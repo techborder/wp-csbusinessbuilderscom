@@ -1,3 +1,0 @@
-[25-May-2014 09:40:36 America/Phoenix] PHP Fatal error:  Call to undefined function get_header() in /home/spencern/public_html/csbb/wp-content/themes/twentytwelve/tag.php on line 14
-[25-May-2014 13:01:08 America/Phoenix] PHP Fatal error:  Call to undefined function get_header() in /home/spencern/public_html/csbb/wp-content/themes/twentytwelve/tag.php on line 14
-[31-May-2014 05:41:22 America/Phoenix] PHP Fatal error:  Call to undefined function get_header() in /home/spencern/public_html/csbb/wp-content/themes/twentytwelve/404.php on line 10
