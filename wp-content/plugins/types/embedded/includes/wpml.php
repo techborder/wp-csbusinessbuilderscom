@@ -7,10 +7,16 @@
  * Mind wpml_action parameter for field.
  * Values:
  * 0 nothing (ignore), 1 copy, 2 translate
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/wpml.php $
+ * $LastChangedDate: 2014-08-27 08:49:51 +0000 (Wed, 27 Aug 2014) $
+ * $LastChangedRevision: 973824 $
+ * $LastChangedBy: brucepearson $
+ *
  */
 
 add_action( 'wpcf_after_init', 'wpcf_wpml_init' );
-add_action( 'init', 'wpcf_wpml_warnings_init', 999999 );
+add_action( 'init', 'wpcf_wpml_warnings_init', PHP_INT_MAX );
 
 // Only when WPML active
 if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
@@ -151,7 +157,7 @@ function wpcf_wpml_init() {
  * @return type 
  */
 function wpcf_translate( $name, $string, $context = 'plugin Types' ) {
-    if ( !function_exists( 'icl_t' ) ) {
+    if ( !function_exists( 'icl_t' ) || !is_string($string) || empty($string) ) {
         return $string;
     }
     return icl_t( $context, $name, stripslashes( $string ) );
@@ -509,12 +515,18 @@ function wpcf_wpml_relationship_meta_belongs_filter( $value, $object_id,
                     $meta_translated_id = icl_object_id( $meta_post->ID,
                             $meta_post->post_type, false, $ulanguage );
                     if ( !empty( $meta_translated_id ) ) {
-                        $value = $meta_translated_id;
+                        if ($single) {
+                            $value = $meta_translated_id;
+                        } else {
+                            $value = array($meta_translated_id);
+                        }
+                        
                     }
                 }
             }
         }
     }
+
     return $value;
 }
 
@@ -1176,9 +1188,16 @@ function wpcf_wpml_sync_postmeta_hook_add( $post, $field ) {
 
 function wpcf_wpml_warnings_init()
 {
-	if(!defined('WPML_ST_PATH') || !class_exists( 'ICL_AdminNotifier' )) return;
+    if(!defined('WPML_ST_PATH') || !class_exists( 'ICL_AdminNotifier' )) return;
 
-	global $sitepress, $sitepress_settings;
+    /**
+     * check is configuration done?!
+     */
+    global $sitepress, $sitepress_settings;
+    if ( !array_key_exists( 'st', $sitepress_settings ) ) {
+        return;
+    }
+
 	if ( $sitepress->get_default_language() != $sitepress_settings[ 'st' ][ 'strings_language' ] ) {
 		wp_types_default_language_warning();
 	} elseif ( $sitepress_settings[ 'st' ][ 'strings_language' ] != 'en' ) {
@@ -1246,7 +1265,7 @@ function wp_types_st_language_warning()
 			$st_language_code = $sitepress_settings[ 'st' ][ 'strings_language' ];
 			$st_language = $sitepress->get_display_language_name($st_language_code, $sitepress->get_admin_language());
 
-			$st_page_url = admin_url('admin.php?page=wpml-string-translation/menu/string-translation.php');
+			$st_page_url = admin_url('admin.php?page='.WPML_ST_FOLDER.'/menu/string-translation.php');
 
 			$message = 'The strings language in your site is set to %s instead of English. ';
 			$message .= 'This means that all English texts that are hard-coded in PHP will appear when displaying content in %s.';

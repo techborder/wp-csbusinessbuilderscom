@@ -1,7 +1,12 @@
 <?php
-
 /**
- *  WPCF_Path
+ * WPCF_Path
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/classes/path.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
  */
 final class WPCF_Path
 {
@@ -191,8 +196,12 @@ final class WPCF_Path
 
         $url .= "://" . $_SERVER['HTTP_HOST']/* $_SERVER["SERVER_NAME"] */;
 
-        if ( $with_port && isset( $_SERVER["SERVER_PORT"] ) && "80" != $_SERVER["SERVER_PORT"] )
-            $url .= ":" . $_SERVER["SERVER_PORT"];
+        if ( $with_port && isset( $_SERVER["SERVER_PORT"] ) && "80" != $_SERVER["SERVER_PORT"] ) {
+            $re = sprintf( '/:%d$/', $_SERVER['SERVER_PORT'] );
+            if ( !preg_match( $re, $url ) ) {
+                $url .= ":" . $_SERVER["SERVER_PORT"];
+            }
+        }
 
         if ( $trailing_slash )
             $url .= '/';
@@ -285,7 +294,7 @@ final class WPCF_Path
             }
         }
     }
-    
+
     private static function _join_paths( $part1, $part2 ) {
         return trailingslashit( $part1 ) . ltrim( $part2, '/' );
     }

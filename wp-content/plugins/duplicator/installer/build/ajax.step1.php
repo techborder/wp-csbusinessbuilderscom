@@ -1,4 +1,12 @@
 <?php
+// Exit if accessed directly
+if (! defined('DUPLICATOR_INIT')) {
+	$_baseURL =  strlen($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+	$_baseURL =  "http://" . $_baseURL;
+	header("HTTP/1.1 301 Moved Permanently");
+	header("Location: $_baseURL");
+	exit; 
+}
 
 //POST PARAMS
 $_POST['dbaction']		= isset($_POST['dbaction']) ? $_POST['dbaction'] : 'create';
@@ -35,16 +43,17 @@ error_reporting(E_ERROR);
 if (isset($_GET['dbtest'])) {
 	
 	$html    = "";
-	$dbConn  = @mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass'], null, $_POST['dbport']);
+	$dbConn  = DupUtil::mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass'], null, $_POST['dbport']);
 	$dbErr	 = mysqli_connect_error();
 	$dbFound = mysqli_select_db($dbConn, $_POST['dbname']);
 
 	$tstSrv   = ($dbConn)  ? "<div class='dup-pass'>Success</div>" : "<div class='dup-fail'>Fail</div>";
 	$tstDB    = ($dbFound) ? "<div class='dup-pass'>Success</div>" : "<div class='dup-fail'>Fail</div>";
 	$html	 .= "<div class='dup-db-test'>";
-	$html	 .= "<small>Connection String:<br/>Server={$_POST['dbhost']}; Database={$_POST['dbname']}; Uid={$_POST['dbuser']}; Pwd={$_POST['dbpass']}; Port={$_POST['dbport']}</small>";
+	$html	 .= "<small style='display:block; padding:5px'>Using Connection String:<br/>Server={$_POST['dbhost']}; Database={$_POST['dbname']}; Uid={$_POST['dbuser']}; Pwd={$_POST['dbpass']}; Port={$_POST['dbport']}</small>";
 	$html	 .= "<label>Server Connected:</label> {$tstSrv} <br/>";
-	$html	 .= "<label>Database Found:</label>   {$tstDB} <br/><br/>";
+	$html	 .= "<label>Database Found:</label>   {$tstDB} <br/>";
+	
 
 	if ($_POST['dbaction'] == 'create'){
 		$tblcount = DupUtil::dbtable_count($dbConn, $_POST['dbname']);
@@ -66,7 +75,7 @@ if (isset($_GET['dbtest'])) {
 function_exists('mysqli_connect') or DUPX_Log::Error(ERR_MYSQLI_SUPPORT);
 
 //ERR_DBCONNECT
-$dbh = @mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass']);
+$dbh = DupUtil::mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass']);
 ($dbh) or DUPX_Log::Error(ERR_DBCONNECT . mysqli_connect_error());
 if ($_POST['dbaction'] == 'empty') {
 	mysqli_select_db($dbh, $_POST['dbname']) or DUPX_Log::Error(sprintf(ERR_DBCREATE, $_POST['dbname']));
@@ -148,13 +157,15 @@ if ($_POST['zip_manual']) {
 	$zip = new ZipArchive();
 	if ($zip->open($_POST['package_name']) === TRUE) {
 		DUPX_Log::Info("EXTRACTING");
-		@$zip->extractTo($target);
-		$close_response = $zip->close();
+		if (! $zip->extractTo($target)) {
+			DUPX_Log::Error(ERR_ZIPEXTRACTION);
+		}
 		$log  = print_r($zip, true);
+		$close_response = $zip->close();
 		$log .= "COMPLETE: " . var_export($close_response, true);
 		DUPX_Log::Info($log);
 	} else {
-		DUPX_Log::Error(ERR_ZIPEXTRACTION);
+		DUPX_Log::Error(ERR_ZIPOPEN);
 	}
 	$zip = null;
 }
@@ -339,7 +350,7 @@ while ($counter < $sql_result_file_length) {
 
 			if (!mysqli_ping($dbh)) {
 				mysqli_close($dbh);
-				$dbh = mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass'], $_POST['dbname']);
+				$dbh = DupUtil::mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass'], $_POST['dbname']);
 			}
 			DUPX_Log::Info("**ERROR** database error write '{$err}' - [sql=" . substr($sql_result_file_data[$counter], 0, 75) . "...]");
 			$dbquery_errs++;

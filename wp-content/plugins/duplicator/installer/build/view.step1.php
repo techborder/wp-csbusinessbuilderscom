@@ -1,5 +1,12 @@
 <?php
-
+	// Exit if accessed directly
+	if (! defined('DUPLICATOR_INIT')) {
+		$_baseURL =  strlen($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+		$_baseURL =  "http://" . $_baseURL;
+		header("HTTP/1.1 301 Moved Permanently");
+		header("Location: $_baseURL");
+		exit; 
+	}
 	//DETECT ARCHIVE FILES
 	$zip_file_name  = "No package file found";
 	$zip_file_count = 0;
@@ -117,13 +124,9 @@
 			error:   function(data){ alert('An error occurred while testing the database connection!  Be sure the install file and package are both in the same directory.'); }
 		});
 		
-		$("#dup-step1-dialog-db").dialog({
-			height:400, width:600, modal: true,
-			position:['center', 150],
-			buttons: {Close: function() {$(this).dialog( "close" );}}
-		});
-	
 		$('#dbconn-test-msg').html("Attempting Connection.  Please wait...");
+		$("#dup-step1-dbconn-status").show(500);
+		
 	};
 	
 	Duplicator.showDeleteWarning = function () {
@@ -209,24 +212,32 @@ VIEW: STEP 1- INPUT -->
 				<td>
 					<div class="dup-step1-modes">
 						<input type="radio" name="dbaction" id="dbaction-create" value="create" checked="checked" />
-						<label for="dbaction-create">Create New</label>
+						<label for="dbaction-create">Create New Database</label>
 					</div>
 					<div class="dup-step1-modes">
 						<input type="radio" name="dbaction" id="dbaction-empty" value="empty" />
-						<label for="dbaction-empty">Remove All Tables</label>						
+						<label for="dbaction-empty">Connect and Remove All Data</label>						
 					</div>
 				</td>
 			</tr>			
     	    <tr><td>Host</td><td><input type="text" name="dbhost" id="dbhost" parsley-required="true" value="<?php echo htmlspecialchars($GLOBALS['FW_DBHOST']); ?>" placeholder="localhost" /></td></tr>
-    	    <tr><td>User</td><td><input type="text" name="dbuser" id="dbuser" parsley-required="true" value="<?php echo htmlspecialchars($GLOBALS['FW_DBUSER']); ?>" placeholder="valid database username" /></td></tr>
-    	    <tr><td>Password</td><td><input type="text" name="dbpass" id="dbpass" value="<?php echo htmlspecialchars($GLOBALS['FW_DBPASS']); ?>"  placeholder="valid database password"   /></td></tr>
-			<tr><td>Name</td><td><input type="text" name="dbname" id="dbname"  parsley-required="true" value="<?php echo htmlspecialchars($GLOBALS['FW_DBNAME']); ?>"  placeholder="database name"  /></td></tr>
+			<tr><td>Name</td><td><input type="text" name="dbname" id="dbname"  parsley-required="true" value="<?php echo htmlspecialchars($GLOBALS['FW_DBNAME']); ?>"  placeholder="new or existing database name"  /></td></tr>
+			<tr><td>User</td><td><input type="text" name="dbuser" id="dbuser" parsley-required="true" value="<?php echo htmlspecialchars($GLOBALS['FW_DBUSER']); ?>" placeholder="valid database username" /></td></tr>
+    	    <tr><td>Password</td><td><input type="text" name="dbpass" id="dbpass" value="<?php echo htmlspecialchars($GLOBALS['FW_DBPASS']); ?>"  placeholder="valid database user password"   /></td></tr>
     	</table>
 		
+		
+		<!-- =========================================
+		DIALOG: DB CONNECTION CHECK  -->
 		<div id="dup-step1-dbconn">
-			<input id="dup-step1-dbconn-btn" type="button" onclick="Duplicator.dlgTestDB()" style="" value="Test Connection..." />
+			<input id="dup-step1-dbconn-btn" type="button" onclick="Duplicator.dlgTestDB()" style="" value="Test Connection" />
+			<div id="dup-step1-dbconn-status" style="display:none">
+				<div style="padding: 0px 10px 10px 10px;">		
+					<div id="dbconn-test-msg" style="min-height:80px"></div>
+				</div>
+				<small><a href="javascript:void()" onclick="$('#dup-step1-dbconn-status').hide(1000)">Hide Connection Details</a></small>
+			</div>
 		</div>
-
 
     	<!-- !!DO NOT CHANGE/EDIT OR REMOVE THIS SECTION!!
     	If your interested in Private Label Rights please contact us at the URL below to discuss
@@ -287,7 +298,7 @@ VIEW: STEP 1- INPUT -->
     	<div id="dup-step1-warning-check">
     	    <input id="accept-warnings" name="accpet-warnings" type="checkbox" onclick="Duplicator.acceptWarning()" /> <label for="accept-warnings">I have read all warnings &amp; notices</label><br/>
 			<div id="dup-step1-warning-emptydb">
-				The remove action will delete <u>all</u> tables from the database!
+				The remove action will delete <u>all</u> tables and data from the database!
 			</div>
     	</div><br/><br/><br/>
     		    
@@ -347,7 +358,7 @@ PANEL: SERVER CHECKS  -->
 <div id="dup-step1-dialog-data" style="padding: 0px 10px 10px 10px;">
 	
 	<b>Archive Name:</b> <?php echo $zip_file_name; ?> <br/>
-	<b>Pakcage Notes:</b> <?php echo empty($GLOBALS['FW_PACKAGE_NOTES']) ? 'No notes provided for this pakcage.' : $GLOBALS['FW_PACKAGE_NOTES']; ?><br/><br/>
+	<b>Package Notes:</b> <?php echo empty($GLOBALS['FW_PACKAGE_NOTES']) ? 'No notes provided for this pakcage.' : $GLOBALS['FW_PACKAGE_NOTES']; ?><br/><br/>
 					
 	<!-- SYSTEM REQUIREMENTS -->
 	<b>REQUIREMENTS</b> &nbsp; <i style='font-size:11px'>click links for details</i>
@@ -436,21 +447,4 @@ PANEL: SERVER CHECKS  -->
 </div>
 
 
-<!-- =========================================
-DIALOG: DB CONNECTION CHECK  -->
-<div id="dup-step1-dialog-db" title="Connection Test" style="display:none">
-    <div id="dup-step1-dialog-db-data" style="padding: 0px 10px 10px 10px;">		
-		<div id="dbconn-test-msg" style="min-height:50px"></div>
-		<br/>
-		<div class="help" style="border-top:1px solid silver">
-			<b>Common Connection Issues:</b><br/>
-			- Double check case sensitive values 'User', 'Password' &amp; the 'Database Name' <br/>
-			- Validate the database and database user exist on this server <br/>
-			- Check if the database user has the correct permission levels to this database <br/>
-			- The host 'localhost' may not work on all hosting providers <br/>
-			- Contact your hosting provider for the exact required parameters <br/>
-			- See the 'Database Setup Help' section on step 1 for more details<br/>
-			- Visit the online resources 'Common FAQ page' <br/>
-		</div>
-    </div>
-</div>
+

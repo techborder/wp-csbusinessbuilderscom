@@ -28,6 +28,9 @@
 	$ui_css_srv_panel   = (isset($view_state['dup-settings-diag-srv-panel'])  && $view_state['dup-settings-diag-srv-panel'])   ? 'display:block' : 'display:none';
 	$ui_css_opts_panel  = (isset($view_state['dup-settings-diag-opts-panel']) && $view_state['dup-settings-diag-opts-panel'])  ? 'display:block' : 'display:none';
 	
+
+	$client_ip_address = DUP_Server::GetClientIP();
+	
 	//POST BACK
 	$action_updated = null;
 	if (isset($_POST['action'])) {
@@ -116,6 +119,14 @@
 				<td><?php echo php_ini_loaded_file() ;?></td>
 			</tr>	
 			<tr>
+				<td><?php _e("Server IP", 'wpduplicator'); ?></td>
+				<td><?php echo $_SERVER['SERVER_ADDR'];?></td>
+			</tr>	
+			<tr>
+				<td><?php _e("Client IP", 'wpduplicator'); ?></td>
+				<td><?php echo $client_ip_address;?></td>
+			</tr>
+			<tr>
 				<td class='dup-settings-diag-header' colspan="2">WordPress</td>
 			</tr>
 			<tr>
@@ -147,7 +158,7 @@
 			</tr>
 			<tr>
 				<td><?php _e("User", 'wpduplicator'); ?></td>
-				<td><?php echo get_current_user(); ?></td>
+				<td><?php echo DUP_Util::GetCurrentUser(); ?></td>
 			</tr>
 			<tr>
 				<td><a href="http://php.net/manual/en/features.safe-mode.php" target="_blank"><?php _e("Safe Mode", 'wpduplicator'); ?></a></td>

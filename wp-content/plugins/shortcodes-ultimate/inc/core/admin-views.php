@@ -60,7 +60,7 @@ class Su_Admin_Views {
 ?>
 <div id="su-custom-css-screen">
 	<div class="su-custom-css-originals">
-		<p><strong><?php _e( 'You can overview the original styles to override it', $config['textdomain'] ); ?></strong></p>
+		<p><strong><?php _e( 'You can overview the original styles to overwrite it', $config['textdomain'] ); ?></strong></p>
 		<div class="sunrise-inline-menu">
 			<a href="<?php echo su_skin_url( 'content-shortcodes.css' ); ?>">content-shortcodes.css</a>
 			<a href="<?php echo su_skin_url( 'box-shortcodes.css' ); ?>">box-shortcodes.css</a>
@@ -69,6 +69,7 @@ class Su_Admin_Views {
 			<a href="<?php echo su_skin_url( 'players-shortcodes.css' ); ?>">players-shortcodes.css</a>
 			<a href="<?php echo su_skin_url( 'other-shortcodes.css' ); ?>">other-shortcodes.css</a>
 		</div>
+		<?php do_action( 'su/admin/css/originals/after' ); ?>
 	</div>
 	<div class="su-custom-css-vars">
 		<p><strong><?php _e( 'You can use next variables in your custom CSS', $config['textdomain'] ); ?></strong></p>
@@ -93,18 +94,103 @@ class Su_Admin_Views {
 		$output = array();
 		$examples = Su_Data::examples();
 		$preview = '<div style="display:none"><div id="su-examples-window"><div id="su-examples-preview"></div></div></div>';
+		$open = ( isset( $_GET['example'] ) ) ? sanitize_text_field( $_GET['example'] ) : '';
+		$open = '<input id="su_open_example" type="hidden" name="su_open_example" value="' . $open . '" />';
 		foreach ( $examples as $group ) {
 			$items = array();
 			if ( isset( $group['items'] ) ) foreach ( $group['items'] as $item ) {
 					$code = ( isset( $item['code'] ) ) ? $item['code'] : plugins_url( 'inc/examples/' . $item['id'] . '.example', SU_PLUGIN_FILE );
 					$id = ( isset( $item['id'] ) ) ? $item['id'] : '';
-					$items[] = '<div class="su-examples-item" data-code="' . $code . '" data-id="' . $id . '" data-mfp-src="#su-examples-window" style="visibility:hidden"><i class="fa fa-' . $item['icon'] . '"></i> ' . $item['name'] . '</div>';
+					$items[] = '<div class="su-examples-item" data-code="' . $code . '" data-id="' . $id . '" data-mfp-src="#su-examples-window"><i class="fa fa-' . $item['icon'] . '"></i> ' . $item['name'] . '</div>';
 				}
-			$output[] = '<div class="su-examples-group su-clearfix"><h2 class="su-examples-group-title" style="visibility:hidden">' . $group['title'] . '</h2>' . implode( '', $items ) . '</div>';
+			$output[] = '<div class="su-examples-group su-clearfix"><h2 class="su-examples-group-title">' . $group['title'] . '</h2>' . implode( '', $items ) . '</div>';
 		}
-		su_query_asset( 'css', array( 'magnific-popup', 'animate', 'font-awesome', 'su-options-page' ) );
+		su_query_asset( 'css', array( 'magnific-popup', 'font-awesome', 'su-options-page' ) );
 		su_query_asset( 'js', array( 'jquery', 'magnific-popup', 'su-options-page' ) );
-		return '<div id="su-examples-screen">' . implode( '', $output ) . '</div>' . $preview;
+		return '<div id="su-examples-screen">' . implode( '', $output ) . '</div>' . $preview . $open;
+	}
+
+	public static function cheatsheet( $field, $config ) {
+		// Prepare print button
+		$print = '<div><a href="javascript:;" id="su-cheatsheet-print" class="su-cheatsheet-switch button button-primary button-large">' . __( 'Printable version', 'su' ) . '</a><div id="su-cheatsheet-print-head"><h1>' . __( 'Shortcodes Ultimate', 'su' ) . ': ' . __( 'Cheatsheet', 'su' ) . '</h1><a href="javascript:;" class="su-cheatsheet-switch">&larr; ' . __( 'Back to Dashboard', 'su' ) . '</a></div></div>';
+		// Prepare table array
+		$table = array();
+		// Table start
+		$table[] = '<table><tr><th style="width:20%;">' . __( 'Shortcode', 'su' ) . '</th><th style="width:50%">' . __( 'Attributes', 'su' ) . '</th><th style="width:30%">' . __( 'Example code', 'su' ) . '</th></tr>';
+		// Loop through shortcodes
+		foreach ( (array) Su_Data::shortcodes() as $name => $shortcode ) {
+			// Prepare vars
+			$icon = ( isset( $shortcode['icon'] ) ) ? $shortcode['icon'] : 'puzzle-piece';
+			$shortcode['name'] = ( isset( $shortcode['name'] ) ) ? $shortcode['name'] : $name;
+			$attributes = array();
+			$example = array();
+			$icons = 'icon: music, icon: envelope &hellip; <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">' . __( 'full list', 'su' ) . '</a>';
+			// Loop through attributes
+			if ( is_array( $shortcode['atts'] ) )
+				foreach ( $shortcode['atts'] as $id => $data ) {
+					// Prepare default value
+					$default = ( isset( $data['default'] ) && $data['default'] !== '' ) ? '<p><em>' . __( 'Default value', 'su' ) . ':</em> ' . $data['default'] . '</p>' : '';
+					// Check type is set
+					if ( empty( $data['type'] ) ) $data['type'] = 'text';
+					// Switch attribute types
+					switch ( $data['type'] ) {
+						// Select
+					case 'select':
+						$value = implode( ', ', array_keys( $data['values'] ) );
+						break;
+						// Slider and number
+					case 'slider':
+					case 'number':
+						$value = $data['min'] . '&hellip;' . $data['max'];
+						break;
+						// Bool
+					case 'bool':
+						$value = 'yes | no';
+						break;
+						// Icon
+					case 'icon':
+						$value = $icons;
+						break;
+						// Color
+					case 'color':
+						$value = __( '#RGB and rgba() colors' );
+						break;
+						// Default value
+					default:
+						$value = $data['default'];
+						break;
+					}
+					// Check empty value
+					if ( $value === '' ) $value = __( 'Any text value', 'su' );
+					// Extra CSS class
+					if ( $id === 'class' ) $value = __( 'Any custom CSS classes', 'su' );
+					// Add attribute
+					$attributes[] = '<div class="su-shortcode-attribute"><strong>' . $data['name'] . ' <em>&ndash; ' . $id . '</em></strong><p><em>' . __( 'Possible values', 'su' ) . ':</em> ' . $value . '</p>' . $default . '</div>';
+					// Add attribute to the example code
+					$example[] = $id . '="' . $data['default'] . '"';
+				}
+			// Prepare example code
+			$example = '[%prefix_' . $name . ' ' . implode( ' ', $example ) . ']';
+			// Prepare content value
+			if ( empty( $shortcode['content'] ) ) $shortcode['content'] = '';
+			// Add wrapping code
+			if ( $shortcode['type'] === 'wrap' ) $example .= esc_textarea( $shortcode['content'] ) . '[/%prefix_' . $name . ']';
+			// Change compatibility prefix
+			$example = str_replace( array( '%prefix_', '__' ), su_cmpt(), $example );
+			// Shortcode
+			$table[] = '<td>' . '<span class="su-shortcode-icon">' . Su_Tools::icon( $icon ) . '</span>' . $shortcode['name'] . '<br/><em class="su-shortcode-desc">' . $shortcode['desc'] . '</em></td>';
+			// Attributes
+			$table[] = '<td>' . implode( '', $attributes ) . '</td>';
+			// Example code
+			$table[] = '<td><code contenteditable="true">' . $example . '</code></td></tr>';
+		}
+		// Table end
+		$table[] = '</table>';
+		// Query assets
+		su_query_asset( 'css', array( 'font-awesome', 'su-cheatsheet' ) );
+		su_query_asset( 'js', array( 'jquery', 'su-options-page' ) );
+		// Return output
+		return '<div id="su-cheatsheet-screen">' . $print . implode( '', $table ) . '</div>';
 	}
 
 	public static function addons( $field, $config ) {
@@ -127,6 +213,12 @@ class Su_Admin_Views {
 				'desc' => __( 'Set of additional skins for Shortcodes Ultimate. It includes skins for accordeons/spoilers, tabs and some other shortcodes', 'su' ),
 				'url' => 'http://gndev.info/shortcodes-ultimate/skins/',
 				'image' => plugins_url( 'assets/images/banners/skins.png', SU_PLUGIN_FILE )
+			),
+			array(
+				'name' => __( 'Add-ons bundle', 'su' ),
+				'desc' => __( 'Get all three add-ons with huge discount!', 'su' ),
+				'url' => 'http://gndev.info/shortcodes-ultimate/add-ons-bundle/',
+				'image' => plugins_url( 'assets/images/banners/bundle.png', SU_PLUGIN_FILE )
 			),
 		);
 		$plugins = array();

@@ -1,6 +1,12 @@
 <?php
 /*
  * Fields and groups form functions.
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/includes/fields-form.php $
+ * $LastChangedDate: 2014-10-23 10:33:39 +0000 (Thu, 23 Oct 2014) $
+ * $LastChangedRevision: 1012677 $
+ * $LastChangedBy: iworks $
+ *
  */
 require_once WPCF_EMBEDDED_ABSPATH . '/classes/validate.php';
 require_once WPCF_ABSPATH . '/includes/conditional-display.php';
@@ -117,10 +123,6 @@ function wpcf_admin_save_fields_groups_submit( $form ) {
                     return $form;
                 }
             }
-        }
-        // Now save fields
-        foreach ( $_POST['wpcf']['fields'] as $key => $field ) {
-            $field = apply_filters( 'wpcf_field_pre_save', $field );
             // Field ID and slug are same thing
             $field_id = wpcf_admin_fields_save_field( $field );
             if ( is_wp_error( $field_id ) ) {
@@ -238,7 +240,7 @@ function wpcf_admin_fields_form() {
     $form['help-icon'] = array(
         '#type' => 'markup',
         '#markup' => '<div class="wpcf-admin-fields-help"><img src="' . WPCF_EMBEDDED_RELPATH
-        . '/common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="http://wp-types.com/documentation/user-guides/using-custom-fields/" target="_blank">'
+        . '/common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="http://wp-types.com/documentation/user-guides/using-custom-fields/?utm_source=typesplugin&utm_medium=help&utm_term=fields-help&utm_content=fields-editor&utm_campaign=types" target="_blank">'
         . __( 'Custom fields help', 'wpcf' ) . '</a></div>',
     );
     $form['submit2'] = array(
@@ -259,7 +261,8 @@ function wpcf_admin_fields_form() {
             '#type' => 'markup',
             '#markup' => '<a href="' . admin_url( 'admin-ajax.php'
                     . '?action=wpcf_ajax&amp;wpcf_action=fields_insert'
-                    . '&amp;field=' . basename( $filename, '.php' ) )
+                    . '&amp;field=' . basename( $filename, '.php' )
+                    . '&amp;page=wpcf-edit' )
             . '&amp;_wpnonce=' . wp_create_nonce( 'fields_insert' ) . '" '
             . 'class="wpcf-fields-add-ajax-link button-secondary">' . $data['title'] . '</a> ',
         );
@@ -313,9 +316,11 @@ function wpcf_admin_fields_form() {
                 '#markup' => '<div id="wpcf-user-created-fields-wrapper-' . $field['id'] . '" style="float:left; margin-right: 10px;"><a href="' . admin_url( 'admin-ajax.php'
                         . '?action=wpcf_ajax'
                         . '&amp;wpcf_action=fields_insert_existing'
+                        . '&amp;page=wpcf-edit'
                         . '&amp;field=' . $field['id'] ) . '&amp;_wpnonce='
                 . wp_create_nonce( 'fields_insert_existing' ) . '" '
-                . 'class="wpcf-fields-add-ajax-link button-secondary" onclick="jQuery(this).parent().fadeOut();">'
+                . 'class="wpcf-fields-add-ajax-link button-secondary" onclick="jQuery(this).parent().fadeOut();" '
+                . ' data-slug="' . $field['id'] . '">'
                 . htmlspecialchars( stripslashes( $field['name'] ) ) . '</a>'
                 . '<a href="' . admin_url( 'admin-ajax.php'
                         . '?action=wpcf_ajax'
@@ -764,8 +769,7 @@ function wpcf_admin_fields_form() {
     wpcf_admin_add_js_settings( 'wpcf_filters_association_all_templates',
             '\'' . __( 'any', 'wpcf' ) . '\'' );
 
-    $additional_filters = apply_filters( 'wpcf_fields_form_additional_filters',
-            array(), $update );
+    $additional_filters = apply_filters( 'wpcf_fields_form_additional_filters', array(), $update );
     $form = $form + $additional_filters;
 
     $form['supports-table-close'] = array(
@@ -774,8 +778,6 @@ function wpcf_admin_fields_form() {
     );
 
     /** Admin styles* */
-    // messes up menu buttons
-//    wp_deregister_style('editor-buttons');
     $form['adminstyles-table-open'] = array(
         '#type' => 'markup',
         '#markup' => '<table class="widefat" id="wpcf-admin-styles-box"><thead><tr><th>'
@@ -803,13 +805,12 @@ function wpcf_admin_fields_form() {
 
         if ( !empty( $post ) && count( $post ) != '' ) {
             $post = $post[0];
-            $preview_profile = wpcf_admin_post_meta_box_preview( $post, $update,
-                    1 );
-            $group = $update;
-            $group['fields'] = wpcf_admin_post_process_fields( $post,
-                    $group['fields'], true, false );
-            $edit_profile = wpcf_admin_post_meta_box( $post, $group, 1 );
         }
+        $preview_profile = wpcf_admin_post_meta_box_preview( $post, $update, 1 );
+        $group = $update;
+        $group['fields'] = wpcf_admin_post_process_fields( $post, $group['fields'], true, false );
+        $edit_profile = wpcf_admin_post_meta_box( $post, $group, 1, true );
+        add_action( 'admin_enqueue_scripts', 'wpcf_admin_fields_form_fix_styles', PHP_INT_MAX  );
     }
 
     $temp[] = array(
@@ -982,6 +983,8 @@ function wpcf_admin_fields_form() {
     wpcf_admin_add_js_settings( 'wpcfFormUniqueSlugsCheckText',
             '\'' . __( 'Warning: field slug already used', 'wpcf' ) . '\'' );
 
+    wpcf_admin_add_js_settings( 'wpcfFormAlertOnlyPreview', sprintf( "'%s'", __( 'Sorry, but this is only preview!', 'wpcf' ) ) );
+
     return $form;
 }
 
@@ -1018,9 +1021,28 @@ function wpcf_fields_insert_existing_ajax() {
 function wpcf_fields_get_field_form( $type, $form_data = array() ) {
     $form = wpcf_fields_get_field_form_data( $type, $form_data );
     if ( $form ) {
-        return '<div class="ui-draggable">'
+        $return = '<div class="ui-draggable">'
                 . wpcf_form_simple( $form )
                 . '</div>';
+
+        /**
+         * add extra condition check if this is checkbox
+         */
+        foreach( $form as $key => $value ) {
+            if (
+                !array_key_exists('value', $value )
+                || !array_key_exists('#attributes', $value['value'] )
+                || !array_key_exists('data-wpcf-type', $value['value']['#attributes'] )
+                || 'checkbox' != $value['value']['#attributes']['data-wpcf-type']
+            ) {
+                continue;
+            }
+            echo '<script type="text/javascript">';
+            printf('jQuery(document).ready(function($){wpcf_checkbox_value_zero(jQuery(\'[name="%s"]\'));});', $value['value']['#name'] );
+            echo '</script>';
+        }
+
+        return $return;
     }
     return '<div>' . __( 'Wrong field requested', 'wpcf' ) . '</div>';
 }
@@ -1250,7 +1272,7 @@ function wpcf_fields_get_field_form_data( $type, $form_data = array() ) {
         }
 
         // WPML Translation Preferences
-        if ( function_exists( 'wpml_cf_translation_preferences' ) && defined('WPML_TM_VERSION') ) {
+        if ( function_exists( 'wpml_cf_translation_preferences' ) ) {
             $custom_field = !empty( $form_data['slug'] ) ? wpcf_types_get_meta_prefix( $form_data ) . $form_data['slug'] : false;
             $suppress_errors = $custom_field == false ? true : false;
             $translatable = array('textfield', 'textarea', 'wysiwyg');
@@ -1260,11 +1282,13 @@ function wpcf_fields_get_field_form_data( $type, $form_data = array() ) {
                 '#title' => __( 'Translation preferences', 'wpcf' ),
                 '#collapsed' => true,
             );
+            $wpml_prefs = wpml_cf_translation_preferences( $id,
+                        $custom_field, 'wpcf', false, $action, false,
+                        $suppress_errors );
+            $wpml_prefs = str_replace('<span style="color:#FF0000;">', '<span class="wpcf-form-error">', $wpml_prefs);
             $form['wpcf-' . $id]['wpml-preferences']['form'] = array(
                 '#type' => 'markup',
-                '#markup' => wpml_cf_translation_preferences( $id,
-                        $custom_field, 'wpcf', false, $action, false,
-                        $suppress_errors ),
+                '#markup' => $wpml_prefs,
             );
         }
 
@@ -1273,6 +1297,9 @@ function wpcf_fields_get_field_form_data( $type, $form_data = array() ) {
                 '#type' => 'hidden',
                 '#name' => 'wpcf[fields][' . $id . '][is_new]',
                 '#value' => '1',
+                '#attributes' => array(
+                    'class' => 'wpcf-is-new',
+                ),
             );
         }
         $form_data['id'] = $id;

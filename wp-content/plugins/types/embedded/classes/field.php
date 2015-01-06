@@ -1,8 +1,12 @@
 <?php
 /*
- * 
- * 
  * Field class.
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/classes/field.php $
+ * $LastChangedDate: 2014-10-23 10:33:39 +0000 (Thu, 23 Oct 2014) $
+ * $LastChangedRevision: 1012677 $
+ * $LastChangedBy: iworks $
+ *
  */
 
 /**
@@ -188,12 +192,9 @@ class WPCF_Field
         $wpcf->debug->meta[$this->slug][] = $this->meta;
 
         // Load files
-        $file = WPCF_EMBEDDED_INC_ABSPATH . '/fields/' . $this->cf['type'] . '.php';
-        if ( file_exists( $file ) ) {
-            include_once $file;
-        }
+        $this->_include_file_by_field_type($this->cf['type']);
         if ( defined( 'WPCF_INC_ABSPATH' ) ) {
-            $file = WPCF_INC_ABSPATH . '/fields/' . $this->cf['type'] . '.php';
+            $file = WPCF_INC_ABSPATH . '/fields/' . preg_replace('/[^\w]+/', '', $this->cf['type']) . '.php';
             if ( file_exists( $file ) ) {
                 include_once $file;
             }
@@ -300,10 +301,8 @@ class WPCF_Field
          * Apply filters
          */
         $meta = apply_filters( 'wpcf_fields_value_get', $meta, $this );
-        $meta = apply_filters( 'wpcf_fields_slug_' . $this->cf['slug']
-                . '_value_get', $meta, $this );
-        $meta = apply_filters( 'wpcf_fields_type_' . $this->cf['type']
-                . '_value_get', $meta, $this );
+        $meta = apply_filters( 'wpcf_fields_slug_' . $this->cf['slug'] . '_value_get', $meta, $this );
+        $meta = apply_filters( 'wpcf_fields_type_' . $this->cf['type'] . '_value_get', $meta, $this );
 
         return $meta;
     }
@@ -328,43 +327,69 @@ class WPCF_Field
      * 
      * @param type $value 
      */
-    function save( $value = null ) {
-
+    function save( $value = null )
+    {
         // If $value null, look for submitted data
         if ( is_null( $value ) ) {
             $value = $this->get_submitted_data();
         }
-
-        /*
-         * 
-         * 
+        /**
+         *
          * Since Types 1.2
          * We completely rewrite meta.
          * It has no impact on frontend and covers a lot of cases
          * (e.g. user change mode from single to repetitive)
+         *
          */
         do_action('wpcf_postmeta_before_delete', $this->post, $this->cf);
         delete_post_meta( $this->post->ID, $this->slug );
         do_action('wpcf_postmeta_after_delete', $this->post, $this->cf);
-
         // Trim
         if ( is_string( $value ) ) {
             $value = trim( $value );
         }
-
-        // Apply filters
-        $_value = $this->_filter_save_value( $value );
-
-        // Save field
-        $mid = add_post_meta( $this->post->ID, $this->slug, $_value );
-
-        // CAll HOOKS
-        /*
-         * 
-         * Use these hooks to add future functionality.
-         * Do not add any more code to core.
+        /**
+         * setup what save to database if needed
          */
-        $this->_action_save( $this->cf, $_value, $mid, $value );
+        if (
+            $value
+            && array_key_exists( 'data', $this->cf )
+            && array_key_exists( 'set_value', $this->cf['data'] )
+        ) {
+            $value = $this->cf['data']['set_value'];
+        }
+        /**
+         * apply filters
+         */
+        $_value = $this->_filter_save_value( $value );
+        /**
+         * Save field if needed
+         */
+        if (
+            (
+                !( is_null( $value ) || $value === false || $value === '' )
+                || (
+                    isset($this->cf['data']['save_empty'])
+                    && 'yes' == $this->cf['data']['save_empty']
+                )
+            )
+            ||
+            /**
+             * handle "save zero as set value"
+             */
+            (
+                array_key_exists( 'set_value', $this->cf['data'] )
+                && preg_match( '/^0$/', $value )
+                && preg_match( '/^0$/', $this->cf['data']['set_value'] )
+            )
+        ) {
+            $mid = add_post_meta( $this->post->ID, $this->slug, $_value );
+            /*
+             * Use these hooks to add future functionality.
+             * Do not add any more code to core.
+             */
+            $this->_action_save( $this->cf, $_value, $mid, $value );
+        }
     }
 
     /**
@@ -373,14 +398,12 @@ class WPCF_Field
      * @param type $value
      * @return type 
      */
-    function _filter_save_value( $value ) {
+    function _filter_save_value( $value )
+    {
         // Apply filters
-        $value = apply_filters( 'wpcf_fields_value_save', $value,
-                $this->cf['type'], $this->cf['slug'], $this->cf, $this );
-        $value = apply_filters( 'wpcf_fields_slug_' . $this->cf['slug']
-                . '_value_save', $value, $this->cf, $this );
-        $value = apply_filters( 'wpcf_fields_type_' . $this->cf['type']
-                . '_value_save', $value, $this->cf, $this );
+        $value = apply_filters( 'wpcf_fields_value_save', $value, $this->cf['type'], $this->cf['slug'], $this->cf, $this );
+        $value = apply_filters( 'wpcf_fields_slug_' . $this->cf['slug'] . '_value_save', $value, $this->cf, $this );
+        $value = apply_filters( 'wpcf_fields_type_' . $this->cf['type'] . '_value_save', $value, $this->cf, $this );
 
         return $value;
     }
@@ -393,13 +416,28 @@ class WPCF_Field
      * @param type $value
      * @param type $meta_id
      */
-    function _action_save( $field, $value, $meta_id, $meta_value_original ) {
-        do_action( 'wpcf_fields_save', $value, $field, $this, $meta_id,
-                $meta_value_original );
-        do_action( 'wpcf_fields_slug_' . $field['slug'] . '_save', $value,
-                $field, $this, $meta_id, $meta_value_original );
-        do_action( 'wpcf_fields_type_' . $field['type'] . '_save', $value,
-                $field, $this, $meta_id, $meta_value_original );
+    function _action_save( $field, $value, $meta_id, $meta_value_original )
+    {
+        do_action( 'wpcf_fields_save', $value, $field, $this, $meta_id, $meta_value_original );
+        do_action( 'wpcf_fields_slug_' . $field['slug'] . '_save', $value, $field, $this, $meta_id, $meta_value_original );
+        do_action( 'wpcf_fields_type_' . $field['type'] . '_save', $value, $field, $this, $meta_id, $meta_value_original );
+    }
+
+    /**
+     * Get file fullpath to include
+     *
+     * param @string $basename
+     *
+     * return @string
+     *
+     */
+    function _include_file_by_field_type($basename)
+    {
+        $file = wpcf_get_fullpath_by_field_type($basename);
+        if ( file_exists( $file ) ) {
+            include_once $file;
+        }
+        return $file;
     }
 
     /**
@@ -408,10 +446,7 @@ class WPCF_Field
      * @return type 
      */
     function _get_config() {
-        $file = WPCF_EMBEDDED_INC_ABSPATH . '/fields/' . $this->cf['type'] . '.php';
-        if ( file_exists( $file ) ) {
-            include_once $file;
-        }
+        $this->_include_file_by_field_type($this->cf['type']);
         $func = 'wpcf_fields_' . $this->cf['type'];
         if ( is_callable( $func ) ) {
             return (object) call_user_func( $func );
@@ -445,10 +480,7 @@ class WPCF_Field
          * Note that field may be registered outside of Types.
          * In that case, it's on developer to make sure it's loaded.
          */
-        $_file = WPCF_EMBEDDED_INC_ABSPATH . '/fields/' . $this->cf['type'] . '.php';
-        if ( file_exists( $_file ) ) {
-            include_once WPCF_EMBEDDED_INC_ABSPATH . '/fields/' . $this->cf['type'] . '.php';
-        }
+        $this->_include_file_by_field_type($this->cf['type']);
 
         /*
          * Set value
@@ -489,12 +521,9 @@ class WPCF_Field
 //                _deprecated_argument( 'inherited_field_type', '1.2',
 //                        'Since Types 1.2 we encourage developers to completely define fields' );
             }
-            $file = WPCF_EMBEDDED_INC_ABSPATH . '/fields/'
-                    . $this->config->inherited_field_type
-                    . '.php';
+            $file = $this->_include_file_by_field_type($this->config->inherited_field_type);
 
             if ( file_exists( $file ) ) {
-                include_once $file;
 
                 if ( function_exists( 'wpcf_fields_'
                                 . $this->config->inherited_field_type
@@ -585,8 +614,7 @@ class WPCF_Field
                 }
 
                 // Set form element
-                $form[$element_key] = apply_filters( 'wpcf_post_edit_field',
-                        $element, $this->cf, $this->post, $this->context );
+                $form[$element_key] = apply_filters( 'wpcf_post_edit_field', $element, $this->cf, $this->post, $this->context );
             }
 
             // Add to editor
@@ -654,7 +682,7 @@ class WPCF_Field
             foreach ( $config->meta_box_css as $handle => $data_script ) {
                 $deps = !empty( $data_script['deps'] ) ? $data_script['deps'] : array();
                 if ( isset( $data_script['inline'] ) ) {
-                    add_action( 'admin_header', $data_script['inline'] );
+                    add_action( 'admin_head', $data_script['inline'] );
                     continue;
                 }
                 if ( !isset( $data_script['src'] ) ) {
@@ -672,10 +700,11 @@ class WPCF_Field
      * @param type $output 
      */
     function html( $html, $params ) {
-        /*
-         * 
+        /**
+         *
          * Exception when RAW = TRUE.
          * Return unchanged value.
+         *
          */
         if ( isset( $params['raw'] ) && $params['raw'] == 'true' ) {
             return $html;

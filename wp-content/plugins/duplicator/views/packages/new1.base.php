@@ -12,19 +12,18 @@
 		}
 	} 
 	
-	
 	DUP_Util::InitSnapshotDirectory();
-	$Package = new DUP_Package();
-	$Package = $Package->GetActive();
+
+	$Package = DUP_Package::GetActive();
+	$package_hash = $Package->MakeHash();
 
 	$dup_tests  = array();
-	$dup_tests  = DUP_Package::GetSystemRequirments();
+	$dup_tests  = DUP_Server::GetRequirments();
 	$default_name = DUP_Package::GetDefaultName();
 	
 	$view_state = DUP_UI::GetViewStateArray();
 	$ui_css_archive   = (isset($view_state['dup-pack-archive-panel']) && $view_state['dup-pack-archive-panel'])   ? 'display:block' : 'display:none';
 	$ui_css_installer = (isset($view_state['dup-pack-installer-panel']) && $view_state['dup-pack-installer-panel']) ? 'display:block' : 'display:none';
-	$package_skip_scanner	= DUP_Settings::Get('package_skip_scanner');
 
 ?>
 
@@ -34,18 +33,19 @@
 	div.dup-sys-section {margin:1px 0px 5px 0px}
 	div.dup-sys-title {display:inline-block; width:250px; padding:1px; }
 	div.dup-sys-title div {display:inline-block;float:right; }
-	div.dup-sys-info {display:none; max-width: 800px}	
+	div.dup-sys-info {display:none; max-width: 98%; margin:4px 4px 12px 4px}	
 	div.dup-sys-pass {display:inline-block; color:green;}
 	div.dup-sys-fail {display:inline-block; color:#AF0000;}
 	div.dup-sys-contact {padding:5px 0px 0px 10px; font-size:11px; font-style:italic}
 	span.dup-toggle {float:left; margin:0 2px 2px 0; }
+	table.dup-sys-info-results td:first-child {width:200px}
 
 	/* -----------------------------
 	PACKAGE OPTS*/
 	form#dup-form-opts label {line-height:22px}
 	form#dup-form-opts input[type=checkbox] {margin-top:3px}
-	form#dup-form-opts fieldset {border-radius:4px; border:1px solid #ccc;  line-height:20px}
-	form#dup-form-opts fieldset{padding:10px 15px 15px 15px; min-height:275px}
+	form#dup-form-opts fieldset {border-radius:4px;  border-top:1px solid #dfdfdf;  line-height:20px}
+	form#dup-form-opts fieldset{padding:10px 15px 15px 15px; min-height:275px; margin:0 10px 10px 10px}
 	form#dup-form-opts textarea, input[type="text"] {width:100%}
 	form#dup-form-opts textarea#filter-dirs {height:85px}
 	form#dup-form-opts textarea#filter-exts {height:27px}
@@ -88,10 +88,141 @@ WIZARD STEP TABS -->
 	<div id="message" class="updated below-h2"><p><?php echo $action_response; ?></p></div>
 <?php endif; ?>	
 
-<?php include('new1.inc-a.reqs.php'); ?>
+<!-- =========================================
+META-BOX1: SYSTEM REQUIREMENTS -->
+<div class="dup-box">
+	<div class="dup-box-title dup-box-title-fancy">
+		<i class="fa fa-check-square-o"></i>
+		<?php 
+			_e("Requirements:", 'wpduplicator');
+			echo ($dup_tests['Success']) ? ' <div class="dup-sys-pass">Pass</div>' : ' <div class="dup-sys-fail">Fail</div>';		
+		?>
+		<div class="dup-box-arrow"></div>
+	</div>
+	
+	<div class="dup-box-panel" style="<?php echo ($dup_tests['Success']) ? 'display:none' : ''; ?>">
 
-<div style="padding:2px 5px 2px 5px">
-	<?php include('new1.inc-b.form.php'); ?>
+		<div class="dup-sys-section">
+			<i><?php _e("System requirments must pass for the Duplicator to work properly.  Click each link for details.", 'wpduplicator'); ?></i>
+		</div>
+		
+		<!-- PHP SUPPORT -->
+		<div class='dup-sys-req'>
+			<div class='dup-sys-title'>
+				<a><?php _e('PHP Support', 'wpduplicator');?></a>
+				<div><?php echo $dup_tests['PHP']['ALL'];?></div>
+			</div>
+			<div class="dup-sys-info dup-info-box">
+				<table class="dup-sys-info-results">
+					<tr>
+						<td><?php printf("%s [%s]", __("PHP Version", 'wpduplicator'), phpversion());?></td>
+						<td><?php echo $dup_tests['PHP']['VERSION'] ?></td>
+					</tr>
+					<tr>
+						<td><?php _e('Zip Archive Enabled', 'wpduplicator');?></td>
+						<td><?php echo $dup_tests['PHP']['ZIP'] ?></td>
+					</tr>					
+					<tr>
+						<td><?php _e('Safe Mode Off', 'wpduplicator');?></td>
+						<td><?php echo $dup_tests['PHP']['SAFE_MODE'] ?></td>
+					</tr>					
+					<tr>
+						<td><?php _e('Function', 'wpduplicator');?> file_get_contents</td>
+						<td><?php echo $dup_tests['PHP']['FUNC_1'] ?></td>
+					</tr>					
+					<tr>
+						<td><?php _e('Function', 'wpduplicator');?> file_put_contents</td>
+						<td><?php echo $dup_tests['PHP']['FUNC_2'] ?></td>
+					</tr>
+				</table>
+				<small>
+					<?php _e("PHP versions 5.2.17+ or higher is required. Please note that in versioning logic a value such as 5.2.9 is less than 5.2.17. For compression to work the ZipArchive extension for PHP is required. Safe Mode should be set to 'Off' in you php.ini file and is deprecated as of PHP 5.3.0.  For any issues in this section please contact your hosting provider or server administrator.  For additional information see our online documentation.", 'wpduplicator'); ?>
+				</small>
+			</div>
+		</div>		
+
+		<!-- PERMISSIONS -->
+		<div class='dup-sys-req'>
+			<div class='dup-sys-title'>
+				<a><?php _e('Permissions', 'wpduplicator');?></a> <div><?php echo $dup_tests['IO']['ALL'];?></div>
+			</div>
+			<div class="dup-sys-info dup-info-box">
+				<b><?php _e("Required Paths", 'wpduplicator'); ?></b>
+				<div style="padding:3px 0px 0px 15px">
+				<?php 
+					printf("<b>%s</b> &nbsp; [%s] <br/>", $dup_tests['IO']['WPROOT'], DUPLICATOR_WPROOTPATH);
+					printf("<b>%s</b> &nbsp; [%s] <br/>", $dup_tests['IO']['SSDIR'], DUPLICATOR_SSDIR_PATH);
+					printf("<b>%s</b> &nbsp; [%s] <br/>", $dup_tests['IO']['SSTMP'], DUPLICATOR_SSDIR_PATH_TMP);
+					//printf("<b>%s:</b> [%s] <br/>", __('PHP Script Owner', 'wpduplicator'), DUP_Util::GetCurrentUser());	
+					//printf("<b>%s:</b> [%s] <br/>", __('PHP Process Owner', 'wpduplicator'), DUP_Util::GetProcessOwner());	
+				?>
+				</div>
+
+				<small>
+					<?php _e("Permissions can be difficult to resolve on some systems. If the plugin can not read the above paths here are a few things to try. 1) Set the above paths to have permissions of 755 for directories and 644 for files. You can temporarily try 777 however, be sure you don’t leave them this way. 2) Check the owner/group settings for both files and directories. The PHP script owner and the process owner are different. The script owner owns the PHP script but the process owner is the user the script is running as, thus determining its capabilities/privileges in the file system. For more details contact your host or server administrator or visit the 'Help' menu under Duplicator for additional online resources.", 'wpduplicator'); ?>
+				</small>					
+			</div>
+		</div>
+
+		<!-- SERVER SUPPORT -->
+		<div class='dup-sys-req'>
+			<div class='dup-sys-title'>
+				<a><?php _e('Server Support', 'wpduplicator');?></a>
+				<div><?php echo $dup_tests['SRV']['ALL'];?></div>
+			</div>
+			<div class="dup-sys-info dup-info-box">
+				<table class="dup-sys-info-results">
+					<tr>
+						<td><?php printf("%s [%s]", __("MySQL Version", 'wpduplicator'), $wpdb->db_version());?></td>
+						<td><?php echo $dup_tests['SRV']['MYSQL_VER'] ?></td>
+					</tr>
+					<tr>
+						<td><?php printf("%s", __("MySQLi Support", 'wpduplicator'));?></td>
+						<td><?php echo $dup_tests['SRV']['MYSQLi'] ?></td>
+					</tr>
+				</table>
+				<small>
+					<?php 
+						_e("MySQL version 5.0+ or better is required and the PHP MySQLi extension (note the trailing 'i') is also required.  Contact your server administrator and request that mysqli extension and MySQL Server 5.0+ be installed. Please note in future versions support for other databases and extensions will be added.", 'wpduplicator');
+						echo "&nbsp;<i><a href='http://php.net/manual/en/mysqli.installation.php' target='_blank'>[" . __('more info', 'wpduplicator')  . "]</a></i>";
+					?>										
+				</small>
+			</div>
+		</div>
+		
+		<!-- RESERVED FILES -->
+		<div class='dup-sys-req'>
+			<div class='dup-sys-title'>
+				<a><?php _e('Reserved Files', 'wpduplicator');?></a> <div><?php echo $dup_tests['RES']['INSTALL'];?></div>
+			</div>
+			<div class="dup-sys-info dup-info-box">
+				<?php if ($dup_tests['RES']['INSTALL'] == 'Pass')  :	?>
+					<?php _e('None of the reserved files (installer.php, installer-data.sql and installer-log.txt) where found from a previous install.  This means you are clear to create a new package.', 'wpduplicator');?>
+				<?php else: ?> 
+					<form method="post" action="admin.php?page=duplicator-tools&tab=cleanup&action=installer">
+						<?php _e('A reserved file(s) was found in the WordPress root directory. Reserved file names are installer.php, installer-data.sql and installer-log.txt.  To archive your data correctly please remove any of these files from your WordPress root directory.  Then try creating your package again.', 'wpduplicator');?>
+						<br/><input type='submit' class='button action' value='<?php _e('Remove Files Now', 'wpduplicator')?>' style='font-size:10px; margin-top:5px;' />
+					</form>
+				<?php endif; ?>
+			</div>
+		</div>
+
+		<!-- ONLINE SUPPORT -->
+		<div class="dup-sys-contact">
+			<?php 	
+				printf("<i class='fa fa-question-circle'></i> %s <a href='admin.php?page=duplicator-help'>[%s]</a>", 
+						__("For additional help please see the ", 'wpduplicator'), 	__("help page", 'wpduplicator'));
+			?>
+		</div>
+
+	</div>
+</div><br/>
+
+
+<!-- =========================================
+FORM PACKAGE OPTIONS -->
+<div style="padding:5px 5px 2px 5px">
+	<?php include('new1.inc.form.php'); ?>
 </div>
 
 <script type="text/javascript">
@@ -118,11 +249,11 @@ jQuery(document).ready(function($) {
 		if($("#filter-on").is(':checked')) {
 			$filterItems.removeAttr('disabled').css({color:'#000'});
 			$('#filter-exts,#filter-dirs').removeAttr('readonly').css({color:'#000'});
-			$('#dup-archive-filter-file').show(800);
+			$('#dup-archive-filter-file').show();
 		} else {
 			$filterItems.attr('disabled', 'disabled').css({color:'#999'});
 			$('#filter-dirs, #filter-exts').attr('readonly', 'readonly').css({color:'#999'});
-			$('#dup-archive-filter-file').hide(800);
+			$('#dup-archive-filter-file').hide();
 		}
 	};
 	
@@ -130,14 +261,15 @@ jQuery(document).ready(function($) {
 	*	METHOD: Appends a path to the directory filter */ 
 	Duplicator.Pack.ToggleDBFilters = function() {
 		var $filterItems = $('#dup-db-filter-items');
+		
 		if($("#dbfilter-on").is(':checked')) {
 			$filterItems.removeAttr('disabled').css({color:'#000'});
 			$('#dup-dbtables input').removeAttr('readonly').css({color:'#000'});
-			$('#dup-archive-filter-db').show(800);
+			$('#dup-archive-filter-db').show();
 		} else {
 			$filterItems.attr('disabled', 'disabled').css({color:'#999'});
 			$('#dup-dbtables input').attr('readonly', 'readonly').css({color:'#999'});
-			$('#dup-archive-filter-db').hide(800);
+			$('#dup-archive-filter-db').hide();
 		}
 	};
 
@@ -145,7 +277,7 @@ jQuery(document).ready(function($) {
 	/*	----------------------------------------
 	*	METHOD: Appends a path to the directory filter  */ 
 	Duplicator.Pack.AddExcludePath = function(path) {
-		var text = $("#filter-dirs").val() + path + ';';
+		var text = $("#filter-dirs").val()  + path + ';\n';
 		$("#filter-dirs").val(text);
 	};
 	
@@ -156,17 +288,7 @@ jQuery(document).ready(function($) {
 		$("#filter-exts").val(text);
 	};	
 	
-	/*	----------------------------------------
-	*	METHOD: Auto Skip Step 2*/ 
-	Duplicator.Pack.SkipStep2 = function() {
-		var $chkbox = jQuery('#dup-skip-step2');
-		if ($chkbox.prop('checked') ) {
-			jQuery('#dup-form-opts').attr('action', '?page=duplicator&tab=new3');
-		} else {
-			jQuery('#dup-form-opts').attr('action', '?page=duplicator&tab=new2');
-		}
-	};	
-	
+
 	//Init: Toogle for system requirment detial links
 	$('.dup-sys-title a').each(function() {
 		$(this).attr('href', 'javascript:void(0)');
@@ -182,7 +304,6 @@ jQuery(document).ready(function($) {
 	//Init: Toggle OptionTabs
 	Duplicator.Pack.ToggleFileFilters();
 	Duplicator.Pack.ToggleDBFilters();
-	<?php echo ($package_skip_scanner) ? 'Duplicator.Pack.SkipStep2();' : ''; ?>
 	
 });
 </script>

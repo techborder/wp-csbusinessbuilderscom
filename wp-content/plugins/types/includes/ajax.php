@@ -243,7 +243,45 @@ function wpcf_ajax() {
             }
             $custom_types = get_option('wpcf-custom-types', array());
             $custom_type = strval($_GET['wpcf-post-type']);
+
+            /**
+             * delete relataion?
+             */
+            if ( apply_filters('wpcf_delete_relation_meta', false) ) {
+                global $wpdb;
+                $wpdb->delete(
+                    $wpdb->postmeta,
+                    array( 'meta_key' => sprintf( '_wpcf_belongs_%s_id', $custom_type ) ),
+                    array( '%s' )
+                );
+            }
+
             unset($custom_types[$custom_type]);
+            /**
+             * remove post relation
+             */
+            foreach ( array_keys($custom_types) as $post_type ) {
+                if ( array_key_exists( 'post_relationship', $custom_types[$post_type] ) ) {
+                    /**
+                     * remove "has" relation
+                     */
+                    if (
+                        array_key_exists( 'has', $custom_types[$post_type]['post_relationship'] )
+                        && array_key_exists( $custom_type, $custom_types[$post_type]['post_relationship']['has'] )
+                    ) {
+                        unset($custom_types[$post_type]['post_relationship']['has'][$custom_type]);
+                    }
+                    /**
+                     * remove "belongs" relation
+                     */
+                    if (
+                        array_key_exists( 'belongs', $custom_types[$post_type]['post_relationship'] )
+                        && array_key_exists( $custom_type, $custom_types[$post_type]['post_relationship']['belongs'] )
+                    ) {
+                        unset($custom_types[$post_type]['post_relationship']['belongs'][$custom_type]);
+                    }
+                }
+            }
             update_option('wpcf-custom-types', $custom_types);
             wpcf_admin_deactivate_content('post_type', $custom_type);
             echo json_encode(array(

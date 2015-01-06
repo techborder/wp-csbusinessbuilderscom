@@ -39,7 +39,11 @@ function wp_evs_admin_options() {
 	if(isset($_POST['hidden_submit']) && $_POST['hidden_submit'] == 'Y') {
 		// Save the posted value in the database
 		update_option('wp-evs-configured', true);
-		update_option('evs_location', $_POST['evs_location']);
+		
+		// Reconstruct the location
+		$evs_location = 'http://'.implode('.', $_POST['evs_location_frags']);
+		
+		update_option('evs_location', $evs_location);
 		update_option('evs_username', $_POST['evs_username']);
 		update_option('evs_password', $_POST['evs_password']);
 		update_option('evs_video_responsive', $_POST['evs_video_responsive']);
@@ -94,7 +98,11 @@ function wp_evs_admin_options() {
 				'success': function(response) {
 					if(response.success == true) {
 						if(typeof response.project_location == 'string') {
-							$('#evs_location').val(response.project_location);
+							var loc = response.project_location.replace('http://', '').replace('https://', ''), loc_frags = loc.split('.');
+							$('#evs_location').prop('name', ''); // remove this field
+							$.each(loc_frags, function(idx, frag) {
+								$('<input type="hidden" name="evs_location_frags[]" value="'+frag+'" />').appendTo($('#wp-evs-admin-form'));
+							});
 							$('#evs_oembed_support').val(''+(response.oembed_support || false));
 							$('#wp-evs-admin-form').submit();
 						} else { // This means it's a 2.x install

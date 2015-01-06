@@ -12,23 +12,14 @@ class DUP_Zip  extends DUP_Archive {
 	private static $compressDir;	
 	private static $countDirs  = 0;
 	private static $countFiles = 0;
-	private static $countLinks = 0;
-	private static $filterExtsOn;
-	private static $filterDirsOn;
-	private static $filterDirsArray;	
-	private static $filterDirsList;
-	private static $filterExtsArray;
-	private static $filterExtsList;
-	private static $filterOn = false;
-	private static $size = 0;
 	private static $sqlPath;
 	private static $zipPath;
 	private static $zipFileSize;
 	private static $zipArchive;
 	
-	private static $limit = DUPLICATOR_ZIP_FLUSH_TRIGGER;
 	private static $limitItems = 0;
 	private static $networkFlush = false;
+	private static $scanReport;
 	
 	/**
      *  CREATE
@@ -41,71 +32,92 @@ class DUP_Zip  extends DUP_Archive {
 			$package_zip_flush = DUP_Settings::Get('package_zip_flush');
 			
 			self::$compressDir		= rtrim(DUP_Util::SafePath($archive->PackDir), '/');
-			self::$filterDirsArray	= array_map('DUP_Util::SafePath', explode(";", $archive->FilterDirs, -1));
-			self::$filterDirsList	= $archive->FilterDirs;
-			self::$filterExtsArray	= explode(";", $archive->FilterExts, -1);
-			self::$filterExtsList	= $archive->FilterExts;
-			self::$filterOn			= $archive->FilterOn;
 			self::$sqlPath			= DUP_Util::SafePath("{$archive->Package->StorePath}/{$archive->Package->Database->File}");
 			self::$zipPath			= DUP_Util::SafePath("{$archive->Package->StorePath}/{$archive->File}");
 			self::$zipArchive		= new ZipArchive();
-			self::$filterDirsOn		= count(self::$filterDirsArray);
-			self::$filterExtsOn		= count(self::$filterExtsArray);
 			self::$networkFlush		= empty($package_zip_flush) ? false : $package_zip_flush;
+			
+			$filterDirs = empty($archive->FilterDirs) ? 'not set' : $archive->FilterDirs;
+			$filterExts = empty($archive->FilterExts) ? 'not set' : $archive->FilterExts;
+			$filterOn   = ($archive->FilterOn) ? 'ON' : 'OFF';
+			
+			//LOAD SCAN REPORT
+			$json = file_get_contents(DUPLICATOR_SSDIR_PATH_TMP . "/{$archive->Package->NameHash}_scan.json");
+			self::$scanReport = json_decode($json);
 			
 			DUP_Log::Info("\n********************************************************************************");
 			DUP_Log::Info("ARCHIVE (ZIP):");
 			DUP_Log::Info("********************************************************************************");
-            DUP_Log::Info("ARCHIVE DIR:  " . self::$compressDir);
-            DUP_Log::Info("ARCHIVE FILE: " . basename(self::$zipPath));
-			DUP_Log::Info("FILTER DIRS:  " . self::$filterDirsList);
-			DUP_Log::Info("FILTER EXTS:  " . self::$filterExtsList);
-            
-						
-			//--------------------------------
-			//OPEN ZIP
 			$isZipOpen = (self::$zipArchive->open(self::$zipPath, ZIPARCHIVE::CREATE) === TRUE);
 			if (! $isZipOpen){
 				DUP_Log::Error("Cannot open zip file with PHP ZipArchive.", "Path location [" . self::$zipPath . "]");
 			}
-            
-			//--------------------------------
-            //ADD FILES
-			DUP_Log::Info("----------------------------------------");
-			DUP_Log::Info("SCANNING");
-			$timerFilesStart = DUP_Util::GetMicrotime();
-			if (self::$filterOn && (self::$filterDirsOn || self::$filterExtsOn)) {
-				DUP_Log::Info("FILTERS *ON*");
-				(! in_array(self::$compressDir, self::$filterDirsArray)) 
-					? self::recurseDirsWithFilters(self::$compressDir)
-					: DUP_Log::Info("-filter@[" . self::$compressDir . "]");
-			} else {
-				DUP_Log::Info("FILTERS *OFF*");
-				self::recurseDirs(self::$compressDir);
-			}
-            
-            $timerFilesEnd = DUP_Util::GetMicrotime();
-            $timerFilesSum = DUP_Util::ElapsedTime($timerFilesEnd, $timerFilesStart);
+            DUP_Log::Info("ARCHIVE DIR:  " . self::$compressDir);
+            DUP_Log::Info("ARCHIVE FILE: " . basename(self::$zipPath));
+			DUP_Log::Info("FILTERS: *{$filterOn}*");
+			DUP_Log::Info("DIRS:  {$filterDirs}");
+			DUP_Log::Info("EXTS:  {$filterExts}");
 			
-			DUP_Log::Info("STATS:\tDirs " . self::$countDirs . " | Files " . self::$countFiles . " | Links " . self::$countLinks);
-			DUP_Log::Info("SIZE:\t" . DUP_Util::ByteSize(self::$size));
-			DUP_Log::Info("TIME:\t{$timerFilesSum}");
 			DUP_Log::Info("----------------------------------------");
 			DUP_Log::Info("COMPRESSING");
-
-			//--------------------------------
+			DUP_Log::Info("SIZE:\t" . self::$scanReport->ARC->Size);
+			DUP_Log::Info("STATS:\tDirs " . self::$scanReport->ARC->DirCount . " | Files " . self::$scanReport->ARC->FileCount . " | Links " . self::$scanReport->ARC->LinkCount);
+			
 			//ADD SQL 
 			$isSQLInZip = self::$zipArchive->addFile(self::$sqlPath, "database.sql");
 			if ($isSQLInZip)  {
 				DUP_Log::Info("SQL ADDED: " . basename(self::$sqlPath));
 			} else {
-				DUP_Log::Error("Unable to add database.sql file to archive.", "SQL File Path [" . self::$sqlath . "]");
+				DUP_Log::Error("Unable to add database.sql to archive.", "SQL File Path [" . self::$sqlath . "]");
 			}
 			self::$zipArchive->close();
 			self::$zipArchive->open(self::$zipPath, ZipArchive::CREATE);
+			
+			//ZIP DIRECTORIES
+			foreach(self::$scanReport->ARC->Dirs as $dir){
+				if (self::$zipArchive->addEmptyDir(ltrim(str_replace(self::$compressDir, '', $dir), '/'))) {
+					self::$countDirs++;
+				} else {
+					//Don't warn when dirtory is the root path
+					if (strcmp($dir, rtrim(self::$compressDir, '/')) != 0)
+						DUP_Log::Info("WARNING: Unable to zip directory: '{$dir}'" . rtrim(self::$compressDir, '/'));
+				}
+			}
+		
+			/* ZIP FILES: Network Flush
+			*  This allows the process to not timeout on fcgi 
+			*  setups that need a response every X seconds */
+			if (self::$networkFlush) {
+				foreach(self::$scanReport->ARC->Files as $file) {
+					if (self::$zipArchive->addFile($file, ltrim(str_replace(self::$compressDir, '', $file), '/'))) {
+						self::$limitItems++;
+						self::$countFiles++;
+					} else {
+						DUP_Log::Info("WARNING: Unable to zip file: {$file}");
+					}
+					//Trigger a flush to the web server after so many files have been loaded.
+					if(self::$limitItems > DUPLICATOR_ZIP_FLUSH_TRIGGER) {
+						$sumItems = (self::$countDirs + self::$countFiles);
+						self::$zipArchive->close();
+						self::$zipArchive->open(self::$zipPath);
+						self::$limitItems = 0;
+						DUP_Util::FcgiFlush();
+						DUP_Log::Info("Items archived [{$sumItems}] flushing response.");
+					}
+				}
+			//Normal
+			} else {
+				foreach(self::$scanReport->ARC->Files as $file) {
+					if (self::$zipArchive->addFile($file, ltrim(str_replace(self::$compressDir, '', $file), '/'))) {
+						self::$countFiles++;
+					} else {
+						DUP_Log::Info("WARNING: Unable to zip file: {$file}");
+					}
+				}
+			}
+			
 			DUP_Log::Info(print_r(self::$zipArchive, true));
 
-			
 			//--------------------------------
 			//LOG FINAL RESULTS
 			DUP_Util::FcgiFlush();
@@ -124,128 +136,6 @@ class DUP_Zip  extends DUP_Archive {
         catch (Exception $e) {
 			DUP_Log::Error("Runtime error in package.archive.zip.php constructor.", "Exception: {$e}");
         }
-	}
-	
-	//BASIC RECURSION
-	//Only called when no filters are provided tighter loop structer for speed
-    private static function recurseDirs($directory) {
-		
-		$currentPath = DUP_Util::SafePath($directory);
-		//EXCLUDE: Snapshot directory
-		if (strstr($currentPath, DUPLICATOR_SSDIR_PATH) || empty($currentPath)) {
-			return;
-		}
-		
-		//DIRECTORIES
-		$dh = new DirectoryIterator($currentPath);
-		foreach ($dh as $file) {
-			if (!$file->isDot()) {
-				$fullPath	= "{$currentPath}/{$file}";
-				$zipPath	= str_replace(self::$compressDir, '', $currentPath);
-				$zipPath	= empty($zipPath) ? $file : ltrim("{$zipPath}/{$file}", '/');
-				if ($file->isDir()) {
-					if (preg_match('/(\/|\*|\?|\>|\<|\:|\\|\|)/', $file) || trim($file) == "") {
-						DUP_Log::Info("WARNING: Excluding invalid directory - [{$fullPath}]");
-					} else {
-						if ($file->isReadable() && self::$zipArchive->addEmptyDir($zipPath)) {
-							self::$countDirs++;
-							self::recurseDirs($fullPath);
-						} else {
-							DUP_Log::Info("WARNING: Unable to add directory: {$fullPath}");
-						}
-					}
-				} else if ($file->isFile() && $file->isReadable()) {
-					(self::$zipArchive->addFile($fullPath, $zipPath))
-						? self::$countFiles++
-						: DUP_Log::Info("WARNING: Unable to add file: {$fullPath}");
-				} else if ($file->isLink()) {
-					self::$countLinks++;
-				} 
-				self::$limitItems++;
-				$fileSize  = filesize($fullPath);
-				$fileSize  = ($fileSize) ? $fileSize : 0;
-				self::$size = self::$size + $fileSize;
-			}
-		}
-		
-		@closedir($dh);
-		if (self::$networkFlush)
-			self::flushResponse();
-	} 
-	
-	//FILTER RECURSION
-	//Called when filters are enabled
-	//Notes: $file->getExtension() is not reliable as it silently fails at least in php 5.2.17 
-	//when a file has a permission such as 705 falling back to pathinfo is more stable
-    private static function recurseDirsWithFilters($directory) {
-		$currentPath = DUP_Util::SafePath($directory);
-
-		//EXCLUDE: Snapshot directory
-		if (strstr($currentPath, DUPLICATOR_SSDIR_PATH) || empty($currentPath)) {
-			return;
-		}
-
-		//DIRECTORIES
-		$dh = new DirectoryIterator($currentPath);
-		foreach ($dh as $file) {
-			if (!$file->isDot()) {
-				$fullPath	= "{$currentPath}/{$file}";
-				$zipPath	= str_replace(self::$compressDir, '', $currentPath);
-				$zipPath	= empty($zipPath) ? $file : ltrim("{$zipPath}/{$file}", '/');
-				if ($file->isDir()) {
-					if (! in_array($fullPath, self::$filterDirsArray)) {
-						if (preg_match('/(\/|\*|\?|\>|\<|\:|\\|\|)/', $file) || trim($file) == "") {
-							DUP_Log::Info("WARNING: Excluding invalid directory - [{$fullPath}]");
-						} else {
-							if ($file->isReadable() && self::$zipArchive->addEmptyDir($zipPath)) {
-								self::$countDirs++;
-								self::recurseDirsWithFilters($fullPath);
-							} else {
-								DUP_Log::Info("WARNING: Unable to add directory: {$fullPath}");
-							}
-						}
-					}  else {
-						DUP_Log::Info("- filter@ [{$fullPath}]");
-					}
-				} else if ($file->isFile() && $file->isReadable()) {
-					if (self::$filterExtsOn) {
-						$ext = @pathinfo($fullPath, PATHINFO_EXTENSION);
-						if (! in_array($ext, self::$filterExtsArray) || empty($ext)) {
-							self::$zipArchive->addFile($fullPath, $zipPath);
-							self::$countFiles++;
-						}
-					} else {
-						(self::$zipArchive->addFile($fullPath, $zipPath))
-							? self::$countFiles++
-							: DUP_Log::Info("WARNING: Unable to add file: $fullPath");
-					}
-				} else if ($file->isLink()) {
-					self::$countLinks++;
-				} 
-				self::$limitItems++;
-				$fileSize  = filesize($fullPath);
-				$fileSize  = ($fileSize) ? $fileSize : 0;
-				self::$size = self::$size + $fileSize;
-			}
-		}
-		@closedir($dh);
-		if (self::$networkFlush)
-			self::flushResponse();
-	} 	
-	
-	
-	/* This allows the process to not timeout on fcgi 
-	 * setups that need a response every X seconds */
-	private static function flushResponse() {
-		//Check if were over our count*/
-		if(self::$limitItems > self::$limit) {
-			$sumItems = (self::$countDirs + self::$countFiles + self::$countLinks);
-			self::$zipArchive->close();
-			self::$zipArchive->open(self::$zipPath);
-			self::$limitItems = 0;
-			DUP_Util::FcgiFlush();
-			DUP_Log::Info("Items archived [{$sumItems}] flushing response.");
-		}
 	}
 	
 }

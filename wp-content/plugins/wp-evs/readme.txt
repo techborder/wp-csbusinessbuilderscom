@@ -40,6 +40,9 @@ Set up the plugin as explained in the installation instructions, and then click 
 
 == Changelog ==
 
+= 1.1.8 =
+* Fixed incompatibility with some strict mod_security rules, preventing saving settings
+
 = 1.1.7 =
 * Same improved distortion-prevention for EVP2 videos
 

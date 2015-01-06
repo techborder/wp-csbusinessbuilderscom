@@ -13,7 +13,7 @@ class Su_Data {
 	 * Shortcode groups
 	 */
 	public static function groups() {
-		return ( array ) apply_filters( 'su/data/groups', array(
+		return apply_filters( 'su/data/groups', array(
 				'all'     => __( 'All', 'su' ),
 				'content' => __( 'Content', 'su' ),
 				'box'     => __( 'Box', 'su' ),
@@ -28,7 +28,7 @@ class Su_Data {
 	 * Border styles
 	 */
 	public static function borders() {
-		return ( array ) apply_filters( 'su/data/borders', array(
+		return apply_filters( 'su/data/borders', array(
 				'none'   => __( 'None', 'su' ),
 				'solid'  => __( 'Solid', 'su' ),
 				'dotted' => __( 'Dotted', 'su' ),
@@ -43,7 +43,7 @@ class Su_Data {
 	 * Font-Awesome icons
 	 */
 	public static function icons() {
-		return apply_filters( 'su/data/icons', array( 'glass', 'music', 'search', 'envelope-o', 'heart', 'star', 'star-o', 'user', 'film', 'th-large', 'th', 'th-list', 'check', 'times', 'search-plus', 'search-minus', 'power-off', 'signal', 'cog', 'trash-o', 'home', 'file-o', 'clock-o', 'road', 'download', 'arrow-circle-o-down', 'arrow-circle-o-up', 'inbox', 'play-circle-o', 'repeat', 'refresh', 'list-alt', 'lock', 'flag', 'headphones', 'volume-off', 'volume-down', 'volume-up', 'qrcode', 'barcode', 'tag', 'tags', 'book', 'bookmark', 'print', 'camera', 'font', 'bold', 'italic', 'text-height', 'text-width', 'align-left', 'align-center', 'align-right', 'align-justify', 'list', 'outdent', 'indent', 'video-camera', 'picture-o', 'pencil', 'map-marker', 'adjust', 'tint', 'pencil-square-o', 'share-square-o', 'check-square-o', 'arrows', 'step-backward', 'fast-backward', 'backward', 'play', 'pause', 'stop', 'forward', 'fast-forward', 'step-forward', 'eject', 'chevron-left', 'chevron-right', 'plus-circle', 'minus-circle', 'times-circle', 'check-circle', 'question-circle', 'info-circle', 'crosshairs', 'times-circle-o', 'check-circle-o', 'ban', 'arrow-left', 'arrow-right', 'arrow-up', 'arrow-down', 'share', 'expand', 'compress', 'plus', 'minus', 'asterisk', 'exclamation-circle', 'gift', 'leaf', 'fire', 'eye', 'eye-slash', 'exclamation-triangle', 'plane', 'calendar', 'random', 'comment', 'magnet', 'chevron-up', 'chevron-down', 'retweet', 'shopping-cart', 'folder', 'folder-open', 'arrows-v', 'arrows-h', 'bar-chart-o', 'twitter-square', 'facebook-square', 'camera-retro', 'key', 'cogs', 'comments', 'thumbs-o-up', 'thumbs-o-down', 'star-half', 'heart-o', 'sign-out', 'linkedin-square', 'thumb-tack', 'external-link', 'sign-in', 'trophy', 'github-square', 'upload', 'lemon-o', 'phone', 'square-o', 'bookmark-o', 'phone-square', 'twitter', 'facebook', 'github', 'unlock', 'credit-card', 'rss', 'hdd-o', 'bullhorn', 'bell', 'certificate', 'hand-o-right', 'hand-o-left', 'hand-o-up', 'hand-o-down', 'arrow-circle-left', 'arrow-circle-right', 'arrow-circle-up', 'arrow-circle-down', 'globe', 'wrench', 'tasks', 'filter', 'briefcase', 'arrows-alt', 'users', 'link', 'cloud', 'flask', 'scissors', 'files-o', 'paperclip', 'floppy-o', 'square', 'bars', 'list-ul', 'list-ol', 'strikethrough', 'underline', 'table', 'magic', 'truck', 'pinterest', 'pinterest-square', 'google-plus-square', 'google-plus', 'money', 'caret-down', 'caret-up', 'caret-left', 'caret-right', 'columns', 'sort', 'sort-asc', 'sort-desc', 'envelope', 'linkedin', 'undo', 'gavel', 'tachometer', 'comment-o', 'comments-o', 'bolt', 'sitemap', 'umbrella', 'clipboard', 'lightbulb-o', 'exchange', 'cloud-download', 'cloud-upload', 'user-md', 'stethoscope', 'suitcase', 'bell-o', 'coffee', 'cutlery', 'file-text-o', 'building-o', 'hospital-o', 'ambulance', 'medkit', 'fighter-jet', 'beer', 'h-square', 'plus-square', 'angle-double-left', 'angle-double-right', 'angle-double-up', 'angle-double-down', 'angle-left', 'angle-right', 'angle-up', 'angle-down', 'desktop', 'laptop', 'tablet', 'mobile', 'circle-o', 'quote-left', 'quote-right', 'spinner', 'circle', 'reply', 'github-alt', 'folder-o', 'folder-open-o', 'smile-o', 'frown-o', 'meh-o', 'gamepad', 'keyboard-o', 'flag-o', 'flag-checkered', 'terminal', 'code', 'reply-all', 'mail-reply-all', 'star-half-o', 'location-arrow', 'crop', 'code-fork', 'chain-broken', 'question', 'info', 'exclamation', 'superscript', 'subscript', 'eraser', 'puzzle-piece', 'microphone', 'microphone-slash', 'shield', 'calendar-o', 'fire-extinguisher', 'rocket', 'maxcdn', 'chevron-circle-left', 'chevron-circle-right', 'chevron-circle-up', 'chevron-circle-down', 'html5', 'css3', 'anchor', 'unlock-alt', 'bullseye', 'ellipsis-h', 'ellipsis-v', 'rss-square', 'play-circle', 'ticket', 'minus-square', 'minus-square-o', 'level-up', 'level-down', 'check-square', 'pencil-square', 'external-link-square', 'share-square', 'compass', 'caret-square-o-down', 'caret-square-o-up', 'caret-square-o-right', 'eur', 'gbp', 'usd', 'inr', 'jpy', 'rub', 'krw', 'btc', 'file', 'file-text', 'sort-alpha-asc', 'sort-alpha-desc', 'sort-amount-asc', 'sort-amount-desc', 'sort-numeric-asc', 'sort-numeric-desc', 'thumbs-up', 'thumbs-down', 'youtube-square', 'youtube', 'xing', 'xing-square', 'youtube-play', 'dropbox', 'stack-overflow', 'instagram', 'flickr', 'adn', 'bitbucket', 'bitbucket-square', 'tumblr', 'tumblr-square', 'long-arrow-down', 'long-arrow-up', 'long-arrow-left', 'long-arrow-right', 'apple', 'windows', 'android', 'linux', 'dribbble', 'skype', 'foursquare', 'trello', 'female', 'male', 'gittip', 'sun-o', 'moon-o', 'archive', 'bug', 'vk', 'weibo', 'renren', 'pagelines', 'stack-exchange', 'arrow-circle-o-right', 'arrow-circle-o-left', 'caret-square-o-left', 'dot-circle-o', 'wheelchair', 'vimeo-square', 'try', 'plus-square-o' ) );
+		return apply_filters( 'su/data/icons', array( 'adjust', 'adn', 'align-center', 'align-justify', 'align-left', 'align-right', 'ambulance', 'anchor', 'android', 'angle-double-down', 'angle-double-left', 'angle-double-right', 'angle-double-up', 'angle-down', 'angle-left', 'angle-right', 'angle-up', 'apple', 'archive', 'arrow-circle-down', 'arrow-circle-left', 'arrow-circle-o-down', 'arrow-circle-o-left', 'arrow-circle-o-right', 'arrow-circle-o-up', 'arrow-circle-right', 'arrow-circle-up', 'arrow-down', 'arrow-left', 'arrow-right', 'arrow-up', 'arrows', 'arrows-alt', 'arrows-h', 'arrows-v', 'asterisk', 'automobile', 'backward', 'ban', 'bank', 'bar-chart-o', 'barcode', 'bars', 'beer', 'behance', 'behance-square', 'bell', 'bell-o', 'bitbucket', 'bitbucket-square', 'bitcoin', 'bold', 'bolt', 'bomb', 'book', 'bookmark', 'bookmark-o', 'briefcase', 'btc', 'bug', 'building', 'building-o', 'bullhorn', 'bullseye', 'cab', 'calendar', 'calendar-o', 'camera', 'camera-retro', 'car', 'caret-down', 'caret-left', 'caret-right', 'caret-square-o-down', 'caret-square-o-left', 'caret-square-o-right', 'caret-square-o-up', 'caret-up', 'certificate', 'chain', 'chain-broken', 'check', 'check-circle', 'check-circle-o', 'check-square', 'check-square-o', 'chevron-circle-down', 'chevron-circle-left', 'chevron-circle-right', 'chevron-circle-up', 'chevron-down', 'chevron-left', 'chevron-right', 'chevron-up', 'child', 'circle', 'circle-o', 'circle-o-notch', 'circle-thin', 'clipboard', 'clock-o', 'cloud', 'cloud-download', 'cloud-upload', 'cny', 'code', 'code-fork', 'codepen', 'coffee', 'cog', 'cogs', 'columns', 'comment', 'comment-o', 'comments', 'comments-o', 'compass', 'compress', 'copy', 'credit-card', 'crop', 'crosshairs', 'css3', 'cube', 'cubes', 'cut', 'cutlery', 'dashboard', 'database', 'dedent', 'delicious', 'desktop', 'deviantart', 'digg', 'dollar', 'dot-circle-o', 'download', 'dribbble', 'dropbox', 'drupal', 'edit', 'eject', 'ellipsis-h', 'ellipsis-v', 'empire', 'envelope', 'envelope-o', 'envelope-square', 'eraser', 'eur', 'euro', 'exchange', 'exclamation', 'exclamation-circle', 'exclamation-triangle', 'expand', 'external-link', 'external-link-square', 'eye', 'eye-slash', 'facebook', 'facebook-square', 'fast-backward', 'fast-forward', 'fax', 'female', 'fighter-jet', 'file', 'file-archive-o', 'file-audio-o', 'file-code-o', 'file-excel-o', 'file-image-o', 'file-movie-o', 'file-o', 'file-pdf-o', 'file-photo-o', 'file-picture-o', 'file-powerpoint-o', 'file-sound-o', 'file-text', 'file-text-o', 'file-video-o', 'file-word-o', 'file-zip-o', 'files-o', 'film', 'filter', 'fire', 'fire-extinguisher', 'flag', 'flag-checkered', 'flag-o', 'flash', 'flask', 'flickr', 'floppy-o', 'folder', 'folder-o', 'folder-open', 'folder-open-o', 'font', 'forward', 'foursquare', 'frown-o', 'gamepad', 'gavel', 'gbp', 'ge', 'gear', 'gears', 'gift', 'git', 'git-square', 'github', 'github-alt', 'github-square', 'gittip', 'glass', 'globe', 'google', 'google-plus', 'google-plus-square', 'graduation-cap', 'group', 'h-square', 'hacker-news', 'hand-o-down', 'hand-o-left', 'hand-o-right', 'hand-o-up', 'hdd-o', 'header', 'headphones', 'heart', 'heart-o', 'history', 'home', 'hospital-o', 'html5', 'image', 'inbox', 'indent', 'info', 'info-circle', 'inr', 'instagram', 'institution', 'italic', 'joomla', 'jpy', 'jsfiddle', 'key', 'keyboard-o', 'krw', 'language', 'laptop', 'leaf', 'legal', 'lemon-o', 'level-down', 'level-up', 'life-bouy', 'life-ring', 'life-saver', 'lightbulb-o', 'link', 'linkedin', 'linkedin-square', 'linux', 'list', 'list-alt', 'list-ol', 'list-ul', 'location-arrow', 'lock', 'long-arrow-down', 'long-arrow-left', 'long-arrow-right', 'long-arrow-up', 'magic', 'magnet', 'mail-forward', 'mail-reply', 'mail-reply-all', 'male', 'map-marker', 'maxcdn', 'medkit', 'meh-o', 'microphone', 'microphone-slash', 'minus', 'minus-circle', 'minus-square', 'minus-square-o', 'mobile', 'mobile-phone', 'money', 'moon-o', 'mortar-board', 'music', 'navicon', 'openid', 'outdent', 'pagelines', 'paper-plane', 'paper-plane-o', 'paperclip', 'paragraph', 'paste', 'pause', 'paw', 'pencil', 'pencil-square', 'pencil-square-o', 'phone', 'phone-square', 'photo', 'picture-o', 'pied-piper', 'pied-piper-alt', 'pied-piper-square', 'pinterest', 'pinterest-square', 'plane', 'play', 'play-circle', 'play-circle-o', 'plus', 'plus-circle', 'plus-square', 'plus-square-o', 'power-off', 'print', 'puzzle-piece', 'qq', 'qrcode', 'question', 'question-circle', 'quote-left', 'quote-right', 'ra', 'random', 'rebel', 'recycle', 'reddit', 'reddit-square', 'refresh', 'renren', 'reorder', 'repeat', 'reply', 'reply-all', 'retweet', 'rmb', 'road', 'rocket', 'rotate-left', 'rotate-right', 'rouble', 'rss', 'rss-square', 'rub', 'ruble', 'rupee', 'save', 'scissors', 'search', 'search-minus', 'search-plus', 'send', 'send-o', 'share', 'share-alt', 'share-alt-square', 'share-square', 'share-square-o', 'shield', 'shopping-cart', 'sign-in', 'sign-out', 'signal', 'sitemap', 'skype', 'slack', 'sliders', 'smile-o', 'sort', 'sort-alpha-asc', 'sort-alpha-desc', 'sort-amount-asc', 'sort-amount-desc', 'sort-asc', 'sort-desc', 'sort-down', 'sort-numeric-asc', 'sort-numeric-desc', 'sort-up', 'soundcloud', 'space-shuttle', 'spinner', 'spoon', 'spotify', 'square', 'square-o', 'stack-exchange', 'stack-overflow', 'star', 'star-half', 'star-half-empty', 'star-half-full', 'star-half-o', 'star-o', 'steam', 'steam-square', 'step-backward', 'step-forward', 'stethoscope', 'stop', 'strikethrough', 'stumbleupon', 'stumbleupon-circle', 'subscript', 'suitcase', 'sun-o', 'superscript', 'support', 'table', 'tablet', 'tachometer', 'tag', 'tags', 'tasks', 'taxi', 'tencent-weibo', 'terminal', 'text-height', 'text-width', 'th', 'th-large', 'th-list', 'thumb-tack', 'thumbs-down', 'thumbs-o-down', 'thumbs-o-up', 'thumbs-up', 'ticket', 'times', 'times-circle', 'times-circle-o', 'tint', 'toggle-down', 'toggle-left', 'toggle-right', 'toggle-up', 'trash-o', 'tree', 'trello', 'trophy', 'truck', 'try', 'tumblr', 'tumblr-square', 'turkish-lira', 'twitter', 'twitter-square', 'umbrella', 'underline', 'undo', 'university', 'unlink', 'unlock', 'unlock-alt', 'unsorted', 'upload', 'usd', 'user', 'user-md', 'users', 'video-camera', 'vimeo-square', 'vine', 'vk', 'volume-down', 'volume-off', 'volume-up', 'warning', 'wechat', 'weibo', 'weixin', 'wheelchair', 'windows', 'won', 'wordpress', 'wrench', 'xing', 'xing-square', 'yahoo', 'yen', 'youtube', 'youtube-play', 'youtube-square' ) );
 	}
 
 	/**
@@ -57,7 +57,7 @@ class Su_Data {
 	 * Examples section
 	 */
 	public static function examples() {
-		return ( array ) apply_filters( 'su/data/examples', array(
+		return apply_filters( 'su/data/examples', array(
 				'basic' => array(
 					'title' => __( 'Basic examples', 'su' ),
 					'items' => array(
@@ -137,7 +137,7 @@ class Su_Data {
 							),
 							'default' => 'default',
 							'name' => __( 'Style', 'su' ),
-							'desc' => sprintf( '%s. <a href="http://gndev.info/shortcodes-ultimate/skins/" target="_blank">%s</a>', __( 'Choose style for this heading', 'su' ), __( 'Install additional styles', 'su' ) )
+							'desc' => __( 'Choose style for this heading', 'su' ) . '%su_skins_link%'
 						),
 						'size' => array(
 							'type' => 'slider',
@@ -191,7 +191,7 @@ class Su_Data {
 							),
 							'default' => 'default',
 							'name' => __( 'Style', 'su' ),
-							'desc' => sprintf( '%s. <a href="http://gndev.info/shortcodes-ultimate/skins/" target="_blank">%s</a>', __( 'Choose style for this tabs', 'su' ), __( 'Install additional styles', 'su' ) )
+							'desc' => __( 'Choose style for this tabs', 'su' ) . '%su_skins_link%'
 						),
 						'active' => array(
 							'type' => 'number',
@@ -216,6 +216,7 @@ class Su_Data {
 					),
 					'content' => __( "[%prefix_tab title=\"Title 1\"]Content 1[/%prefix_tab]\n[%prefix_tab title=\"Title 2\"]Content 2[/%prefix_tab]\n[%prefix_tab title=\"Title 3\"]Content 3[/%prefix_tab]", 'su' ),
 					'desc' => __( 'Tabs container', 'su' ),
+					'example' => 'tabs',
 					'icon' => 'list-alt'
 				),
 				// tab
@@ -240,6 +241,21 @@ class Su_Data {
 							'name' => __( 'Anchor', 'su' ),
 							'desc' => __( 'You can use unique anchor for this tab to access it with hash in page url. For example: type here <b%value>Hello</b> and then use url like http://example.com/page-url#Hello. This tab will be activated and scrolled in', 'su' )
 						),
+						'url' => array(
+							'default' => '',
+							'name' => __( 'URL', 'su' ),
+							'desc' => __( 'You can link this tab to any webpage. Enter here full URL to switch this tab into link', 'su' )
+						),
+						'target' => array(
+							'type' => 'select',
+							'values' => array(
+								'self'  => __( 'Open link in same window/tab', 'su' ),
+								'blank' => __( 'Open link in new window/tab', 'su' )
+							),
+							'default' => 'blank',
+							'name' => __( 'Link target', 'su' ),
+							'desc' => __( 'Choose how to open the custom tab link', 'su' )
+						),
 						'class' => array(
 							'default' => '',
 							'name' => __( 'Class', 'su' ),
@@ -248,6 +264,8 @@ class Su_Data {
 					),
 					'content' => __( 'Tab content', 'su' ),
 					'desc' => __( 'Single tab', 'su' ),
+					'note' => __( 'Did you know that you need to wrap single tabs with [tabs] shortcode?', 'su' ),
+					'example' => 'tabs',
 					'icon' => 'list-alt'
 				),
 				// spoiler
@@ -275,7 +293,7 @@ class Su_Data {
 							),
 							'default' => 'default',
 							'name' => __( 'Style', 'su' ),
-							'desc' => sprintf( '%s. <a href="http://gndev.info/shortcodes-ultimate/skins/" target="_blank">%s</a>', __( 'Choose style for this spoiler', 'su' ), __( 'Install additional styles', 'su' ) )
+							'desc' => __( 'Choose style for this spoiler', 'su' ) . '%su_skins_link%'
 						),
 						'icon' => array(
 							'type' => 'select',
@@ -311,6 +329,8 @@ class Su_Data {
 					),
 					'content' => __( 'Hidden content', 'su' ),
 					'desc' => __( 'Spoiler with hidden content', 'su' ),
+					'note' => __( 'Did you know that you can wrap multiple spoilers with [accordion] shortcode to create accordion effect?', 'su' ),
+					'example' => 'spoilers',
 					'icon' => 'list-ul'
 				),
 				// accordion
@@ -327,6 +347,8 @@ class Su_Data {
 					),
 					'content' => __( "[%prefix_spoiler]Content[/%prefix_spoiler]\n[%prefix_spoiler]Content[/%prefix_spoiler]\n[%prefix_spoiler]Content[/%prefix_spoiler]", 'su' ),
 					'desc' => __( 'Accordion with spoilers', 'su' ),
+					'note' => __( 'Did you know that you can wrap multiple spoilers with [accordion] shortcode to create accordion effect?', 'su' ),
+					'example' => 'spoilers',
 					'icon' => 'list'
 				),
 				// divider
@@ -345,6 +367,50 @@ class Su_Data {
 							'values' => array( ),
 							'default' => __( 'Go to top', 'su' ),
 							'name' => __( 'Link text', 'su' ), 'desc' => __( 'Text for the GO TOP link', 'su' )
+						),
+						'style' => array(
+							'type' => 'select',
+							'values' => array(
+								'default' => __( 'Default', 'su' ),
+								'dotted'  => __( 'Dotted', 'su' ),
+								'dashed'  => __( 'Dashed', 'su' ),
+								'double'  => __( 'Double', 'su' )
+							),
+							'default' => 'default',
+							'name' => __( 'Style', 'su' ),
+							'desc' => __( 'Choose style for this divider', 'su' )
+						),
+						'divider_color' => array(
+							'type' => 'color',
+							'values' => array( ),
+							'default' => '#999999',
+							'name' => __( 'Divider color', 'su' ),
+							'desc' => __( 'Pick the color for divider', 'su' )
+						),
+						'link_color' => array(
+							'type' => 'color',
+							'values' => array( ),
+							'default' => '#999999',
+							'name' => __( 'Link color', 'su' ),
+							'desc' => __( 'Pick the color for TOP link', 'su' )
+						),
+						'size' => array(
+							'type' => 'slider',
+							'min' => 0,
+							'max' => 40,
+							'step' => 1,
+							'default' => 3,
+							'name' => __( 'Size', 'su' ),
+							'desc' => __( 'Height of the divider (in pixels)', 'su' )
+						),
+						'margin' => array(
+							'type' => 'slider',
+							'min' => 0,
+							'max' => 200,
+							'step' => 5,
+							'default' => 15,
+							'name' => __( 'Margin', 'su' ),
+							'desc' => __( 'Adjust the top and bottom margins of this divider (in pixels)', 'su' )
 						),
 						'class' => array(
 							'default' => '',
@@ -451,7 +517,7 @@ class Su_Data {
 							),
 							'default' => 'default',
 							'name' => __( 'Style', 'su' ),
-							'desc' => sprintf( '%s. <a href="http://gndev.info/shortcodes-ultimate/skins/" target="_blank">%s</a>', __( 'Choose style for this quote', 'su' ), __( 'Install additional styles', 'su' ) )
+							'desc' => __( 'Choose style for this quote', 'su' ) . '%su_skins_link%'
 						),
 						'cite' => array(
 							'default' => '',
@@ -618,6 +684,8 @@ class Su_Data {
 					),
 					'content' => __( 'Column content', 'su' ),
 					'desc' => __( 'Flexible and responsive columns', 'su' ),
+					'note' => __( 'Did you know that you need to wrap columns with [row] shortcode?', 'su' ),
+					'example' => 'columns',
 					'icon' => 'columns'
 				),
 				// list
@@ -675,6 +743,7 @@ class Su_Data {
 							'values' => array(
 								'default' => __( 'Default', 'su' ),
 								'flat' => __( 'Flat', 'su' ),
+								'ghost' => __( 'Ghost', 'su' ),
 								'soft' => __( 'Soft', 'su' ),
 								'glass' => __( 'Glass', 'su' ),
 								'bubbles' => __( 'Bubbles', 'su' ),
@@ -759,6 +828,11 @@ class Su_Data {
 							'name' => __( 'onClick', 'su' ),
 							'desc' => __( 'Advanced JavaScript code for onClick action', 'su' )
 						),
+						'rel' => array(
+							'default' => '',
+							'name' => __( 'Rel attribute', 'su' ),
+							'desc' => __( 'Here you can add value for the rel attribute.<br>Example values: <b%value>nofollow</b>, <b%value>lightbox</b>', 'su' )
+						),
 						'class' => array(
 							'default' => '',
 							'name' => __( 'Class', 'su' ),
@@ -767,6 +841,7 @@ class Su_Data {
 					),
 					'content' => __( 'Button text', 'su' ),
 					'desc' => __( 'Styled button', 'su' ),
+					'example' => 'buttons',
 					'icon' => 'heart'
 				),
 				// service
@@ -905,6 +980,97 @@ class Su_Data {
 					'desc' => __( 'Colored box', 'su' ),
 					'icon' => 'list-alt'
 				),
+				// expand
+				'expand' => array(
+					'name' => __( 'Expand', 'su' ),
+					'type' => 'wrap',
+					'group' => 'box',
+					'atts' => array(
+						'more_text' => array(
+							'default' => __( 'Show more', 'su' ),
+							'name' => __( 'More text', 'su' ),
+							'desc' => __( 'Enter the text for more link', 'su' )
+						),
+						'less_text' => array(
+							'default' => __( 'Show less', 'su' ),
+							'name' => __( 'Less text', 'su' ),
+							'desc' => __( 'Enter the text for less link', 'su' )
+						),
+						'height' => array(
+							'type' => 'slider',
+							'min' => 0,
+							'max' => 1000,
+							'step' => 10,
+							'default' => 100,
+							'name' => __( 'Height', 'su' ),
+							'desc' => __( 'Height for collapsed state (in pixels)', 'su' )
+						),
+						'hide_less' => array(
+							'type' => 'bool',
+							'default' => 'no',
+							'name' => __( 'Hide less link', 'su' ),
+							'desc' => __( 'This option allows you to hide less link, when the text block has been expanded', 'su' )
+						),
+						'text_color' => array(
+							'type' => 'color',
+							'values' => array( ),
+							'default' => '#333333',
+							'name' => __( 'Text color', 'su' ),
+							'desc' => __( 'Pick the text color', 'su' )
+						),
+						'link_color' => array(
+							'type' => 'color',
+							'values' => array( ),
+							'default' => '#0088FF',
+							'name' => __( 'Link color', 'su' ),
+							'desc' => __( 'Pick the link color', 'su' )
+						),
+						'link_style' => array(
+							'type' => 'select',
+							'values' => array(
+								'default'    => __( 'Default', 'su' ),
+								'underlined' => __( 'Underlined', 'su' ),
+								'dotted'     => __( 'Dotted', 'su' ),
+								'dashed'     => __( 'Dashed', 'su' ),
+								'button'     => __( 'Button', 'su' ),
+							),
+							'default' => 'default',
+							'name' => __( 'Link style', 'su' ),
+							'desc' => __( 'Select the style for more/less link', 'su' )
+						),
+						'link_align' => array(
+							'type' => 'select',
+							'values' => array(
+								'left' => __( 'Left', 'su' ),
+								'center' => __( 'Center', 'su' ),
+								'right' => __( 'Right', 'su' ),
+							),
+							'default' => 'left',
+							'name' => __( 'Link align', 'su' ),
+							'desc' => __( 'Select link alignment', 'su' )
+						),
+						'more_icon' => array(
+							'type' => 'icon',
+							'default' => '',
+							'name' => __( 'More icon', 'su' ),
+							'desc' => __( 'Add an icon to the more link', 'su' )
+						),
+						'less_icon' => array(
+							'type' => 'icon',
+							'default' => '',
+							'name' => __( 'Less icon', 'su' ),
+							'desc' => __( 'Add an icon to the less link', 'su' )
+						),
+						'class' => array(
+							'default' => '',
+							'name' => __( 'Class', 'su' ),
+							'desc' => __( 'Extra CSS class', 'su' )
+						)
+					),
+					'content' => __( 'This text block can be expanded', 'su' ),
+					'desc' => __( 'Expandable text block', 'su' ),
+					'icon' => 'sort-amount-asc'
+				),
 				// lightbox
 				'lightbox' => array(
 					'name' => __( 'Lightbox', 'su' ),
@@ -925,7 +1091,7 @@ class Su_Data {
 						'src' => array(
 							'default' => '',
 							'name' => __( 'Content source', 'su' ),
-							'desc' => __( 'Insert here URL or CSS selector. Use URL for Iframe and Image content types. Use CSS selector for Inline content type.<br />Example values:<br /><b%value>http://www.youtube.com/watch?v=XXXXXXXXX</b> - YouTube video (iframe)<br /><b%value>http://example.com/wp-content/uploads/image.jpg</b> - uploaded image (image)<br /><b%value>http://example.com/</b> - any web page (iframe)<br /><b%value>#contact-form</b> - any HTML content (inline)', 'su' )
+							'desc' => __( 'Insert here URL or CSS selector. Use URL for Iframe and Image content types. Use CSS selector for Inline content type.<br />Example values:<br /><b%value>http://www.youtube.com/watch?v=XXXXXXXXX</b> - YouTube video (iframe)<br /><b%value>http://example.com/wp-content/uploads/image.jpg</b> - uploaded image (image)<br /><b%value>http://example.com/</b> - any web page (iframe)<br /><b%value>#my-custom-popup</b> - any HTML content (inline)', 'su' )
 						),
 						'class' => array(
 							'default' => '',
@@ -935,6 +1101,85 @@ class Su_Data {
 					),
 					'content' => __( '[%prefix_button] Click Here to Watch the Video [/%prefix_button]', 'su' ),
 					'desc' => __( 'Lightbox window with custom content', 'su' ),
+					'icon' => 'external-link'
+				),
+				// lightbox content
+				'lightbox_content' => array(
+					'name' => __( 'Lightbox content', 'su' ),
+					'type' => 'wrap',
+					'group' => 'gallery',
+					'atts' => array(
+						'id' => array(
+							'default' => '',
+							'name' => __( 'ID', 'su' ),
+							'desc' => sprintf( __( 'Enter here the ID from Content source field. %s Example value: %s', 'su' ), '<br>', '<b%value>my-custom-popup</b>' )
+						),
+						'width' => array(
+							'default' => '50%',
+							'name' => __( 'Width', 'su' ),
+							'desc' => sprintf( __( 'Adjust the width for inline content (in pixels or percents). %s Example values: %s, %s, %s', 'su' ), '<br>', '<b%value>300px</b>', '<b%value>600px</b>', '<b%value>90%</b>' )
+						),
+						'margin' => array(
+							'type' => 'slider',
+							'min' => 0,
+							'max' => 600,
+							'step' => 5,
+							'default' => 40,
+							'name' => __( 'Margin', 'su' ),
+							'desc' => __( 'Adjust the margin for inline content (in pixels)', 'su' )
+						),
+						'padding' => array(
+							'type' => 'slider',
+							'min' => 0,
+							'max' => 600,
+							'step' => 5,
+							'default' => 40,
+							'name' => __( 'Padding', 'su' ),
+							'desc' => __( 'Adjust the padding for inline content (in pixels)', 'su' )
+						),
+						'text_align' => array(
+							'type' => 'select',
+							'values' => array(
+								'left'   => __( 'Left', 'su' ),
+								'center' => __( 'Center', 'su' ),
+								'right'  => __( 'Right', 'su' )
+							),
+							'default' => 'center',
+							'name' => __( 'Text alignment', 'su' ),
+							'desc' => __( 'Select the text alignment', 'su' )
+						),
+						'background' => array(
+							'type' => 'color',
+							'default' => '#FFFFFF',
+							'name' => __( 'Background color', 'su' ),
+							'desc' => __( 'Pick a background color', 'su' )
+						),
+						'color' => array(
+							'type' => 'color',
+							'default' => '#333333',
+							'name' => __( 'Text color', 'su' ),
+							'desc' => __( 'Pick a text color', 'su' )
+						),
+						'color' => array(
+							'type' => 'color',
+							'default' => '#333333',
+							'name' => __( 'Text color', 'su' ),
+							'desc' => __( 'Pick a text color', 'su' )
+						),
+						'shadow' => array(
+							'type' => 'shadow',
+							'default' => '0px 0px 15px #333333',
+							'name' => __( 'Shadow', 'su' ),
+							'desc' => __( 'Adjust the shadow for content box', 'su' )
+						),
+						'class' => array(
+							'default' => '',
+							'name' => __( 'Class', 'su' ),
+							'desc' => __( 'Extra CSS class', 'su' )
+						)
+					),
+					'content' => __( 'Inline content', 'su' ),
+					'desc' => __( 'Inline content for lightbox', 'su' ),
 					'icon' => 'external-link'
 				),
 				// tooltip
@@ -1104,6 +1349,7 @@ class Su_Data {
 						)
 					),
 					'desc' => __( 'YouTube video', 'su' ),
+					'example' => 'media',
 					'icon' => 'youtube-play'
 				),
 				// youtube_advanced
@@ -1215,6 +1461,17 @@ class Su_Data {
 							'name' => __( 'Theme', 'su' ),
 							'desc' => __( 'This parameter indicates whether the embedded player will display player controls (like a play button or volume control) within a dark or light control bar', 'su' )
 						),
+						'https' => array(
+							'type' => 'bool',
+							'default' => 'no',
+							'name' => __( 'Force HTTPS', 'su' ),
+							'desc' => __( 'Use HTTPS in player iframe', 'su' )
+						),
+						'wmode' => array(
+							'default' => '',
+							'name'    => __( 'WMode', 'su' ),
+							'desc'    => sprintf( __( 'Here you can specify wmode value for the embed URL. %s Example values: %s, %s', 'su' ), '<br>', '<b%value>transparent</b>', '<b%value>opaque</b>' )
+						),
 						'class' => array(
 							'default' => '',
 							'name' => __( 'Class', 'su' ),
@@ -1222,6 +1479,7 @@ class Su_Data {
 						)
 					),
 					'desc' => __( 'YouTube video player with advanced settings', 'su' ),
+					'example' => 'media',
 					'icon' => 'youtube-play'
 				),
 				// vimeo
@@ -1272,6 +1530,7 @@ class Su_Data {
 						)
 					),
 					'desc' => __( 'Vimeo video', 'su' ),
+					'example' => 'media',
 					'icon' => 'youtube-play'
 				),
 				// screenr
@@ -1282,7 +1541,8 @@ class Su_Data {
 					'atts' => array(
 						'url' => array(
 							'default' => '',
-							'name' => __( 'Url', 'su' ), 'desc' => __( 'Url of Screenr page with video', 'su' )
+							'name' => __( 'Url', 'su' ),
+							'desc' => __( 'Url of Screenr page with video', 'su' )
 						),
 						'width' => array(
 							'type' => 'slider',
@@ -1315,6 +1575,105 @@ class Su_Data {
 						)
 					),
 					'desc' => __( 'Screenr video', 'su' ),
+					'icon' => 'youtube-play'
+				),
+				// dailymotion
+				'dailymotion' => array(
+					'name' => __( 'Dailymotion', 'su' ),
+					'type' => 'single',
+					'group' => 'media',
+					'atts' => array(
+						'url' => array(
+							'default' => '',
+							'name' => __( 'Url', 'su' ),
+							'desc' => __( 'Url of Dailymotion page with video', 'su' )
+						),
+						'width' => array(
+							'type' => 'slider',
+							'min' => 200,
+							'max' => 1600,
+							'step' => 20,
+							'default' => 600,
+							'name' => __( 'Width', 'su' ),
+							'desc' => __( 'Player width', 'su' )
+						),
+						'height' => array(
+							'type' => 'slider',
+							'min' => 200,
+							'max' => 1600,
+							'step' => 20,
+							'default' => 400,
+							'name' => __( 'Height', 'su' ),
+							'desc' => __( 'Player height', 'su' )
+						),
+						'responsive' => array(
+							'type' => 'bool',
+							'default' => 'yes',
+							'name' => __( 'Responsive', 'su' ),
+							'desc' => __( 'Ignore width and height parameters and make player responsive', 'su' )
+						),
+						'autoplay' => array(
+							'type' => 'bool',
+							'default' => 'no',
+							'name' => __( 'Autoplay', 'su' ),
+							'desc' => __( 'Start the playback of the video automatically after the player load. May not work on some mobile OS versions', 'su' )
+						),
+						'background' => array(
+							'type' => 'color',
+							'default' => '#FFC300',
+							'name' => __( 'Background color', 'su' ),
+							'desc' => __( 'HTML color of the background of controls elements', 'su' )
+						),
+						'foreground' => array(
+							'type' => 'color',
+							'default' => '#F7FFFD',
+							'name' => __( 'Foreground color', 'su' ),
+							'desc' => __( 'HTML color of the foreground of controls elements', 'su' )
+						),
+						'highlight' => array(
+							'type' => 'color',
+							'default' => '#171D1B',
+							'name' => __( 'Highlight color', 'su' ),
+							'desc' => __( 'HTML color of the controls elements\' highlights', 'su' )
+						),
+						'logo' => array(
+							'type' => 'bool',
+							'default' => 'yes',
+							'name' => __( 'Show logo', 'su' ),
+							'desc' => __( 'Allows to hide or show the Dailymotion logo', 'su' )
+						),
+						'quality' => array(
+							'type' => 'select',
+							'values' => array(
+								'240'  => '240',
+								'380'  => '380',
+								'480'  => '480',
+								'720'  => '720',
+								'1080' => '1080'
+							),
+							'default' => '380',
+							'name' => __( 'Quality', 'su' ),
+							'desc' => __( 'Determines the quality that must be played by default if available', 'su' )
+						),
+						'related' => array(
+							'type' => 'bool',
+							'default' => 'yes',
+							'name' => __( 'Show related videos', 'su' ),
+							'desc' => __( 'Show related videos at the end of the video', 'su' )
+						),
+						'info' => array(
+							'type' => 'bool',
+							'default' => 'yes',
+							'name' => __( 'Show video info', 'su' ),
+							'desc' => __( 'Show videos info (title/author) on the start screen', 'su' )
+						),
+						'class' => array(
+							'default' => '',
+							'name' => __( 'Class', 'su' ),
+							'desc' => __( 'Extra CSS class', 'su' )
+						)
+					),
+					'desc' => __( 'Dailymotion video', 'su' ),
 					'icon' => 'youtube-play'
 				),
 				// audio
@@ -1354,6 +1713,7 @@ class Su_Data {
 						)
 					),
 					'desc' => __( 'Custom audio player', 'su' ),
+					'example' => 'media',
 					'icon' => 'play-circle'
 				),
 				// video
@@ -1423,6 +1783,7 @@ class Su_Data {
 						)
 					),
 					'desc' => __( 'Custom video player', 'su' ),
+					'example' => 'media',
 					'icon' => 'play-circle'
 				),
 				// table
@@ -1740,6 +2101,8 @@ class Su_Data {
 							'values' => array(
 								'none'       => __( 'None', 'su' ),
 								'image'      => __( 'Full-size image', 'su' ),
+								'lightbox'   => __( 'Lightbox', 'su' ),
+								'custom'     => __( 'Slide link (added in media editor)', 'su' ),
 								'attachment' => __( 'Attachment page', 'su' ),
 								'post'       => __( 'Post permalink', 'su' )
 							),
@@ -1856,7 +2219,9 @@ class Su_Data {
 							'type' => 'select',
 							'values' => array(
 								'none'       => __( 'None', 'su' ),
-								'image'      => __( 'Original image', 'su' ),
+								'image'      => __( 'Full-size image', 'su' ),
+								'lightbox'   => __( 'Lightbox', 'su' ),
+								'custom'     => __( 'Slide link (added in media editor)', 'su' ),
 								'attachment' => __( 'Attachment page', 'su' ),
 								'post'       => __( 'Post permalink', 'su' )
 							),
@@ -1992,7 +2357,9 @@ class Su_Data {
 							'type' => 'select',
 							'values' => array(
 								'none'       => __( 'None', 'su' ),
-								'image'      => __( 'Original image', 'su' ),
+								'image'      => __( 'Full-size image', 'su' ),
+								'lightbox'   => __( 'Lightbox', 'su' ),
+								'custom'     => __( 'Slide link (added in media editor)', 'su' ),
 								'attachment' => __( 'Attachment page', 'su' ),
 								'post'       => __( 'Post permalink', 'su' )
 							),
@@ -2099,13 +2466,18 @@ class Su_Data {
 							'default' => 'IN', 'name' => __( 'Taxonomy term operator', 'su' ),
 							'desc' => __( 'IN - posts that have any of selected categories terms<br/>NOT IN - posts that is does not have any of selected terms<br/>AND - posts that have all selected terms', 'su' )
 						),
+						// 'author' => array(
+						// 	'type' => 'select',
+						// 	'multiple' => true,
+						// 	'values' => Su_Tools::get_users(),
+						// 	'default' => 'default',
+						// 	'name' => __( 'Authors', 'su' ),
+						// 	'desc' => __( 'Choose the authors whose posts you want to show. Enter here comma-separated list of users (IDs). Example: 1,7,18', 'su' )
+						// ),
 						'author' => array(
-							'type' => 'select',
-							'multiple' => true,
-							'values' => Su_Tools::get_users(),
-							'default' => 'default',
+							'default' => '',
 							'name' => __( 'Authors', 'su' ),
-							'desc' => __( 'Choose the authors whose posts you want to show', 'su' )
+							'desc' => __( 'Enter here comma-separated list of author\'s IDs. Example: 1,7,18', 'su' )
 						),
 						'meta_key' => array(
 							'default' => '',
@@ -2320,6 +2692,7 @@ class Su_Data {
 					),
 					'content' => __( 'Animated content', 'su' ),
 					'desc' => __( 'Wrapper for animation. Any nested element will be animated', 'su' ),
+					'example' => 'animations',
 					'icon' => 'bolt'
 				),
 				// meta
@@ -2477,6 +2850,39 @@ class Su_Data {
 					'desc' => __( 'Post data', 'su' ),
 					'icon' => 'info-circle'
 				),
+				// post_terms
+				// 'post_terms' => array(
+				// 	'name' => __( 'Post terms', 'su' ),
+				// 	'type' => 'single',
+				// 	'group' => 'data',
+				// 	'atts' => array(
+				// 		'post_id' => array(
+				// 			'default' => '',
+				// 			'name' => __( 'Post ID', 'su' ),
+				// 			'desc' => __( 'You can specify custom post ID. Leave this field empty to use an ID of the current post. Current post ID may not work in Live Preview mode', 'su' )
+				// 		),
+				// 		'links' => array(
+				// 			'type' => 'bool',
+				// 			'default' => 'yes',
+				// 			'name' => __( 'Show links', 'su' ),
+				// 			'desc' => __( 'Show terms names as hyperlinks', 'su' )
+				// 		),
+				// 		'format' => array(
+				// 			'type' => 'select',
+				// 			'values' => array(
+				// 				'text' => __( 'Terms separated by commas', 'su' ),
+				// 				'br' => __( 'Terms separated by new lines', 'su' ),
+				// 				'ul' => __( 'Unordered list', 'su' ),
+				// 				'ol' => __( 'Ordered list', 'su' ),
+				// 			),
+				// 			'default' => 'text',
+				// 			'name' => __( 'Format', 'su' ),
+				// 			'desc' => __( 'Choose how to output the terms', 'su' )
+				// 		),
+				// 	),
+				// 	'desc' => __( 'Terms list', 'su' ),
+				// 	'icon' => 'info-circle'
+				// ),
 				// template
 				'template' => array(
 					'name' => __( 'Template', 'su' ),
@@ -2491,6 +2897,130 @@ class Su_Data {
 					),
 					'desc' => __( 'Theme template', 'su' ),
 					'icon' => 'puzzle-piece'
+				),
+				// qrcode
+				'qrcode' => array(
+					'name' => __( 'QR code', 'su' ),
+					'type' => 'single',
+					'group' => 'content',
+					'atts' => array(
+						'data' => array(
+							'default' => '',
+							'name' => __( 'Data', 'su' ),
+							'desc' => __( 'The text to store within the QR code. You can use here any text or even URL', 'su' )
+						),
+						'title' => array(
+							'default' => '',
+							'name' => __( 'Title', 'su' ),
+							'desc' => __( 'Enter here short description. This text will be used in alt attribute of QR code', 'su' )
+						),
+						'size' => array(
+							'type' => 'slider',
+							'min' => 10,
+							'max' => 1000,
+							'step' => 10,
+							'default' => 200,
+							'name' => __( 'Size', 'su' ),
+							'desc' => __( 'Image width and height (in pixels)', 'su' )
+						),
+						'margin' => array(
+							'type' => 'slider',
+							'min' => 0,
+							'max' => 50,
+							'step' => 5,
+							'default' => 0,
+							'name' => __( 'Margin', 'su' ),
+							'desc' => __( 'Thickness of a margin (in pixels)', 'su' )
+						),
+						'align' => array(
+							'type' => 'select',
+							'values' => array(
+								'none' => __( 'None', 'su' ),
+								'left' => __( 'Left', 'su' ),
+								'center' => __( 'Center', 'su' ),
+								'right' => __( 'Right', 'su' ),
+							),
+							'default' => 'none',
+							'name' => __( 'Align', 'su' ),
+							'desc' => __( 'Choose image alignment', 'su' )
+						),
+						'link' => array(
+							'default' => '',
+							'name' => __( 'Link', 'su' ),
+							'desc' => __( 'You can make this QR code clickable. Enter here the URL', 'su' )
+						),
+						'target' => array(
+							'type' => 'select',
+							'values' => array(
+								'self' => __( 'Open link in same window/tab', 'su' ),
+								'blank' => __( 'Open link in new window/tab', 'su' ),
+							),
+							'default' => 'blank',
+							'name' => __( 'Link target', 'su' ),
+							'desc' => __( 'Select link target', 'su' )
+						),
+						'color' => array(
+							'type' => 'color',
+							'default' => '#000000',
+							'name' => __( 'Primary color', 'su' ),
+							'desc' => __( 'Pick a primary color', 'su' )
+						),
+						'background' => array(
+							'type' => 'color',
+							'default' => '#ffffff',
+							'name' => __( 'Background color', 'su' ),
+							'desc' => __( 'Pick a background color', 'su' )
+						),
+						'class' => array(
+							'default' => '',
+							'name' => __( 'Class', 'su' ),
+							'desc' => __( 'Extra CSS class', 'su' )
+						)
+					),
+					'desc' => __( 'Advanced QR code generator', 'su' ),
+					'icon' => 'qrcode'
+				),
+				// scheduler
+				'scheduler' => array(
+					'name' => __( 'Scheduler', 'su' ),
+					'type' => 'wrap',
+					'group' => 'other',
+					'atts' => array(
+						'time' => array(
+							'default' => '',
+							'name' => __( 'Time', 'su' ),
+							'desc' => sprintf( __( 'In this field you can specify one or more time ranges. Every day at this time the content of shortcode will be visible. %s %s %s - show content from 9:00 to 18:00 %s - show content from 9:00 to 13:00 and from 14:00 to 18:00 %s - example with minutes (content will be visible each day, 45 minutes) %s - example with seconds', 'su' ), '<br><br>', __( 'Examples (click to set)', 'su' ), '<br><b%value>9-18</b>', '<br><b%value>9-13, 14-18</b>', '<br><b%value>9:30-10:15</b>', '<br><b%value>9:00:00-17:59:59</b>' )
+						),
+						'days_week' => array(
+							'default' => '',
+							'name' => __( 'Days of the week', 'su' ),
+							'desc' => sprintf( __( 'In this field you can specify one or more days of the week. Every week at these days the content of shortcode will be visible. %s 0 - Sunday %s 1 - Monday %s 2 - Tuesday %s 3 - Wednesday %s 4 - Thursday %s 5 - Friday %s 6 - Saturday %s %s %s - show content from Monday to Friday %s - show content only at Sunday %s - show content at Sunday and from Wednesday to Friday', 'su' ), '<br><br>', '<br>', '<br>', '<br>', '<br>', '<br>', '<br>', '<br><br>', __( 'Examples (click to set)', 'su' ), '<br><b%value>1-5</b>', '<br><b%value>0</b>', '<br><b%value>0, 3-5</b>' )
+						),
+						'days_month' => array(
+							'default' => '',
+							'name' => __( 'Days of the month', 'su' ),
+							'desc' => sprintf( __( 'In this field you can specify one or more days of the month. Every month at these days the content of shortcode will be visible. %s %s %s - show content only at first day of month %s - show content from 1th to 5th %s - show content from 10th to 15th and from 20th to 25th', 'su' ), '<br><br>', __( 'Examples (click to set)', 'su' ), '<br><b%value>1</b>', '<br><b%value>1-5</b>', '<br><b%value>10-15, 20-25</b>' )
+						),
+						'months' => array(
+							'default' => '',
+							'name' => __( 'Months', 'su' ),
+							'desc' => sprintf( __( 'In this field you can specify the month or months in which the content will be visible. %s %s %s - show content only in January %s - show content from February to June %s - show content in January, March and from May to July', 'su' ), '<br><br>', __( 'Examples (click to set)', 'su' ), '<br><b%value>1</b>', '<br><b%value>2-6</b>', '<br><b%value>1, 3, 5-7</b>' )
+						),
+						'years' => array(
+							'default' => '',
+							'name' => __( 'Years', 'su' ),
+							'desc' => sprintf( __( 'In this field you can specify the year or years in which the content will be visible. %s %s %s - show content only in 2014 %s - show content from 2014 to 2016 %s - show content in 2014, 2018 and from 2020 to 2022', 'su' ), '<br><br>', __( 'Examples (click to set)', 'su' ), '<br><b%value>2014</b>', '<br><b%value>2014-2016</b>', '<br><b%value>2014, 2018, 2020-2022</b>' )
+						),
+						'alt' => array(
+							'default' => '',
+							'name' => __( 'Alternative text', 'su' ),
+							'desc' => __( 'In this field you can type the text which will be shown if content is not visible at the current moment', 'su' )
+						)
+					),
+					'content' => __( 'Scheduled content', 'su' ),
+					'desc' => __( 'Allows to show the content only at the specified time period', 'su' ),
+					'note' => __( 'This shortcode allows you to show content only at the specified time.', 'su' ) . '<br><br>' . __( 'Please pay special attention to the descriptions, which are located below each text field. It will save you a lot of time', 'su' ) . '<br><br>' . __( 'By default, the content of this shortcode will be visible all the time. By using fields below, you can add some limitations. For example, if you type 1-5 in the Days of the week field, content will be only shown from Monday to Friday. Using the same principles, you can limit content visibility from years to seconds.', 'su' ),
+					'icon' => 'clock-o'
 				),
 			) );
 		// Return result

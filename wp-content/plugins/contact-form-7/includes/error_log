@@ -1,2 +1,0 @@
-[31-Jan-2014 20:19:09 America/Phoenix] PHP Fatal error:  Call to undefined function add_action() in /home/spencern/public_html/csbb/wp-content/plugins/contact-form-7/includes/upgrade.php on line 3
-[09-Aug-2014 11:38:22 America/Phoenix] PHP Fatal error:  Call to undefined function add_action() in /home/spencern/public_html/csbb/wp-content/plugins/contact-form-7/includes/upgrade.php on line 3

@@ -94,6 +94,10 @@ NO DUPLICATES
 .wpcf-form-label {
     white-space: nowrap;
 }
+.wpcf-form-fieldset .wpcf-form-label
+{
+    white-space: normal;
+}
 .wpcf-form-textfield-label {
     font-size: 1em;
     font-weight: bold;
@@ -162,7 +166,6 @@ input.wpcf-form-error {
 .wpcf-form-fields-delete,
 .wpcf-fields-form-move-field {
     float: left;
-    margin-top: 10px;
     margin-top: 3px;
     margin-right: 5px;
 }
@@ -255,6 +258,9 @@ input.wpcf-form-error {
 }
 #wpcf-types-form-name-table input {
     width: 100%;
+}
+#wpcf-types-form-name-table input[type="checkbox"] {
+    width: auto;
 }
 #wpcf-types-form-name-table label {
     font-weight: normal;
@@ -422,7 +428,11 @@ input.wpcf-form-error {
     display: none;
 }
 .ac_results{
-	width:200px !important;
+	/**
+	* Commented out because it breaks autocomplete suggestions in, well, everywhere, if any result is longer.
+	* Adjust to specific place if needed, using the resultsClass option.
+	*/
+	/*width:200px !important;*/
 }
 
 /* temp */

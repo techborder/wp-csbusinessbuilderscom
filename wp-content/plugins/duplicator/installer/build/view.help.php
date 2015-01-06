@@ -1,3 +1,13 @@
+<?php
+	// Exit if accessed directly
+	if (! defined('DUPLICATOR_INIT')) {
+		$_baseURL =  strlen($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+		$_baseURL =  "http://" . $_baseURL;
+		header("HTTP/1.1 301 Moved Permanently");
+		header("Location: $_baseURL");
+		exit; 
+	}
+?>
 <!-- =========================================
 HELP FORM -->
 <div id="dup-main-help">
@@ -10,11 +20,11 @@ HELP FORM -->
 		<legend><b>MySQL Server</b></legend>
 
 		<b>Action:</b><br/>
-		'Create New' will attempt to create a new database if it does not exist.  This option will not work on many hosting providers.  If the database does not exist then you will need to login to your control panel and create the database.  If 'Remove All Tables' is checked this will DELETE all tables in the database you are connecting to as the Duplicator requires a blank database.  Please make sure you have backups of all your data before using an portion of the installer, as this option WILL remove all data.  Please contact your server administrator for more details.
+		'Create New' will attempt to create a new database if it does not exist.  This option will not work on many hosting providers.  If the database does not exist then you will need to login to your control panel and create the database.  If 'Connect and Remove All Data' is checked this will DELETE all tables in the database you are connecting to as the Duplicator requires a blank database.  Please make sure you have backups of all your data before using an portion of the installer, as this option WILL remove all data.  Please contact your server administrator for more details.
 		<br/><br/>
 
 		<b>Host:</b><br/>
-		The name of the host server that the database resides on.  Many times this will be localhost, however each hosting provider will have it's own naming convention please check with your server administrator.
+		The name of the host server that the database resides on.  Many times this will be localhost, however each hosting provider will have it's own naming convention please check with your server administrator.  To add a port number just append it to the host i.e. 'localhost:3306'.
 		<br/><br/>
 
 		<b>User:</b><br/>
@@ -28,6 +38,17 @@ HELP FORM -->
 		<b>Name:</b><br/>
 		The name of the database to which this installation will connect and install the new tables onto.
 		<br/><br/>
+		
+		<div class="help" style="border-top:1px solid silver">
+			<b>Common Database Connection Issues:</b><br/>
+			- Double check case sensitive values 'User', 'Password' &amp; the 'Database Name' <br/>
+			- Validate the database and database user exist on this server <br/>
+			- Check if the database user has the correct permission levels to this database <br/>
+			- The host 'localhost' may not work on all hosting providers <br/>
+			- Contact your hosting provider for the exact required parameters <br/>
+			- See the 'Database Setup Help' section on step 1 for more details<br/>
+			- Visit the online resources 'Common FAQ page' <br/>
+		</div>
 
 
 	</fieldset>				

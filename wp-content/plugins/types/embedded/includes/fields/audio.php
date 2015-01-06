@@ -1,4 +1,12 @@
 <?php
+/**
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/fields/audio.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
+ */
 
 /**
  * Register data (called automatically).
@@ -10,9 +18,9 @@ function wpcf_fields_audio() {
         'id' => 'wpcf-audio',
         'title' => __( 'Audio', 'wpcf' ),
         'description' => __( 'Audio', 'wpcf' ),
-        'validate' => array('required', 'url'),
         'wp_version' => '3.6',
         'inherited_field_type' => 'file',
+        'validate' => array('required'),
     );
 }
 

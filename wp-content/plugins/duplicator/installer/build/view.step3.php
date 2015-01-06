@@ -1,4 +1,13 @@
-
+<?php
+	// Exit if accessed directly
+	if (! defined('DUPLICATOR_INIT')) {
+		$_baseURL =  strlen($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+		$_baseURL =  "http://" . $_baseURL;
+		header("HTTP/1.1 301 Moved Permanently");
+		header("Location: $_baseURL");
+		exit; 
+	}
+?>
 <script type="text/javascript">	
 	/** **********************************************
 	* METHOD: Opens the tips dialog */	
@@ -39,7 +48,7 @@ VIEW: STEP 3- INPUT -->
 			<td>1. <a href="javascript:void(0)" onclick="$('#dup-step3-install-report').toggle(400)">Install Report</a>
 			</td>
 			<td>
-				<i style='color:#BE2323'>
+				<i id="dup-step3-install-report-count">
 					<b>Errors:</b>
 					<span data-bind="with: status.step1">Deploy (<span data-bind="text: query_errs"></span>)</span> &nbsp;
 					<span data-bind="with: status.step2">Update (<span data-bind="text: err_all"></span>)</span> &nbsp; &nbsp;
@@ -238,7 +247,13 @@ DIALOG: TROUBLSHOOTING DIALOG -->
 </div>
 
 <script type="text/javascript">
-	MyViewModel = function() { this.status = <?php echo urldecode($_POST['json']); ?>;};
+	MyViewModel = function() { 
+		this.status = <?php echo urldecode($_POST['json']); ?>;
+		var errorCount =  this.status.step2.err_all || 0;
+		(errorCount >= 1 )
+			? $('#dup-step3-install-report-count').css('color', '#BE2323')
+			: $('#dup-step3-install-report-count').css('color', '#197713')
+	};
 	ko.applyBindings(new MyViewModel());
 </script>
  

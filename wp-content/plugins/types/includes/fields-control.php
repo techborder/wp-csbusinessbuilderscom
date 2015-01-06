@@ -1,6 +1,12 @@
 <?php
 /*
  * Custom Fields Control Screen
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/includes/fields-control.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
  */
 require_once ABSPATH . '/wp-admin/includes/class-wp-list-table.php';
 
@@ -254,19 +260,24 @@ class WPCF_Custom_Fields_Control_Table extends WP_List_Table
 /**
  * JS.
  */
-function wpcf_admin_custom_fields_control_js() {
-
-    ?>
+function wpcf_admin_custom_fields_control_js()
+{ ?>
     <script type="text/javascript">
-        jQuery(document).ready(function(){
-            jQuery('#wpcf-custom-fields-control-form .actions select').change(function(){
-                return wpcfAdminCustomFieldsControlSubmit(jQuery(this));
-            });
+    jQuery(document).ready(function(){
+<?php if ( 1 > count(wpcf_admin_fields_get_groups())) { ?>
+        jQuery('#wpcf-custom-fields-control-form .actions select option').each(function(){
+            switch(jQuery(this).val()) {
+            case 'wpcf-remove-from-group-bulk':
+            case 'wpcf-add-to-group-bulk':
+                jQuery(jQuery(this)).attr('disabled','disabled');
+            }
+        });
+<?php } ?>
             jQuery('#wpcf-custom-fields-control-form #doaction, #wpcf-custom-fields-control-form #doaction2').click(function(){
                 return wpcfAdminCustomFieldsControlSubmit(jQuery(this).prev());
             });
         });
-                                                                                                                
+
         function wpcfAdminCustomFieldsControlSubmit(action_field) {
             var action = action_field.val();
             var open_popup = false;

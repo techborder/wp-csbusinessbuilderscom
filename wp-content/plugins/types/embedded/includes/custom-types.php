@@ -1,6 +1,13 @@
 <?php
-/*
+/**
+ *
  * Custom Post Types embedded code.
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/custom-types.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
  */
 add_action( 'wpcf_type', 'wpcf_filter_type', 10, 2 );
 
@@ -156,7 +163,11 @@ function wpcf_custom_types_register( $post_type, $data ) {
     }
     if ( !empty( $data['show_in_menu_page'] ) ) {
         $data['show_in_menu'] = $data['show_in_menu_page'];
+        $data['labels']['all_items'] = $data['labels']['name'];
     }
+    /**
+     * menu_icon
+     */
     if ( empty( $data['menu_icon'] ) ) {
         unset( $data['menu_icon'] );
     } else {
@@ -166,6 +177,12 @@ function wpcf_custom_types_register( $post_type, $data ) {
                     get_stylesheet_directory_uri(), $data['menu_icon'] );
         }
     }
+    if ( empty($data['menu_icon'] ) && !empty( $data['icon'] ) ) {
+        $data['menu_icon'] = sprintf( 'dashicons-%s', $data['icon'] );
+    }
+    /**
+     * rewrite
+     */
     if ( !empty( $data['rewrite']['enabled'] ) ) {
         $data['rewrite']['with_front'] = !empty( $data['rewrite']['with_front'] );
         $data['rewrite']['feeds'] = !empty( $data['rewrite']['feeds'] );

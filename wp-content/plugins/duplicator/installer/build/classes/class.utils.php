@@ -1,4 +1,12 @@
 <?php
+// Exit if accessed directly
+if (! defined('DUPLICATOR_INIT')) {
+	$_baseURL =  strlen($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+	$_baseURL =  "http://" . $_baseURL;
+	header("HTTP/1.1 301 Moved Permanently");
+	header("Location: $_baseURL");
+	exit; 
+}
 
 /** * *****************************************************
  *  CLASS::DupUtil
@@ -162,6 +170,28 @@ class DupUtil {
         }
         return array();
     }
+	
+    /**
+     * MySQL connection support for sock
+     * @param same as mysqli_connect
+     * @return database connection handle
+     */	
+	static public function mysqli_connect( $host, $username, $password, $dbname = '', $port = null ) {
+		if ( ! $port ) {
+			$port = ini_get("mysqli.default_port");
+			$port = empty($port) ? 3306 : $port;
+		}
+
+		if ( 'sock' === substr( $host, -4 ) ) {
+			$url_parts = parse_url( $host );
+			$dbh = @mysqli_connect( 'localhost', $username, $password, $dbname, null, $url_parts['path'] );
+		}
+		else {
+			$dbh = @mysqli_connect( $host, $username, $password, $dbname, $port );
+		}
+		return $dbh;
+	}
+	
 
     /**
      * MySQL database version number
@@ -280,5 +310,7 @@ class DupUtil {
 			return false;
 		}
 	}
+	
+	
 }
 ?>

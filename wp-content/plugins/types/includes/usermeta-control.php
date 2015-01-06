@@ -1,9 +1,13 @@
 <?php
 /*
  * Custom Fields Control Screen
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/includes/usermeta-control.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
  */
-
-
 /**
  * Table class.
  */
@@ -16,7 +20,7 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
 
         // Get ours and enabled
         $cf_types = wpcf_admin_fields_get_fields( true, true, false, 'wpcf-usermeta' );
-		$__groups = wpcf_admin_fields_get_groups( 'wp-types-user-group' );
+        $__groups = wpcf_admin_fields_get_groups( 'wp-types-user-group' );
         foreach ( $__groups as $__group_id => $__group ) {
             $__groups[$__group_id]['fields'] = wpcf_admin_fields_get_fields_by_group( $__group['id'], 'slug', false, true, false, 'wp-types-user-group', 'wpcf-usermeta' );
         }
@@ -29,14 +33,14 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
             }
             $cf_types[$cf_id]['groups_txt'] = empty( $cf_types[$cf_id]['groups'] ) ? __( 'None', 'wpcf' ) : implode(', ', $cf_types[$cf_id]['groups'] );
         }
-		
+
         // Get others (cache this result?)
         $cf_other = $wpdb->get_results("
-		SELECT umeta_id, meta_key
-		FROM $wpdb->usermeta
-		GROUP BY meta_key
-		HAVING meta_key NOT LIKE '\_%'
-		ORDER BY meta_key");
+        SELECT umeta_id, meta_key
+        FROM $wpdb->usermeta
+        GROUP BY meta_key
+        HAVING meta_key NOT LIKE '\_%'
+        ORDER BY meta_key");
 
         $output = '';
 
@@ -224,8 +228,7 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
         $actions['wpcf-remove-from-group-bulk'] = __('Remove from group', 'wpcf');
         $actions['wpcf-change-type-bulk'] = __('Change type', 'wpcf');
         $actions['wpcf-activate-bulk'] = __("Add to Types control", 'wpcf');
-        $actions['wpcf-deactivate-bulk'] = __("Stop controlling with Types",
-                'wpcf');
+        $actions['wpcf-deactivate-bulk'] = __("Stop controlling with Types", 'wpcf');
         $actions['wpcf-delete-bulk'] = __("Delete", 'wpcf');
         return $actions;
     }
@@ -233,11 +236,9 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
     function view_switcher($current_mode = '') {
         echo '<div style="clear:both; margin: 20px 0 10px 0; float: right;"><a class="button button-secondary" href="';
         if (empty($_GET['display_all'])) {
-            echo esc_url($_SERVER['REQUEST_URI']) . '&amp;display_all=1">' . __('Display all items',
-                    'wpcf');
+            echo esc_url($_SERVER['REQUEST_URI']) . '&amp;display_all=1">' . __('Display all items', 'wpcf');
         } else {
-            echo esc_url($_SERVER['REQUEST_URI']) . '&amp;display_all=0">' . __('Show pagination',
-                    'wpcf');
+            echo esc_url($_SERVER['REQUEST_URI']) . '&amp;display_all=0">' . __('Show pagination', 'wpcf');
         }
         echo '</a></div>';
     }
@@ -249,9 +250,9 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
  * Submitted Bulk actions.
  */
 function wpcf_admin_user_fields_control_bulk_actions($action = '') {
-	
+
     if ($action == 'wpcf-deactivate-bulk') {
-		
+
         $fields = wpcf_admin_fields_get_fields(false, true, false, 'wpcf-usermeta');
         foreach ($_POST['fields'] as $field_id) {
             if (isset($fields[$field_id])) {
@@ -262,12 +263,11 @@ function wpcf_admin_user_fields_control_bulk_actions($action = '') {
         }
         wpcf_admin_fields_save_fields($fields, false, 'wpcf-usermeta');
     } else if ($action == 'wpcf-activate-bulk') {
-		
+
         $fields = wpcf_admin_fields_get_fields(false, true, false, 'wpcf-usermeta');
         $fields_bulk = wpcf_types_cf_under_control('add',
                 array('fields' => $_POST['fields']), 'wp-types-user-group', 'wpcf-usermeta');
         foreach ($fields_bulk as $field_id) {
-//            if (isset($fields[$field_id]) && empty($fields[$field_id]['data']['disabled_by_type'])) {
             if (isset($fields[$field_id])) {
                 $fields[$field_id]['data']['disabled'] = 0;
             }
@@ -309,14 +309,11 @@ function wpcf_admin_user_fields_control_js() {
     ?>
     <script type="text/javascript">
         jQuery(document).ready(function(){
-            jQuery('#wpcf-custom-fields-control-form .actions select').change(function(){
-                return wpcfAdminCustomFieldsControlSubmit(jQuery(this));
-            });
             jQuery('#wpcf-custom-fields-control-form #doaction, #wpcf-custom-fields-control-form #doaction2').click(function(){
                 return wpcfAdminCustomFieldsControlSubmit(jQuery(this).prev());
             });
         });
-                                                                                                                
+
         function wpcfAdminCustomFieldsControlSubmit(action_field) {
             var action = action_field.val();
             var open_popup = false;
@@ -393,7 +390,7 @@ function wpcf_admin_user_fields_control_bulk_ajax() {
     $output = array();
     if (in_array($_GET['wpcf_bulk_action'],
                     array('wpcf-add-to-group-bulk', 'wpcf-remove-from-group-bulk'))) {
-						
+
         foreach ($groups as $group_id => $group) {
             $output[$group['id']] = array(
                 '#type' => 'checkbox',
@@ -404,7 +401,7 @@ function wpcf_admin_user_fields_control_bulk_ajax() {
                 '#inline' => true,
             );
         }
-		
+
     } else if ($_GET['wpcf_bulk_action'] == 'wpcf-change-type-bulk') {
         $output['types'] = wpcf_admin_user_fields_control_change_type_dropdown();
     } else {
@@ -412,7 +409,7 @@ function wpcf_admin_user_fields_control_bulk_ajax() {
     }
 
     foreach ($_GET['fields'] as $field_id) {
-		$output[$field_id] = array(
+        $output[$field_id] = array(
             '#type' => 'hidden',
             '#name' => 'fields[]',
             '#value' => $field_id,
@@ -435,7 +432,7 @@ function wpcf_admin_user_fields_control_bulk_ajax() {
 
 /**
  * Change type dropdown.
- * 
+ *
  * @return array Form array
  */
 function wpcf_admin_user_fields_control_change_type_dropdown() {

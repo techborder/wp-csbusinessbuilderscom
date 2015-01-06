@@ -4,7 +4,7 @@ function wp_evs_integrate_basic() {
 	?>
 	<script type="text/javascript">
 	function WPEVSPopup() {
-	 var evscode = prompt('Please enter your EasyVideoSuite code here. Audio files and lightboxes will work also!');
+	 var evscode = prompt('Please enter your EasyVideoSuite code here. Lightboxes, split tests and playlists will all work as well!');
 	 if(typeof(evscode) == 'string' && evscode.length > 0) {
 			var url = '<?php echo plugins_url('/wp-evs/images/placeholder.png?v=1'); ?>';
 			

@@ -29,9 +29,9 @@ class Shortcodes_Ultimate {
 		$admin->add_menu( array(
 				'page_title'  => __( 'Settings', 'su' ) . ' &lsaquo; ' . __( 'Shortcodes Ultimate', 'su' ),
 				'menu_title'  => apply_filters( 'su/menu/shortcodes', __( 'Shortcodes', 'su' ) ),
-				'capability'  => 'edit_others_posts',
+				'capability'  => 'manage_options',
 				'slug'        => 'shortcodes-ultimate',
-				'icon_url'    => plugins_url( 'assets/images/icon.png', SU_PLUGIN_FILE ),
+				'icon_url'    => 'dashicons-editor-code',
 				'position'    => '80.11',
 				'options'     => array(
 					array(
@@ -74,7 +74,7 @@ class Shortcodes_Ultimate {
 						'default' => 'su_'
 					),
 					array(
-						'type'    => 'text',
+						'type'    => 'hidden',
 						'id'      => 'skin',
 						'name'    => __( 'Skin', 'su' ),
 						'desc'    => __( 'Choose global skin for shortcodes', 'su' ),
@@ -103,7 +103,7 @@ class Shortcodes_Ultimate {
 				'parent_slug' => 'shortcodes-ultimate',
 				'page_title'  => __( 'Settings', 'su' ) . ' &lsaquo; ' . __( 'Shortcodes Ultimate', 'su' ),
 				'menu_title'  => apply_filters( 'su/menu/settings', __( 'Settings', 'su' ) ),
-				'capability'  => 'edit_others_posts',
+				'capability'  => 'manage_options',
 				'slug'        => 'shortcodes-ultimate',
 				'options'     => array()
 			) );
@@ -118,6 +118,20 @@ class Shortcodes_Ultimate {
 					array(
 						'type' => 'examples',
 						'callback' => array( 'Su_Admin_Views', 'examples' )
+					)
+				)
+			) );
+		// Cheatsheet submenu
+		$admin->add_submenu( array(
+				'parent_slug' => 'shortcodes-ultimate',
+				'page_title'  => __( 'Cheatsheet', 'su' ) . ' &lsaquo; ' . __( 'Shortcodes Ultimate', 'su' ),
+				'menu_title'  => apply_filters( 'su/menu/examples', __( 'Cheatsheet', 'su' ) ),
+				'capability'  => 'edit_others_posts',
+				'slug'        => 'shortcodes-ultimate-cheatsheet',
+				'options'     => array(
+					array(
+						'type' => 'cheatsheet',
+						'callback' => array( 'Su_Admin_Views', 'cheatsheet' )
 					)
 				)
 			) );
@@ -214,6 +228,7 @@ class Shortcodes_Ultimate {
 	 * Add plugin actions links
 	 */
 	public static function actions_links( $links ) {
+		$links[] = '<a href="' . admin_url( 'admin.php?page=shortcodes-ultimate-examples' ) . '">' . __( 'Examples', 'su' ) . '</a>';
 		$links[] = '<a href="' . admin_url( 'admin.php?page=shortcodes-ultimate' ) . '#tab-0">' . __( 'Where to start?', 'su' ) . '</a>';
 		return $links;
 	}

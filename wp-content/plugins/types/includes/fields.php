@@ -1,15 +1,21 @@
 <?php
 /*
  * Fields and groups functions
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/includes/fields.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
  */
 require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
 
 /**
  * Gets post_types supported by specific group.
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_get_post_types_by_group( $group_id ) {
     $post_types = get_post_meta( $group_id, '_wp_types_group_post_types', true );
@@ -22,10 +28,10 @@ function wpcf_admin_get_post_types_by_group( $group_id ) {
 
 /**
  * Gets taxonomies supported by specific group.
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_get_taxonomies_by_group( $group_id ) {
     global $wpdb;
@@ -55,10 +61,10 @@ function wpcf_admin_get_taxonomies_by_group( $group_id ) {
 
 /**
  * Gets templates supported by specific group.
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_get_templates_by_group( $group_id ) {
     global $wpdb;
@@ -87,10 +93,10 @@ function wpcf_admin_get_templates_by_group( $group_id ) {
 /**
  * Activates group.
  * Modified by Gen, 13.02.2013
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_activate_group( $group_id,
         $post_type = 'wp-types-group' ) {
@@ -104,10 +110,10 @@ function wpcf_admin_fields_activate_group( $group_id,
 /**
  * Deactivates group.
  * Modified by Gen, 13.02.2013
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_deactivate_group( $group_id,
         $post_type = 'wp-types-group' ) {
@@ -120,12 +126,12 @@ function wpcf_admin_fields_deactivate_group( $group_id,
 
 /**
  * Removes specific field from group.
- * 
+ *
  * @global type $wpdb
  * @global type $wpdb
  * @param type $group_id
  * @param type $field_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_remove_field_from_group( $group_id, $field_id ) {
     $group_fields = get_post_meta( $group_id, '_wp_types_group_fields', true );
@@ -138,10 +144,10 @@ function wpcf_admin_fields_remove_field_from_group( $group_id, $field_id ) {
 
 /**
  * Bulk removal
- * 
+ *
  * @param type $group_id
  * @param type $fields
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_remove_field_from_group_bulk( $group_id, $fields ) {
     foreach ( $fields as $field_id ) {
@@ -152,7 +158,7 @@ function wpcf_admin_fields_remove_field_from_group_bulk( $group_id, $fields ) {
 /**
  * Deletes field.
  * Modified by Gen, 13.02.2013
- * 
+ *
  * @param type $field_id
  */
 function wpcf_admin_fields_delete_field( $field_id,
@@ -184,10 +190,10 @@ function wpcf_admin_fields_delete_field( $field_id,
 /**
  * Deletes group by ID.
  * Modified by Gen, 13.02.2013
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_delete_group( $group_id,
         $post_type = 'wp-types-group' ) {
@@ -201,9 +207,9 @@ function wpcf_admin_fields_delete_group( $group_id,
 /**
  * Saves group.
  * Modified by Gen, 13.02.2013
- * 
+ *
  * @param type $group
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_save_group( $group, $post_type = 'wp-types-group' ) {
     if ( !isset( $group['name'] ) ) {
@@ -242,8 +248,7 @@ function wpcf_admin_fields_save_group( $group, $post_type = 'wp-types-group' ) {
     }
 
     if ( !empty( $group['filters_association'] ) ) {
-        update_post_meta( $group_id, '_wp_types_group_filters_association',
-                $group['filters_association'] );
+        update_post_meta( $group_id, '_wp_types_group_filters_association', $group['filters_association'] );
     } else {
         delete_post_meta( $group_id, '_wp_types_group_filters_association' );
     }
@@ -262,8 +267,8 @@ function wpcf_admin_fields_save_group( $group, $post_type = 'wp-types-group' ) {
 /**
  * Saves all fields.
  * Modified by Gen, 13.02.2013
- * 
- * @param type $fields 
+ *
+ * @param type $fields
  */
 function wpcf_admin_fields_save_fields( $fields, $forced = false,
         $option_name = 'wpcf-fields' ) {
@@ -277,9 +282,9 @@ function wpcf_admin_fields_save_fields( $fields, $forced = false,
 /**
  * Saves field.
  * Modified by Gen, 13.02.2013
- * 
+ *
  * @param type $field
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_save_field( $field, $post_type = 'wp-types-group',
         $meta_name = 'wpcf-fields' ) {
@@ -321,8 +326,7 @@ function wpcf_admin_fields_save_field( $field, $post_type = 'wp-types-group',
         }
     }
 
-    $field['data'] = apply_filters( 'wpcf_fields_' . $field['type'] . '_meta_data',
-            $field['data'], $field );
+    $field['data'] = apply_filters( 'wpcf_fields_' . $field['type'] . '_meta_data', $field['data'], $field );
 
     // Check validation
     if ( isset( $field['data']['validate'] ) ) {
@@ -486,9 +490,9 @@ function wpcf_admin_fields_save_field( $field, $post_type = 'wp-types-group',
 /**
  * Changes field type.
  * Modified by Gen, 13.02.2013
- * 
+ *
  * @param type $fields
- * @param type $type 
+ * @param type $type
  */
 function wpcf_admin_custom_fields_change_type( $fields, $type,
         $post_type = 'wp-types-group', $meta_name = 'wpcf-fields' ) {
@@ -545,10 +549,10 @@ function wpcf_admin_custom_fields_change_type( $fields, $type,
 /**
  * Saves group's fields.
  * Modified by Gen, 13.02.2013
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @param type $fields 
+ * @param type $fields
  */
 function wpcf_admin_fields_save_group_fields( $group_id, $fields, $add = false,
         $post_type = 'wp-types-group' ) {
@@ -582,10 +586,10 @@ function wpcf_admin_fields_save_group_fields( $group_id, $fields, $add = false,
 
 /**
  * Saves group's post types.
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @param type $post_types 
+ * @param type $post_types
  */
 function wpcf_admin_fields_save_group_post_types( $group_id, $post_types ) {
     if ( empty( $post_types ) ) {
@@ -598,10 +602,10 @@ function wpcf_admin_fields_save_group_post_types( $group_id, $post_types ) {
 
 /**
  * Saves group's terms.
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @param type $terms 
+ * @param type $terms
  */
 function wpcf_admin_fields_save_group_terms( $group_id, $terms ) {
     if ( empty( $terms ) ) {
@@ -614,10 +618,10 @@ function wpcf_admin_fields_save_group_terms( $group_id, $terms ) {
 
 /**
  * Saves group's templates.
- * 
+ *
  * @global type $wpdb
  * @param type $group_id
- * @param type $terms 
+ * @param type $terms
  */
 function wpcf_admin_fields_save_group_templates( $group_id, $templates ) {
     if ( empty( $templates ) ) {
@@ -630,9 +634,9 @@ function wpcf_admin_fields_save_group_templates( $group_id, $templates ) {
 
 /**
  * Returns HTML formatted AJAX activation link.
- * 
+ *
  * @param type $group_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_get_ajax_activation_link( $group_id ) {
     return '<a href="' . admin_url( 'admin-ajax.php?action=wpcf_ajax&amp;'
@@ -647,7 +651,7 @@ function wpcf_admin_fields_get_ajax_activation_link( $group_id ) {
 /**
  * Returns HTML formatted AJAX deactivation link.
  * @param type $group_id
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_get_ajax_deactivation_link( $group_id ) {
     return '<a href="' . admin_url( 'admin-ajax.php?action=wpcf_ajax&amp;'
@@ -661,10 +665,10 @@ function wpcf_admin_fields_get_ajax_deactivation_link( $group_id ) {
 
 /**
  * Check how many posts needs checkbox update.
- * 
+ *
  * @param type $field
  * @param type $action
- * @return boolean|int 
+ * @return boolean|int
  */
 function wpcf_admin_fields_checkbox_migrate_empty_check( $field, $action ) {
     if ( $field['type'] != 'checkbox' ) {
@@ -710,10 +714,10 @@ function wpcf_admin_fields_checkbox_migrate_empty_check( $field, $action ) {
 
 /**
  * Update posts checkboxes fields.
- * 
+ *
  * @param type $field
  * @param type $action
- * @return boolean|int 
+ * @return boolean|int
  */
 function wpcf_admin_fields_checkbox_migrate_empty( $field, $action ) {
     if ( $field['type'] != 'checkbox' ) {
@@ -813,9 +817,9 @@ function wpcf_admin_fields_checkbox_migrate_empty( $field, $action ) {
 
 /**
  * Gets all filters required for field to be used.
- * 
+ *
  * @param type $field
- * @return boolean|string 
+ * @return boolean|string
  */
 function wpcf_admin_fields_get_filter_by_field( $field ) {
     $field = wpcf_admin_fields_get_field( $field );
@@ -859,10 +863,10 @@ function wpcf_admin_fields_get_filter_by_field( $field ) {
 
 /**
  * Gets posts by filter fetched with wpcf_admin_fields_get_filter_by_field().
- * 
+ *
  * @global type $wpdb
  * @param type $filter
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_get_posts_by_filter( $filter, $meta_query = '' ) {
     global $wpdb, $wpcf;
@@ -918,10 +922,10 @@ function wpcf_admin_fields_get_posts_by_filter( $filter, $meta_query = '' ) {
 /**
  * Gets posts by filter with missing meta fetched
  * with wpcf_admin_fields_get_filter_by_field().
- * 
+ *
  * @global type $wpdb
  * @param type $filter
- * @return type 
+ * @return type
  */
 function wpcf_admin_fields_get_posts_by_filter_missing_meta( $filter,
         $meta_key = '' ) {
@@ -968,10 +972,10 @@ function wpcf_admin_fields_get_posts_by_filter_missing_meta( $filter,
 
 /**
  * Check how many posts needs checkboxes update.
- * 
+ *
  * @param type $field
  * @param type $action
- * @return boolean|int 
+ * @return boolean|int
  */
 function wpcf_admin_fields_checkboxes_migrate_empty_check( $field, $action ) {
     if ( $field['type'] != 'checkboxes' || empty( $field['data']['options'] ) ) {
@@ -986,7 +990,7 @@ function wpcf_admin_fields_checkboxes_migrate_empty_check( $field, $action ) {
                 $query[] = '\"' . $option_id . '\";i:0;';
             }
             $meta_query = "SELECT u.ID FROM {$wpdb->users} u
-                LEFT JOIN {$wpdb->usermeta} um ON u.ID = um.user_id 
+                LEFT JOIN {$wpdb->usermeta} um ON u.ID = um.user_id
                 WHERE (um.meta_key = '%s' AND (um.meta_value LIKE '%%"
                     . implode( "%%' OR um.meta_value LIKE '%%", $query ) . "%%'))";
         } else if ( $action == 'save_check' ) {
@@ -997,7 +1001,7 @@ function wpcf_admin_fields_checkboxes_migrate_empty_check( $field, $action ) {
                 $query[] = '\"' . $option_id . '\"';
             }
             $meta_query = "SELECT u.ID FROM {$wpdb->users} u
-                LEFT JOIN {$wpdb->usermeta} um ON u.ID = um.user_id 
+                LEFT JOIN {$wpdb->usermeta} um ON u.ID = um.user_id
                 WHERE (um.meta_key = '%s' AND (um.meta_value NOT LIKE '%%"
                     . implode( "%%' OR um.meta_value NOT LIKE '%%", $query ) . "%%'))";
         }
@@ -1043,10 +1047,10 @@ function wpcf_admin_fields_checkboxes_migrate_empty_check( $field, $action ) {
 
 /**
  * Update posts checkboxes fields.
- * 
+ *
  * @param type $field
  * @param type $action
- * @return boolean|int 
+ * @return boolean|int
  */
 function wpcf_admin_fields_checkboxes_migrate_empty( $field, $action ) {
     if ( $field['type'] != 'checkboxes' || empty( $field['data']['options'] ) ) {
@@ -1165,8 +1169,7 @@ function wpcf_admin_fields_checkboxes_migrate_empty( $field, $action ) {
                                 unset( $value_check[$option_id] );
                             }
                         }
-                        update_post_meta( $post_id, $meta_key, $value_check,
-                                $value );
+                        update_post_meta( $post_id, $meta_key, $value_check, $value );
                     }
                 }
                 unset( $posts[$temp_key] );
@@ -1200,8 +1203,7 @@ function wpcf_admin_fields_checkboxes_migrate_empty( $field, $action ) {
                             }
                         }
                         $updated_value = $value_check + $set_value;
-                        update_post_meta( $post_id, $meta_key, $updated_value,
-                                $value );
+                        update_post_meta( $post_id, $meta_key, $updated_value, $value );
                     }
                 }
                 unset( $posts[$temp_key] );
@@ -1214,3 +1216,13 @@ function wpcf_admin_fields_checkboxes_migrate_empty( $field, $action ) {
     }
     return false;
 }
+
+function wpcf_admin_fields_form_fix_styles()
+{
+    $suffix = SCRIPT_DEBUG ? '' : '.min';
+    wp_enqueue_style(
+        'wpcf-dashicons',
+        site_url( "/wp-includes/css/dashicons$suffix.css" )
+    );
+}
+

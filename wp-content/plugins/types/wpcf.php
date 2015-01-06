@@ -3,13 +3,24 @@
   Plugin Name: Types - Complete Solution for Custom Fields and Types
   Plugin URI: http://wordpress.org/extend/plugins/types/
   Description: Define custom post types, custom taxonomy and custom fields.
-  Author: ICanLocalize
-  Author URI: http://wp-types.com
-  Version: 1.5.4
+  Author: OnTheGoSystems
+  Author URI: http://www.onthegosystems.com
+  Version: 1.6.4
+ */
+/**
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/wpcf.php $
+ * $LastChangedDate: 2014-11-18 06:52:14 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027716 $
+ * $LastChangedBy: iworks $
+ *
  */
 // Added check because of activation hook and theme embedded code
 if ( !defined( 'WPCF_VERSION' ) ) {
-    define( 'WPCF_VERSION', '1.5.4' );
+    /**
+     * make sure that WPCF_VERSION in embedded/bootstrap.php is the same!
+     */
+    define( 'WPCF_VERSION', '1.6.4' );
 }
 
 define( 'WPCF_REPOSITORY', 'http://api.wp-types.com/' );
@@ -21,11 +32,22 @@ define( 'WPCF_INC_RELPATH', WPCF_RELPATH . '/includes' );
 define( 'WPCF_RES_ABSPATH', WPCF_ABSPATH . '/resources' );
 define( 'WPCF_RES_RELPATH', WPCF_RELPATH . '/resources' );
 
+//Add installer
+include dirname( __FILE__ ) . '/embedded/common/installer/loader.php';
+WP_Installer_Setup($wp_installer_instance,  
+array(
+    'plugins_install_tab' => '1',
+    'repositories_include' => array('toolset', 'wpml')	
+));
+		
 require_once WPCF_INC_ABSPATH . '/constants.php';
 /*
  * Since Types 1.2 we load all embedded code without conflicts
  */
 require_once WPCF_ABSPATH . '/embedded/types.php';
+
+require_once WPCF_ABSPATH . '/embedded/onthego-resources/onthegosystems-branding-loader.php';
+ont_set_on_the_go_systems_uri_and_start(WPCF_RELPATH . '/embedded/onthego-resources/' );
 
 
 // Plugin mode only hooks
@@ -41,10 +63,11 @@ add_filter( 'plugin_action_links', 'wpcf_types_plugin_action_links', 10, 2 );
 
 /**
  * Deactivation hook.
- * 
+ *
  * Reset some of data.
  */
-function wpcf_deactivation_hook() {
+function wpcf_deactivation_hook()
+{
     // Reset redirection
     delete_option( 'wpcf_types_plugin_do_activation_redirect', true );
 
@@ -55,33 +78,51 @@ function wpcf_deactivation_hook() {
 /**
  * Main init hook.
  */
-function wpcf_init() {
+function wpcf_init()
+{
     if ( !defined( 'EDITOR_ADDON_RELPATH' ) ) {
-        define( 'EDITOR_ADDON_RELPATH',
-                WPCF_RELPATH . '/embedded/common/visual-editor' );
+        define( 'EDITOR_ADDON_RELPATH', WPCF_RELPATH . '/embedded/common/visual-editor' );
     }
-    
+
     if ( is_admin() ) {
+	
         require_once WPCF_ABSPATH . '/admin.php';
     }
+	
+    
+}
+
+//Render Installer packages
+function installer_content(){			
+	echo '<div class="wrap">';
+	$config['repository'] = array(); // required
+	WP_Installer_Show_Products($config);			
+	echo "</div>";			
 }
 
 /**
  * WP Main init hook.
  */
-function wpcf_wp_init() {
+function wpcf_wp_init()
+{
     if ( is_admin() ) {
-        require_once WPCF_ABSPATH . '/admin.php';
-    }
+	
+		require_once WPCF_ABSPATH . '/admin.php';
+		add_action('admin_menu', 'setup_installer');
+		//Add submenu Installer to Types
+		function setup_installer(){
+			add_submenu_page('wpcf', 'Installer', 'Installer', 'manage_options', 'installer', 'installer_content');
+		}
+	}
 }
 
 /**
  * Include embedded code if not used in theme.
- * 
+ *
  * We are actually calling this hook on after_setup_theme which is called
  * immediatelly before 'init'. However WP issues warnings because for some
  * action it strictly required 'init' hook to be used.
- * 
+ *
  * @todo Revise this!
  */
 /*
@@ -106,17 +147,18 @@ function wpcf_wp_init() {
 /**
  * Upgrade hook.
  */
-function wpcf_upgrade_init() {
-    //require_once WPCF_ABSPATH . '/upgrade.php';
-    //wpcf_upgrade();
+function wpcf_upgrade_init()
+{
     wpcf_types_plugin_activate();
 }
 
-function wpcf_types_plugin_activate() {
+function wpcf_types_plugin_activate()
+{
     add_option( 'wpcf_types_plugin_do_activation_redirect', true );
 }
 
-function wpcf_types_plugin_redirect() {
+function wpcf_types_plugin_redirect()
+{
     if ( get_option( 'wpcf_types_plugin_do_activation_redirect', false ) ) {
         delete_option( 'wpcf_types_plugin_do_activation_redirect' );
         wp_redirect( admin_url() . 'admin.php?page=wpcf-help' );
@@ -124,7 +166,8 @@ function wpcf_types_plugin_redirect() {
     }
 }
 
-function wpcf_types_plugin_action_links( $links, $file ) {
+function wpcf_types_plugin_action_links($links, $file)
+{
     $this_plugin = basename( WPCF_ABSPATH ) . '/wpcf.php';
     if ( $file == $this_plugin ) {
         $links[] = '<a href="admin.php?page=wpcf-help">' . __( 'Getting started',
@@ -135,14 +178,15 @@ function wpcf_types_plugin_action_links( $links, $file ) {
 
 /**
  * Checks if name is reserved.
- * 
+ *
  * @param type $name
- * @return type 
+ * @return type
  */
-function wpcf_is_reserved_name( $name, $context, $check_pages = true ) {
+function wpcf_is_reserved_name($name, $context, $check_pages = true)
+{
     $name = strval( $name );
     /*
-     * 
+     *
      * If name is empty string skip page cause there might be some pages without name
      */
     if ( $check_pages && !empty( $name ) ) {
@@ -191,10 +235,11 @@ function wpcf_is_reserved_name( $name, $context, $check_pages = true ) {
 
 /**
  * Reserved names.
- * 
- * @return type 
+ *
+ * @return type
  */
-function wpcf_reserved_names() {
+function wpcf_reserved_names()
+{
     $reserved = array(
         'attachment',
         'attachment_id',
@@ -280,22 +325,12 @@ function wpcf_reserved_names() {
     return apply_filters( 'wpcf_reserved_names', $reserved );
 }
 
-add_action( 'icl_pro_translation_saved',
-        'wpcf_fix_translated_post_relationships' );
+add_action( 'icl_pro_translation_saved', 'wpcf_fix_translated_post_relationships' );
 
-function wpcf_fix_translated_post_relationships( $post_id ) {
+function wpcf_fix_translated_post_relationships($post_id)
+{
     require_once WPCF_EMBEDDED_ABSPATH . '/includes/post-relationship.php';
     wpcf_post_relationship_set_translated_parent( $post_id );
     wpcf_post_relationship_set_translated_children( $post_id );
 }
 
-// Fix to set correct parent and children for duplicated posts
-
-add_action('icl_make_duplicate',
-        'wpcf_fix_duplicated_post_relationships', 20, 4);
-
-function wpcf_fix_duplicated_post_relationships( $original_post_id, $lang, $postarr, $duplicate_post_id ) {
-    require_once WPCF_EMBEDDED_ABSPATH . '/includes/post-relationship.php';
-    wpcf_post_relationship_set_translated_parent( $duplicate_post_id );
-    wpcf_post_relationship_set_translated_children( $duplicate_post_id );
-}

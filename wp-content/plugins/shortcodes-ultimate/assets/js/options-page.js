@@ -4,13 +4,33 @@ jQuery(document).ready(function ($) {
 	// ########## About screen ##########
 
 	$('.su-demo-video').magnificPopup({
-		type: 'iframe'
+		type: 'iframe',
+		callbacks: {
+			open: function () {
+				// Change z-index
+				$('body').addClass('su-mfp-shown');
+			},
+			close: function () {
+				// Change z-index
+				$('body').removeClass('su-mfp-shown');
+			}
+		}
 	});
 
 	// ########## Custom CSS screen ##########
 
 	$('.su-custom-css-originals a').magnificPopup({
-		type: 'iframe'
+		type: 'iframe',
+		callbacks: {
+			open: function () {
+				// Change z-index
+				$('body').addClass('su-mfp-shown');
+			},
+			close: function () {
+				// Change z-index
+				$('body').removeClass('su-mfp-shown');
+			}
+		}
 	});
 
 	// Enable ACE editor
@@ -54,53 +74,65 @@ jQuery(document).ready(function ($) {
 		e.preventDefault();
 	});
 
-	var examples_timer = 0,
+	var open = $('#su_open_example').val(),
 		$example_window = $('#su-examples-window'),
 		$example_preview = $('#su-examples-preview');
 	$('.su-examples-group-title, .su-examples-item').each(function () {
 		var $item = $(this),
 			delay = 200;
-		if ($item.hasClass('su-examples-item')) $item.on('mousedown', function (e) {
-			var code = $(this).data('code'),
-				id = $(this).data('id');
-			$item.magnificPopup({
-				type: 'inline',
-				alignTop: true,
-				callbacks: {
-					close: function () {
-						$example_preview.html('');
+		if ($item.hasClass('su-examples-item')) {
+			$item.on('click', function (e) {
+				var code = $(this).data('code'),
+					id = $(this).data('id');
+				$item.magnificPopup({
+					type: 'inline',
+					alignTop: true,
+					callbacks: {
+						open: function () {
+							// Change z-index
+							$('body').addClass('su-mfp-shown');
+						},
+						close: function () {
+							// Change z-index
+							$('body').removeClass('su-mfp-shown');
+							$example_preview.html('');
+						}
 					}
-				}
+				});
+				var su_example_preview = $.ajax({
+					url: ajaxurl,
+					type: 'get',
+					dataType: 'html',
+					data: {
+						action: 'su_example_preview',
+						code: code,
+						id: id
+					},
+					beforeSend: function () {
+						if (typeof su_example_preview === 'object') su_example_preview.abort();
+						$example_window.addClass('su-ajax');
+						$item.magnificPopup('open');
+					},
+					success: function (data) {
+						$example_preview.html(data);
+						$example_window.removeClass('su-ajax');
+					}
+				});
+				e.preventDefault();
 			});
-			var su_example_preview = $.ajax({
-				url: ajaxurl,
-				type: 'get',
-				dataType: 'html',
-				data: {
-					action: 'su_example_preview',
-					code: code,
-					id: id
-				},
-				beforeSend: function () {
-					if (typeof su_example_preview === 'object') su_example_preview.abort();
-					$example_window.addClass('su-ajax');
-					$item.magnificPopup('open');
-				},
-				success: function (data) {
-					$example_preview.html(data);
-					$example_window.removeClass('su-ajax');
-				}
-			});
-			e.preventDefault();
-		});
-		examples_timer = examples_timer + delay;
-		window.setTimeout(function () {
-			$item.addClass('animated fadeInDown').css('visibility', 'visible');
-		}, examples_timer);
+			// Open preselected example
+			if ($item.data('id') === open) $item.trigger('click');
+		}
 	});
-	$('#su-examples-window').on('mousedown', '.su-examples-get-code', function (e) {
+	$('#su-examples-window').on('click', '.su-examples-get-code', function (e) {
 		$(this).hide();
 		$(this).parent('.su-examples-code').children('textarea').slideDown(300);
+		e.preventDefault();
+	});
+
+	// ########## Cheatsheet screen ##########
+	$('.su-cheatsheet-switch').on('click', function (e) {
+		$('body').toggleClass('su-print-cheatsheet');
 		e.preventDefault();
 	});
 });

@@ -1,6 +1,12 @@
 <?php
 /*
  * Frontend functions.
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/frontend.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
  */
 
 global $wp_version;
@@ -76,7 +82,8 @@ function wpcf_shortcode( $atts, $content = null, $code = '' ) {
  * @param type $atts
  * @return type 
  */
-function types_render_field( $field_id, $params, $content = null, $code = '' ) {
+function types_render_field( $field_id, $params, $content = null, $code = '' )
+{
 
     global $wpcf;
 
@@ -102,8 +109,7 @@ function types_render_field( $field_id, $params, $content = null, $code = '' ) {
 
             // Types parent
         } else if ( strpos( $params['post_id'], '$' ) === 0 ) {
-            $post_id = intval( WPCF_Relationship::get_parent( $post_id,
-                            trim( $params['post_id'], '$' ) ) );
+            $post_id = intval( WPCF_Relationship::get_parent( $post_id, trim( $params['post_id'], '$' ) ) );
         }
     }
 
@@ -121,44 +127,6 @@ function types_render_field( $field_id, $params, $content = null, $code = '' ) {
     // Get field
     $field = types_get_field( $field_id );
 
-    //If Access plugin activated
-    if ( function_exists( 'wpcf_access_register_caps' ) ) {
-        $forbidden = false;
-        $cache_group = 'types_access_cache_forbidden';
-		$cache_key = md5( 'access::types_render_field' . $field_id );
-		$cached_object = wp_cache_get( $cache_key, $cache_group );
-		$current_user = wp_get_current_user();
-		if ( false === $cached_object ) {
-			require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
-			$field_groups = wpcf_admin_fields_get_groups_by_field( $field_id );
-			$cache_data = array();
-			if ( !empty( $field_groups ) ) {
-				foreach ( $field_groups as $field_group ) {
-					if ( !current_user_can( 'view_fields_on_site_' . $field_group['slug'] ) ) {
-						$forbidden = true;
-					}
-				}
-			}
-			foreach ( $current_user->roles as $role ) {
-				if ( $forbidden ) {
-					$cache_data[$role] = 'disallow';
-				} else {
-					$cache_data[$role] = 'allow';
-				}
-			}
-			wp_cache_add( $cache_key, $cache_data, $cache_group );
-		} else {
-			foreach ( $current_user->roles as $role ) {
-				if ( is_array( $cached_object ) && isset( $cached_object[$role] ) && $cached_object[$role] == 'disallow' ) {
-					$forbidden = true;
-				}
-			}
-		}
-        if ( $forbidden ) {
-			return;
-        }
-    }
-
     // If field not found return empty string
     if ( empty( $field ) ) {
 
@@ -167,8 +135,7 @@ function types_render_field( $field_id, $params, $content = null, $code = '' ) {
             require_once WPCF_EMBEDDED_ABSPATH . '/common/wplogger.php';
         }
         global $wplogger;
-        $wplogger->log( 'types_render_field call for missing field \''
-                . $field_id . '\'', WPLOG_DEBUG );
+        $wplogger->log( 'types_render_field call for missing field \'' . $field_id . '\'', WPLOG_DEBUG );
 
         return '';
     }
@@ -202,8 +169,7 @@ function types_render_field( $field_id, $params, $content = null, $code = '' ) {
                 $output = array();
                 foreach ( $meta as $temp_key => $temp_value ) {
                     $params['field_value'] = $temp_value;
-                    $temp_output = types_render_field_single( $field, $params,
-                            $content, $code, $temp_key );
+                    $temp_output = types_render_field_single( $field, $params, $content, $code, $temp_key );
                     if ( !empty( $temp_output ) ) {
                         $output[] = $temp_output;
                     }
@@ -223,8 +189,7 @@ function types_render_field( $field_id, $params, $content = null, $code = '' ) {
                 foreach ( $meta as $temp_key => $temp_value ) {
                     if ( $_index == $index ) {
                         $params['field_value'] = $temp_value;
-                        return types_render_field_single( $field, $params,
-                                        $content, $code, $temp_key );
+                        return types_render_field_single( $field, $params, $content, $code, $temp_key );
                     }
                     $_index++;
                 }
@@ -243,10 +208,8 @@ function types_render_field( $field_id, $params, $content = null, $code = '' ) {
         if ( $params['field_value'] == '' && $field['type'] != 'checkbox' ) {
             return '';
         }
-        $html = types_render_field_single( $field, $params, $content, $code,
-                $wpcf->field->meta_object->meta_id );
+        $html = types_render_field_single( $field, $params, $content, $code, $wpcf->field->meta_object->meta_id );
     }
-
     return $wpcf->field->html( $html, $params );
 }
 
@@ -257,8 +220,8 @@ function types_render_field( $field_id, $params, $content = null, $code = '' ) {
  * @param type $atts
  * @return type 
  */
-function types_render_field_single( $field, $params, $content = null,
-        $code = '', $meta_id = null ) {
+function types_render_field_single( $field, $params, $content = null, $code = '', $meta_id = null )
+{
     global $post;
 
     if ( empty( $post ) ) {
@@ -271,16 +234,13 @@ function types_render_field_single( $field, $params, $content = null,
     }
 
     $params = apply_filters( 'types_field_shortcode_parameters', $params,
-            $field, $post, $meta_id );
+        $field, $post, $meta_id );
 
-    $params['field_value'] = apply_filters( 'wpcf_fields_value_display',
-            $params['field_value'], $params, $post->ID, $field['id'], $meta_id );
+    $params['field_value'] = apply_filters( 'wpcf_fields_value_display', $params['field_value'], $params, $post->ID, $field['id'], $meta_id );
 
-    $params['field_value'] = apply_filters( 'wpcf_fields_slug_' . $field['slug'] . '_value_display',
-            $params['field_value'], $params, $post->ID, $field['id'], $meta_id );
+    $params['field_value'] = apply_filters( 'wpcf_fields_slug_' . $field['slug'] . '_value_display', $params['field_value'], $params, $post->ID, $field['id'], $meta_id );
 
-    $params['field_value'] = apply_filters( 'wpcf_fields_type_' . $field['type'] . '_value_display',
-            $params['field_value'], $params, $post->ID, $field['id'], $meta_id );
+    $params['field_value'] = apply_filters( 'wpcf_fields_type_' . $field['type'] . '_value_display', $params['field_value'], $params, $post->ID, $field['id'], $meta_id );
     // To make sure
     if ( is_string( $params['field_value'] ) ) {
         $params['field_value'] = addslashes( stripslashes( strval( $params['field_value'] ) ) );
@@ -289,17 +249,27 @@ function types_render_field_single( $field, $params, $content = null,
     // Set values
     if ( is_array( $params['field_value'] ) ) {
         foreach ( $params['field_value'] as $f_key => $f_value ) {
-
-            $params['field_value'][$f_key] = wpcf_translate( 'field ' . $f_key . ' value',
-                    $f_value );
+            if ((isset($field['data']['repetitive'])) && ($field['data']['repetitive'])) {
+                //Repetitive fields, used meta ID for proper string translation unique identification
+                $params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$meta_id, $params['field_value'] );
+            } else {
+                //Non-repetitive fields, use post ID
+                $params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$post->ID, $params['field_value'] );
+            }
         }
     } else {
-        $params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value',
-                $params['field_value'] );
+        if ((isset($field['data']['repetitive'])) && ($field['data']['repetitive'])) {
+    		    		
+    		//Repetitive fields, used meta ID for proper string translation unique identification
+    		$params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$meta_id, $params['field_value'] );
+    		
+    	} else {
+    		//Non-repetitive fields, use post ID
+    		$params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$post->ID, $params['field_value'] );
+    	}
     }
 
-    $field['name'] = wpcf_translate( 'field ' . $field['id'] . ' name',
-            $field['name'] );
+    $field['name'] = wpcf_translate( 'field ' . $field['id'] . ' name', $field['name'] );
     $params['field'] = $field;
     $params['#content'] = htmlspecialchars( $content );
     $params['#code'] = $code;
@@ -309,50 +279,55 @@ function types_render_field_single( $field, $params, $content = null,
     $params['field']['__meta_id'] = $meta_id;
 
     if ( (isset( $params['raw'] ) && $params['raw'] == 'true')
-            || (isset( $params['output'] ) && $params['output'] == 'raw') ) {
-        // Skype is array
-        if ( $field['type'] == 'skype' && isset( $params['field_value']['skypename'] ) ) {
-            $output = $params['field_value']['skypename'];
-        } else if ($field['type'] == 'checkboxes' && is_array( $params['field_value'] ) ) {
-            $output = implode( ', ', $params['field_value'] );
+        || (isset( $params['output'] ) && $params['output'] == 'raw') ) {
+            // Skype is array
+            if ( $field['type'] == 'skype' && isset( $params['field_value']['skypename'] ) ) {
+                $output = $params['field_value']['skypename'];
+            } else if ($field['type'] == 'checkboxes' && is_array( $params['field_value'] ) ) {
+                $output = '';
+                foreach ($params['field_value'] as $value) {
+                    if ($output != '') {
+                        $output .= ', ';
+                    }
+                    $output .= $value[0];
+                }
+            } else {
+                $output = $params['field_value'];
+            }
         } else {
-            $output = $params['field_value'];
-        }
-    } else {
-        /*
-         * This is place where view function is called.
-         * Returned data should be string.
-         */
-        $output = '';
-        $_view_func = 'wpcf_fields_' . strtolower( $field['type'] ) . '_view';
-        if ( is_callable( $_view_func ) ) {
-            $output = strval( call_user_func( $_view_func, $params ) );
-        }
-
-        // If no output
-        if ( empty( $output ) && isset( $params['field_value'] )
-                && $params['field_value'] !== "" ) {
-            $output = $params['field_value'];
-        } else if ( $output == '__wpcf_skip_empty' ) {
+            /*
+             * This is place where view function is called.
+             * Returned data should be string.
+             */
             $output = '';
-        }
+            $_view_func = 'wpcf_fields_' . strtolower( $field['type'] ) . '_view';
+            if ( is_callable( $_view_func ) ) {
+                $output = strval( call_user_func( $_view_func, $params ) );
+            }
 
-        if (isset($params['output']) && $params['output'] == 'html') {
-            $output = wpcf_frontend_compat_html_output( $output, $field, $content, $params );
-        } else {
-            // Prepend name if needed
-            if ( !empty( $output ) && isset( $params['show_name'] )
+            // If no output
+            if ( empty( $output ) && isset( $params['field_value'] )
+                && $params['field_value'] !== "" ) {
+                    $output = $params['field_value'];
+                } else if ( $output == '__wpcf_skip_empty' ) {
+                    $output = '';
+                }
+
+            if (isset($params['output']) && $params['output'] == 'html') {
+                $output = wpcf_frontend_compat_html_output( $output, $field, $content, $params );
+            } else {
+                // Prepend name if needed
+                if ( !empty( $output ) && isset( $params['show_name'] )
                     && $params['show_name'] == 'true' ) {
-                $output = $params['field']['name'] . ': ' . $output;
+                        $output = $params['field']['name'] . ': ' . $output;
+                    }
             }
         }
 
-        
-    }
     // Apply filters
     $output = strval( apply_filters( 'types_view', $output,
-                    $params['field_value'], $field['type'], $field['slug'],
-                    $field['name'], $params ) );
+        $params['field_value'], $field['type'], $field['slug'],
+        $field['name'], $params ) );
     return htmlspecialchars_decode( stripslashes( strval( $output ) ) );
 }
 
@@ -557,7 +532,17 @@ function wpcf_views_query( $query, $view_settings ) {
                     $meta_filter_required = true;
                     $meta['compare'] = '=';
 
-                    $values = explode( ',', $meta['value'] );
+                    /* According to http://codex.wordpress.org/Class_Reference/WP_Meta_Query#Accepted_Arguments,
+					 * $meta['value'] can be an array or a string. In case of a string we additionally allow
+					 * multiple comma-separated values. */
+					if( is_array( $meta['value'] ) ) {
+						$values = $meta['value'];
+					} elseif( is_string( $meta['value'] ) ) {
+						$values = explode( ',', $meta['value'] );
+					} else {
+						// This can happen if $meta['value'] is a number, for example.
+						$values = array( $meta['value'] );
+					}
 
                     $meta['value'] = ' REGEXP(';
 

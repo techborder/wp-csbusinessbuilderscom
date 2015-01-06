@@ -141,56 +141,22 @@ function su_hex_shift( $supplied_hex, $shift_method, $percentage = 50 ) {
 	return '#' . $shifted_hex_value;
 }
 
-/**
- * Apply all custom formatting options of plugin
- */
-// function su_apply_formatting() {
-//  // Enable shortcodes in text widgets
-//  add_filter( 'widget_text', 'do_shortcode' );
-//  // Enable shortcodes in category descriptions
-//  add_filter( 'category_description', 'do_shortcode' );
-//  // Enable auto-formatting
-//  if ( get_option( 'su_option_custom-formatting' ) === 'on' ) {
-//   // Disable WordPress native content formatters
-//   remove_filter( 'the_content', 'wpautop' );
-//   remove_filter( 'the_content', 'wptexturize' );
-//   // Apply custom formatter function
-//   add_filter( 'the_content', 'su_custom_formatter', 99 );
-//   add_filter( 'widget_text', 'su_custom_formatter', 99 );
-//   add_filter( 'category_description', 'su_custom_formatter', 99 );
-//  }
-//  // Fix for large posts, http://core.trac.wordpress.org/ticket/8553
-//  @ini_set( 'pcre.backtrack_limit', 500000 );
-// }
-
-// add_action( 'init', 'su_apply_formatting' );
-
-/**
- * Custom formatter function
- *
- * @param string  $content
- *
- * @return string Formatted content with clean shortcodes content
- */
-// function su_custom_formatter( $content ) {
-//  // Prepare variables
-//  $new_content = '';
-//  // Matches the contents and the open and closing tags
-//  $pattern_full = '{(\[raw\].*?\[/raw\])}is';
-//  // Matches just the contents
-//  $pattern_contents = '{\[raw\](.*?)\[/raw\]}is';
-//  // Divide content into pieces
-//  $pieces = preg_split( $pattern_full, $content, -1, PREG_SPLIT_DELIM_CAPTURE );
-//  // Loop over pieces
-//  foreach ( $pieces as $piece ) {
-//   // Look for presence of the shortcode, Append to content (no formatting)
-//   if ( preg_match( $pattern_contents, $piece, $matches ) ) $new_content .= $matches[1];
-//   // Format and append to content
-//   else $new_content .= wptexturize( wpautop( $piece ) );
-//  }
-//  // Return formatted content
-//  return $new_content;
-// }
+function su_hex2rgb( $colour, $delimiter = '-' ) {
+	if ( $colour[0] == '#' ) {
+		$colour = substr( $colour, 1 );
+	}
+	if ( strlen( $colour ) == 6 ) {
+		list( $r, $g, $b ) = array( $colour[0] . $colour[1], $colour[2] . $colour[3], $colour[4] . $colour[5] );
+	} elseif ( strlen( $colour ) == 3 ) {
+		list( $r, $g, $b ) = array( $colour[0] . $colour[0], $colour[1] . $colour[1], $colour[2] . $colour[2] );
+	} else {
+		return false;
+	}
+	$r = hexdec( $r );
+	$g = hexdec( $g );
+	$b = hexdec( $b );
+	return implode( $delimiter, array( $r, $g, $b ) ); //array( 'red' => $r, 'green' => $g, 'blue' => $b );
+}
 
 /**
  * Apply all custom formatting options of plugin
@@ -265,6 +231,32 @@ function su_cmpt() {
  */
 function su_ecssc( $atts ) {
 	return ( $atts['class'] ) ? ' ' . trim( $atts['class'] ) : '';
+}
+
+/**
+ * Helper to check add-on is activated
+ *
+ * @return bool
+ */
+function su_addon_active( $addons ) {
+	// Prepare add-ons paths
+	$paths = array(
+		'maker' => 'shortcodes-ultimate-maker/shortcodes-ultimate-maker.php',
+		'skins' => 'shortcodes-ultimate-skins/shortcodes-ultimate-skins.php',
+		'extra' => 'shortcodes-ultimate-extra/shortcodes-ultimate-extra.php',
+	);
+	// Convert string into array
+	if ( is_string( $addons ) ) $addons = array( $addons );
+	// Loop addons
+	foreach ( $addons as $addon ) {
+		if ( !is_plugin_active( $paths[$addon] ) ) return false;
+	}
+	return true;
+}
+
+function su_skins_link() {
+	if ( su_addon_active( 'skins' ) ) return sprintf( '<br><strong>%s</strong><br><strong>%s</strong>', __( 'Additional skins successfully installed', 'su' ), __( 'Open dropdown to choose one of new styles', 'su' ) );
+	else return sprintf( '<br><a href="http://gndev.info/sus" target="_blank">%s &rarr;</a>', __( 'Get more styles', 'su' ) );
 }
 
 /**
@@ -589,6 +581,9 @@ class Su_Tools {
 		add_action( 'su/update',                  array( __CLASS__, 'reset_examples' ) );
 		add_action( 'su/activation',              array( __CLASS__, 'reset_examples' ) );
 		add_action( 'sunrise/page/before',        array( __CLASS__, 'reset_examples' ) );
+
+		add_filter( 'attachment_fields_to_edit',  array( __CLASS__, 'slide_link_input' ), null, 2 );
+		add_filter( 'attachment_fields_to_save',  array( __CLASS__, 'slide_link_save' ), null, 2 );
 	}
 
 	public static function select( $args ) {
@@ -651,12 +646,6 @@ class Su_Tools {
 		return $types;
 	}
 
-	public static function get_users() {
-		$users = array();
-		foreach ( (array) get_users() as $user ) $users[$user->ID] = $user->data->display_name;
-		return $users;
-	}
-
 	public static function get_taxonomies() {
 		$taxes = array();
 		foreach ( (array) get_taxonomies( '', 'objects' ) as $tax ) $taxes[$tax->name] = $tax->label;
@@ -666,8 +655,8 @@ class Su_Tools {
 	public static function get_terms( $tax = 'category', $key = 'id' ) {
 		$terms = array();
 		if ( $key === 'id' ) foreach ( (array) get_terms( $tax, array( 'hide_empty' => false ) ) as $term ) $terms[$term->term_id] = $term->name;
-		elseif ( $key === 'slug' ) foreach ( (array) get_terms( $tax, array( 'hide_empty' => false ) ) as $term ) $terms[$term->slug] = $term->name;
-		return $terms;
+			elseif ( $key === 'slug' ) foreach ( (array) get_terms( $tax, array( 'hide_empty' => false ) ) as $term ) $terms[$term->slug] = $term->name;
+				return $terms;
 	}
 
 	public static function get_slides( $args ) {
@@ -729,7 +718,6 @@ class Su_Tools {
 		}
 		// Query posts
 		$query = new WP_Query( $query );
-		// print_r($query);
 		// Loop through posts
 		if ( is_array( $query->posts ) ) foreach ( $query->posts as $post ) {
 				// Get post thumbnail ID
@@ -741,7 +729,8 @@ class Su_Tools {
 					'link'  => '',
 					'title' => get_the_title( $post->ID )
 				);
-				if ( $args['link'] === 'image' ) $slide['link'] = $slide['image'];
+				if ( $args['link'] === 'image' || $args['link'] === 'lightbox' ) $slide['link'] = $slide['image'];
+				elseif ( $args['link'] === 'custom' ) $slide['link'] = get_post_meta( $post->ID, 'su_slide_link', true );
 				elseif ( $args['link'] === 'post' ) $slide['link'] = get_permalink( $post->ID );
 				elseif ( $args['link'] === 'attachment' ) $slide['link'] = get_attachment_link( $thumb );
 				$slides[] = $slide;
@@ -815,7 +804,7 @@ class Su_Tools {
 	}
 
 	public static function icon( $src = 'file' ) {
-		return ( strpos( $src, '/' ) !== false ) ? '<img src="' . $src . '" alt="" />' : '<i class="fa fa-' . $src . '"></i>';
+		return ( strpos( $src, '/' ) !== false ) ? '<img src="' . $src . '" alt="" />' : '<i class="fa fa-' . str_replace( 'icon: ', '', $src ) . '"></i>';
 	}
 
 	public static function get_icon( $args ) {
@@ -865,6 +854,63 @@ class Su_Tools {
 
 	public static function access_check() {
 		return current_user_can( 'edit_posts' );
+	}
+
+	public static function slide_link_input( $form_fields, $post ) {
+		$form_fields['su_slide_link'] = array(
+			'label' => __( 'Slide link', 'su' ),
+			'input' => 'text',
+			'value' => get_post_meta( $post->ID, 'su_slide_link', true ),
+			'helps' => sprintf( '<strong>%s</strong><br>%s', __( 'Shortcodes Ultimate', 'su' ), __( 'Use this field to add custom links to slides used with Slider, Carousel and Custom Gallery shortcodes', 'su' ) )
+		);
+		return $form_fields;
+	}
+
+	public static function slide_link_save( $post, $attachment ) {
+		if ( isset( $attachment['su_slide_link'] ) )
+			update_post_meta( $post['ID'], 'su_slide_link', $attachment['su_slide_link'] );
+		return $post;
+	}
+
+	public static function error( $prefix = false, $message = false ) {
+		if ( !$prefix && !$message ) return '';
+		$return = array( '<div class="su-error" style="padding:10px;border:1px solid #f03;color:#903;background:#fde">' );
+		if ( $prefix ) $return[] = '<strong>' . $prefix . '</strong><br/>';
+		$return[] = $message;
+		$return[] = '</div>';
+		return implode( '', $return );
+	}
+
+	/**
+	 * Range converter
+	 * Converts string range (like 1, 5-7, 10) into array (like [1]=>1, [5]=>5, [6]=>6, [7]=>7, [10]=>10)
+	 */
+	public static function range( $string = '' ) {
+		$numbers = array();
+		// Loop values
+		foreach ( explode( ',', $string ) as $range ) {
+			// Detect range (min-max)
+			if ( strpos( $range, '-' ) !== false ) {
+				// Split min/max
+				$range = explode( '-', $range );
+				// Check min/max values
+				if ( !is_numeric( $range[0] ) ) $range[0] = 0;
+				if ( !is_numeric( $range[1] ) ) $range[1] = 0;
+				// Sort min/max values
+				sort( $range );
+				// List values from min to max
+				$range = range( $range[0], $range[1] );
+				// Add values to the array
+				foreach ( $range as $value ) $numbers[$value] = $value;
+			}
+			// Single value
+			else {
+				// Add day to the array
+				$numbers[$range] = $range;
+			}
+		}
+		// Return array with numbers
+		return $numbers;
 	}
 }
 

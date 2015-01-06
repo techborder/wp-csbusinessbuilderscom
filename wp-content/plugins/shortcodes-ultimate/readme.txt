@@ -1,5 +1,5 @@
 === Shortcodes Ultimate ===
-Contributors: gn_themes
+Contributors: madfork, gn_themes
 License: GPL
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MMA2VA7JDXWDY
 Tags: shortcode, shortcodes, short code, video, responsive, responsive video, youtube, vimeo, audio, mp3, tab, tabs, button, buttons, jquery, box, boxes, toggle, spoiler, column, columns, services, service, pullquote, list, lists, images, image, links, fancy, fancy link, fancy links, fancy buttons, jquery tabs, accordion, slider, plugin, admin, gallery, bloginfo, list pages, sub pages, navigation, siblings pages, children pages, permalink, permalinks, feed, document, member, members, guests, membership, documents, carousel, rss, touch, icon, icons
@@ -23,15 +23,21 @@ With this plugin you can easily create tabs, buttons, boxes, different sliders, 
 
 = Features =
 * Shortcode Generator
-* 40+ amazing shortcodes
+* 50+ amazing shortcodes
 * Modern responsive design
 * Power of CSS3
 * Custom CSS editor with syntax highlight
 * Special widget
 * Rich API
 
-= What people are saying (reviews) =
+= Demo video =
+[youtube http://www.youtube.com/watch?v=h5hlJb0mSSY]
+
+= What people are saying (blog posts/tutorials) =
 * [40+ Reasons Shortcodes Ultimate Is A Must Have Plugin](http://www.the-best-web-hosting-service.com/blog/2014/01/ultimateshortcodesreview/)
+* [Show Me the Shortcode](http://thewpchick.com/show-shortcode/) + Video
+* [Shortcodes Ultimate: Ultimatize your written content](http://wisdmlabs.com/blog/how-to-style-wordpress-themes-with-shortcodes-ultimate/)
+* [Add 40+ New Layout Features To WordPress with Shortcodes Ultimate](http://www.makeuseof.com/tag/add-40-new-layout-features-wordpress-shortcodes-ultimate/)
 * [Обзор плагина Shortcodes Ultimate](http://rad-dom.ru/shortcodes-ultimate/) (Ru)
 * [Shortcodes Ultimate Plugin Review](http://kevindankowebdesign.com/shortcodes-ultimate-plugin-review/)
 * [Shortcodes Ultimate — плагин неограниченных возможностей](http://altacademic.ru/shortcodes-ultimate/) (Ru)
@@ -40,9 +46,6 @@ With this plugin you can easily create tabs, buttons, boxes, different sliders, 
 * Video: [Shortcodes Ultimate Tutorial](http://www.youtube.com/watch?v=IjmaXz-b55I)
 * Video: [How to use special widget](http://www.youtube.com/watch?v=YU3Zu6C5ZfA)
 * Video: [How to create image gallery](http://www.youtube.com/watch?v=kCWyO2F7jTw)
-
-= Demo video =
-[youtube http://www.youtube.com/watch?v=DR2c266yWEA]
 
 = Requirements =
 * WordPress 3.5+
@@ -58,7 +61,8 @@ With this plugin you can easily create tabs, buttons, boxes, different sliders, 
 * Fr, [Nicolas Leclerc](http://etic-studio.fr/)
 * Gr, [Kleanthis Manolopoulos](mailto:akis_manolopoulos_at_hotmail_dot_com)
 * Ja, [Stranger](#)
-* Unforunately old translations is incompatible with current version
+* Sk, [Patrik Žec (PATWIST)](http://patwist.com/)
+* Cz, [Punc00](http://nuze.cz/)
 
 Have a translation? [Contact me](http://gndev.info/feedback/)
 
@@ -103,12 +107,68 @@ Upgrade normally
 
 == Changelog ==
 
-= 4.6.1 =
-* Compatibility with recent version of [SiteOrigin page builder](http://wordpress.org/plugins/siteorigin-panels/)
-* Compatibility with recent version of [Visual Composer](http://vc.wpbakery.com/)
-* Compatibility with recent version of [Elegant Themes page builder](http://www.elegantthemes.com/gallery/elegant-builder/)
+= 4.9.3 =
+* Updated: owl-carousel.js
+* Added: minor UI improvements
+* Fixed: [vimeo] ssl issue (thanks to Adam)
+* Fixed: multiple errors on cheatsheet page
+* Fixed: errors when updating user profile, [forum topic](https://wordpress.org/support/topic/error-message-when-updating-users-in-wp-admin)
+* Removed: global skin option at settings page
 
-= 4.6.0 =
+= 4.9.2 =
+* Added: minor improvements for tabs/spoilers anchors (auto-removing extra # characters)
+* Added: compatibility with TablePress's advanced editor
+* Added: new option for tabs. You can now link any tab to any webpage [su_tab url="http://" target="blank"]
+* Added: new option wmode for [youtube_advanced], [forum topic](http://wordpress.org/support/topic/youtube-player-option-request)
+* Added: new shortcode [lightbox_content]
+* Fixed: lightbox and galleries scripts, [forum topic](http://wordpress.org/support/topic/carousel-su-little-hack)
+* Fixed: removed global function $.support.transition, [forum topic](http://wordpress.org/support/topic/transition-check-returns-string-instead-of-object)
+* Updated: Russian language
+* Updated: Japanese language
+* Updated: FontAwesome, 4.1.0
+* Updated: Magnific Popup, 0.9.9
+
+= 4.9.1 =
+* Added: New shortcode [scheduler]
+* Added: New shortcode [expand]
+* Added: New options for [divider]
+* Added: New option `rel` for [button]
+* Fixed: animations script has been changed. CSS animations will be skipped in non-supported browsers, [forum topic](http://wordpress.org/support/topic/disable-animations-on-non-supported-devicesbrowsers)
+* Fixed: templates/default-loop.php - removed extra n character in comments number, [forum topic](http://wordpress.org/support/topic/minor-bug-in-templatesdefault-loopphp)
+* Fixed: large DB query on sites with many users, [forum topic](http://wordpress.org/support/topic/installing-sc-ultimate-on-site-with-30000-wp-users)
+
+= 4.9.0 =
+* New shortcode [qrcode] allows you to generate colorful and responsive QR codes!
+* Improved shortcode search. Just type shortcode name and hit Enter
+* Updated Animate.css (animations library)
+* Updated ACE editor (custom CSS editor)
+* Responsive CSS for [tabs]
+* Highly decreased plugin size
+
+= 4.8 =
+* Minor UI fixes (compatibility with page builders)
+* Czech translation by [Punc00](http://nuze.cz/)
+* Added: full compatibility with multiple editors on same page - [fourm topic](http://wordpress.org/support/topic/enhance-compatibility-with-other-plugins)
+* Fixed: extra CSS class for [menu] - [forum topic](http://wordpress.org/support/topic/extra-css-class-not-working-on-menu-shortcode-video-included)
+* Fixed: Swiper click event, Swiper has been updated - [forum topic](http://wordpress.org/support/topic/carousel-links-not-working)
+* Fixed: [spoiler]'s content is now hidden until the page is loaded
+* New dashboard page: Cheatsheet
+* Minor [spoiler] fix, for hidden spoiler content
+* Updated Japanese translation
+
+= 4.7 =
+* Long-awaited feature: slider, carousel and custom_gallery links can now be open with lightbox
+* Long-awaited feature: custom links in slider, carousel and custom_gallery shortcodes
+* Fixed https bug in FontAwesome enqueue
+* Fixed bug with multiple users queries - [forum topic](http://wordpress.org/support/topic/plugin-making-700-sql-calls)
+* New Ghost style for [button]
+* Minor UI fixes (for WP 3.9+)
+* New shortcode [dailymotion]
+* YouTube (advanced) can now use https protocol
+* Additional help notes in Shortcode Generator
+* Slovak language
+
+= 4.6 =
 * Auto-save for shortcodes settings. Now you don't need to adjust it again and again
 * New premium add-on - [Extra Shortcodes](http://gndev.info/shortcodes-ultimate/extra/)
 * Minor UX improvements
@@ -116,6 +176,17 @@ Upgrade normally
 * Fixed bug with tax_term IDs in [posts] shortcode, [forum topic](http://wordpress.org/support/topic/posts-tax_term-category-number)
 * Fixed bug with service title, [forum topic](http://wordpress.org/support/topic/service-shortcode-not-wrapping-properly-on-mobile-browser)
 * Fixed bug with animations names in shortcode generator, [forum topic](http://wordpress.org/support/topic/animations-2)
+* Updated settings pages capabilities
+* Added some hooks
+* Updated .pot file
+* Font-Awesome is now loaded from bootstrap CDN. [Technical details](http://stackoverflow.com/questions/20032426/fontawesome-doesnt-display-in-firefox).
+* New review - [Shortcodes Ultimate: Ultimatize your written content](http://wisdmlabs.com/blog/how-to-style-wordpress-themes-with-shortcodes-ultimate/)
+* New review - [Add 40+ New Layout Features To WordPress with Shortcodes Ultimate](http://www.makeuseof.com/tag/add-40-new-layout-features-wordpress-shortcodes-ultimate/)
+* New review - [Show Me the Shortcode](http://thewpchick.com/show-shortcode/) + Video
+* Updated readme.txt
+* Compatibility with recent version of [SiteOrigin page builder](siteorigin.com/page-builder/) - it's free!
+* Compatibility with recent version of [Visual Composer](http://vc.wpbakery.com/)
+* Compatibility with recent version of [Elegant Themes page builder](http://www.elegantthemes.com/gallery/elegant-builder/)
 
 = 4.5 =
 * Updated some examples

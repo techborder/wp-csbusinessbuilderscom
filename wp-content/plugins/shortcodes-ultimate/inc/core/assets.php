@@ -50,9 +50,9 @@ class Su_Assets {
 		wp_register_style( 'owl-carousel', plugins_url( 'assets/css/owl-carousel.css', SU_PLUGIN_FILE ), false, '1.3.2', 'all' );
 		wp_register_style( 'owl-carousel-transitions', plugins_url( 'assets/css/owl-carousel-transitions.css', SU_PLUGIN_FILE ), false, '1.3.2', 'all' );
 		// Font Awesome
-		wp_register_style( 'font-awesome', plugins_url( 'assets/css/font-awesome.css', SU_PLUGIN_FILE ), false, '3.2.1', 'all' );
+		wp_register_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', false, '4.1.0', 'all' );
 		// Animate.css
-		wp_register_style( 'animate', plugins_url( 'assets/css/animate.css', SU_PLUGIN_FILE ), false, '1.0.0', 'all' );
+		wp_register_style( 'animate', plugins_url( 'assets/css/animate.css', SU_PLUGIN_FILE ), false, '3.1.1', 'all' );
 		// InView
 		wp_register_script( 'inview', plugins_url( 'assets/js/inview.js', SU_PLUGIN_FILE ), array( 'jquery' ), '2.1.1', true );
 		// qTip
@@ -61,14 +61,22 @@ class Su_Assets {
 		// jsRender
 		wp_register_script( 'jsrender', plugins_url( 'assets/js/jsrender.js', SU_PLUGIN_FILE ), array( 'jquery' ), '1.0.0-beta', true );
 		// Magnific Popup
-		wp_register_style( 'magnific-popup', plugins_url( 'assets/css/magnific-popup.css', SU_PLUGIN_FILE ), false, '0.9.7', 'all' );
-		wp_register_script( 'magnific-popup', plugins_url( 'assets/js/magnific-popup.js', SU_PLUGIN_FILE ), array( 'jquery' ), '0.9.7', true );
+		wp_register_style( 'magnific-popup', plugins_url( 'assets/css/magnific-popup.css', SU_PLUGIN_FILE ), false, '0.9.9', 'all' );
+		wp_register_script( 'magnific-popup', plugins_url( 'assets/js/magnific-popup.js', SU_PLUGIN_FILE ), array( 'jquery' ), '0.9.9', true );
+		wp_localize_script( 'magnific-popup', 'su_magnific_popup', array(
+				'close'   => __( 'Close (Esc)', 'su' ),
+				'loading' => __( 'Loading...', 'su' ),
+				'prev'    => __( 'Previous (Left arrow key)', 'su' ),
+				'next'    => __( 'Next (Right arrow key)', 'su' ),
+				'counter' => sprintf( __( '%s of %s', 'su' ), '%curr%', '%total%' ),
+				'error'   => sprintf( __( 'Failed to load this link. %sOpen link%s.', 'su' ), '<a href="%url%" target="_blank"><u>', '</u></a>' )
+			) );
 		// Ace
-		wp_register_script( 'ace', plugins_url( 'assets/js/ace/ace.js', SU_PLUGIN_FILE ), false, '1.1.01', true );
+		wp_register_script( 'ace', plugins_url( 'assets/js/ace/ace.js', SU_PLUGIN_FILE ), false, '1.1.3', true );
 		// Swiper
-		wp_register_script( 'swiper', plugins_url( 'assets/js/swiper.js', SU_PLUGIN_FILE ), array( 'jquery' ), SU_PLUGIN_VERSION, true );
+		wp_register_script( 'swiper', plugins_url( 'assets/js/swiper.js', SU_PLUGIN_FILE ), array( 'jquery' ), '2.6.1', true );
 		// jPlayer
-		wp_register_script( 'jplayer', plugins_url( 'assets/js/jplayer.js', SU_PLUGIN_FILE ), array( 'jquery' ), SU_PLUGIN_VERSION, true );
+		wp_register_script( 'jplayer', plugins_url( 'assets/js/jplayer.js', SU_PLUGIN_FILE ), array( 'jquery' ), '2.4.0', true );
 		// Options page
 		wp_register_style( 'su-options-page', plugins_url( 'assets/css/options-page.css', SU_PLUGIN_FILE ), false, SU_PLUGIN_VERSION, 'all' );
 		wp_register_script( 'su-options-page', plugins_url( 'assets/js/options-page.js', SU_PLUGIN_FILE ), array( 'magnific-popup', 'jquery-ui-sortable', 'ace', 'jsrender' ), SU_PLUGIN_VERSION, true );
@@ -77,6 +85,8 @@ class Su_Assets {
 				'upload_insert' => __( 'Add selected files', 'su' ),
 				'not_clickable' => __( 'This button is not clickable', 'su' )
 			) );
+		// Cheatsheet
+		wp_register_style( 'su-cheatsheet', plugins_url( 'assets/css/cheatsheet.css', SU_PLUGIN_FILE ), false, SU_PLUGIN_VERSION, 'all' );
 		// Generator
 		wp_register_style( 'su-generator', plugins_url( 'assets/css/generator.css', SU_PLUGIN_FILE ), array( 'farbtastic', 'magnific-popup' ), SU_PLUGIN_VERSION, 'all' );
 		wp_register_script( 'su-generator', plugins_url( 'assets/js/generator.js', SU_PLUGIN_FILE ), array( 'farbtastic', 'magnific-popup', 'qtip' ), SU_PLUGIN_VERSION, true );

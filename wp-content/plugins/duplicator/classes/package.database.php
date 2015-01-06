@@ -17,14 +17,21 @@ class DUP_Database {
 	
 	//PRIVATE
 	private $dbStorePath;
+	private $EOFMarker;
+	private $networkFlush;
 
 	//CONSTRUCTOR
 	function __construct($package) {
 		 $this->Package = $package;
+		 $this->EOFMarker = "";
+		 $package_zip_flush  = DUP_Settings::Get('package_zip_flush');
+		 $this->networkFlush = empty($package_zip_flush) ? false : $package_zip_flush;
 	}
 	
-	public function Build() {
+	public function Build($package) {
 		try {
+			
+			$this->Package = $package;
 			
 			$time_start = DUP_Util::GetMicrotime();
 			$this->Package->SetStatus(DUP_PackageStatus::DBSTART);
@@ -191,6 +198,7 @@ class DUP_Database {
 		$cmd .= ' --no-create-db';
 		$cmd .= ' --single-transaction';
 		$cmd .= ' --hex-blob';
+		$cmd .= ' --skip-add-drop-table';
 		
 		//Filter tables
 		$tables		= $wpdb->get_col('SHOW TABLES');
@@ -209,8 +217,6 @@ class DUP_Database {
 		$tblCreateCount = count($tables);
 		$tblFilterCount = $tblAllCount - $tblCreateCount;
 
-
-
 		$cmd .= ' -u ' . escapeshellarg(DB_USER);
 		$cmd .= (DB_PASSWORD) ? 
 				' -p'  . escapeshellarg(DB_PASSWORD) : '';
@@ -227,16 +233,19 @@ class DUP_Database {
 		if ( trim( $output ) === 'Warning: Using a password on the command line interface can be insecure.' ) {
 			$output = '';
 		}
-		$output = (strlen($strerr)) ? $output : "Ran from {$exePath}";
+		$output = (strlen($output)) ? $output : "Ran from {$exePath}";
 		
 		DUP_Log::Info("TABLES: total:{$tblAllCount} | filtered:{$tblFilterCount} | create:{$tblCreateCount}");
 		DUP_Log::Info("FILTERED: [{$this->FilterTables}]");		
 		DUP_Log::Info("RESPONSE: {$output}");
 		
+		$sql_footer = "/* " . DUPLICATOR_DB_EOF_MARKER . " */\n\n";
+		file_put_contents($this->dbStorePath, $sql_footer, FILE_APPEND);
+		
 		return ($output) ?  false : true;
 	}
 
-
+	//TODO: esc_sql is a wrapper around mysqli_real_escape_string
 	private function phpDump() {
 
 		global $wpdb;
@@ -307,20 +316,24 @@ class DUP_Database {
 								($num_values == $num_counter) 	? $sql .= 'NULL' 	: $sql .= 'NULL, ';
 							} else {
 								($num_values == $num_counter) 
-									? $sql .= '"' . @mysql_real_escape_string($value) . '"' 
-									: $sql .= '"' . @mysql_real_escape_string($value) . '", ';
+									? $sql .= '"' . @esc_sql($value) . '"' 
+									: $sql .= '"' . @esc_sql($value) . '", ';
 							}
 							$num_counter++;
 						}
 						$sql .= ");\n";
 					}
 					@fwrite($handle, $sql);
-					DUP_Util::FcgiFlush();
+					if ($this->networkFlush) {
+						DUP_Util::FcgiFlush();
+					}
 				}
 			}
 		}
 		unset($sql);
-		$sql_footer = "\nSET FOREIGN_KEY_CHECKS = 1;";
+		$sql_footer = "\nSET FOREIGN_KEY_CHECKS = 1; \n\n";
+		$sql_footer .= "/* DUPLICATOR MYSQL SCRIPT END ON : " . @date("F j, Y, g:i a") . " */\n\n";
+		$sql_footer .= "/* " . DUPLICATOR_DB_EOF_MARKER . " */\n\n";
 		@fwrite($handle, $sql_footer);
 		$wpdb->flush();
 		fclose($handle);

@@ -1,4 +1,12 @@
 <?php
+/**
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/admin.php $
+ * $LastChangedDate: 2014-08-22 01:02:43 +0000 (Fri, 22 Aug 2014) $
+ * $LastChangedRevision: 970205 $
+ * $LastChangedBy: brucepearson $
+ *
+ */
 require_once(WPCF_EMBEDDED_ABSPATH . '/common/visual-editor/editor-addon.class.php');
 require_once WPCF_EMBEDDED_ABSPATH . '/includes/post-relationship.php';
 
@@ -26,6 +34,7 @@ function wpcf_embedded_admin_init_hook() {
 
     // Add Media callback
     add_action( 'add_attachment', 'wpcf_admin_save_attachment_hook', 10 );
+    add_action( 'add_attachment', 'wpcf_admin_add_attachment_hook', 10 );
     add_action( 'edit_attachment', 'wpcf_admin_save_attachment_hook', 10 );
 
     // Render messages
@@ -42,8 +51,7 @@ function wpcf_embedded_admin_init_hook() {
     ) {
         require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields/file.php';
         // Add types button
-        add_filter( 'attachment_fields_to_edit',
-                'wpcf_fields_file_attachment_fields_to_edit_filter', 9999, 2 );
+        add_filter( 'attachment_fields_to_edit', 'wpcf_fields_file_attachment_fields_to_edit_filter', PHP_INT_MAX, 2 );
         // Add JS
         add_action( 'admin_head', 'wpcf_fields_file_media_admin_head' );
         // Filter media TABs
@@ -106,6 +114,17 @@ function wpcf_admin_save_post_hook( $post_ID, $post ) {
     require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
     require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields-post.php';
     wpcf_admin_post_save_post_hook( $post_ID, $post );
+}
+
+/**
+ * Save attachment hook.
+ * 
+ * @param type $attachment_id
+ */
+function wpcf_admin_add_attachment_hook( $attachment_id )
+{
+    $post = get_post( $attachment_id );
+    wpcf_admin_post_add_attachment_hook( $attachment_id, $post );
 }
 
 /**
@@ -304,7 +323,7 @@ function wpcf_custom_fields_to_be_copied( $copied_fields, $original_post_id ) {
  */
 function wpcf_admin_validation_messages( $method = false, $sprintf = '' ) {
     $messages = array(
-        'required' => __( 'This Field is required', 'wpcf' ),
+        'required' => __( 'This field is required', 'wpcf' ),
         'email' => __( 'Please enter a valid email address', 'wpcf' ),
         'url' => __( 'Please enter a valid URL address', 'wpcf' ),
         'date' => __( 'Please enter a valid date', 'wpcf' ),

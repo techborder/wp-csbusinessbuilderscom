@@ -1,4 +1,13 @@
 <?php
+// Exit if accessed directly
+if (! defined('DUPLICATOR_INIT')) {
+	$_baseURL =  strlen($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+	$_baseURL =  "http://" . $_baseURL;
+	header("HTTP/1.1 301 Moved Permanently");
+	header("Location: $_baseURL");
+	exit; 
+}
+
 /* JSON RESPONSE: Most sites have warnings turned off by default, but if they're turned on the warnings
 cause errors in the JSON data Here we hide the status so warning level is reset at it at the end*/
 $ajax2_error_level = error_reporting();
@@ -11,7 +20,7 @@ error_reporting(E_ERROR);
 $ajax2_start = DupUtil::get_microtime();
 
 //MYSQL CONNECTION
-$dbh = @mysqli_connect($_POST['dbhost'], $_POST['dbuser'], $_POST['dbpass'], $_POST['dbname'], $_POST['dbport']);
+$dbh = DupUtil::mysqli_connect($_POST['dbhost'], $_POST['dbuser'], html_entity_decode($_POST['dbpass']), $_POST['dbname'], $_POST['dbport']);
 $charset_server = @mysqli_character_set_name($dbh);
 @mysqli_query($dbh, "SET wait_timeout = {$GLOBALS['DB_MAX_TIME']}");
 DupUtil::mysql_set_charset($dbh, $_POST['dbcharset'], $_POST['dbcollate']);
@@ -81,9 +90,16 @@ $log .= "[^] no searchable columns\n";
 $log .= "--------------------------------------";
 DUPX_Log::Info($log);
 
+$url_old_json = str_replace('"', "", json_encode($_POST['url_old']));
+$url_new_json = str_replace('"', "", json_encode($_POST['url_new']));
+$path_old_json = str_replace('"', "", json_encode($_POST['path_old']));
+$path_new_json = str_replace('"', "", json_encode($_POST['path_new']));
+
 array_push($GLOBALS['REPLACE_LIST'], 
-		array('search' => $_POST['url_old'], 'replace' => $_POST['url_new']), 
+		array('search' => $_POST['url_old'],  'replace' => $_POST['url_new']), 
+		array('search' => $url_old_json,	  'replace' => $url_new_json), 
 		array('search' => $_POST['path_old'], 'replace' => $_POST['path_new']), 
+		array('search' => $path_old_json,	  'replace' => $path_new_json), 		
 		array('search' => rtrim(DupUtil::unset_safe_path($_POST['path_old']), '\\'), 'replace' => rtrim($_POST['path_new'], '/'))
 );
 

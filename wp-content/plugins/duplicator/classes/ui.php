@@ -42,6 +42,9 @@ class DUP_UI {
 	 * </code>
      */
     static public function SaveViewStateByPost() {
+		
+		DUP_Util::CheckPermissions('read');
+		
 		$post  = stripslashes_deep($_POST);
 		$key   = esc_html($post['key']);
 		$value = esc_html($post['value']);
@@ -86,6 +89,9 @@ class DUP_UI {
 	 * @return type void
 	 */
 	static public function ShowReservedFilesNotice() {
+		
+		if (! is_plugin_active('duplicator/duplicator.php'))
+			return;
 
 		$hide  = isset($_REQUEST['page']) && $_REQUEST['page'] == 'duplicator-tools' ? true : false;
 		$perms = (current_user_can( 'install_plugins' ) && current_user_can( 'import' ));
@@ -98,11 +104,11 @@ class DUP_UI {
 		}
 
 		if (! self::GetViewStateValue($metaKey, false)) {
-			if (DUP_Package::RequiredFilesFound()) {
+			if (DUP_Server::InstallerFilesFound()) {
 				$queryStr = $_SERVER['QUERY_STRING'];
 				echo '<div class="updated"><p>';
-				printf("%s <br/> <a href='admin.php?page=duplicator-tools&tab=cleanup&action=installer'>%s</a> | <a href='?{$queryStr}&{$metaKey}=1'>%s</a>",
-						__('Reserved Duplicator install file(s) still exsist in the root directory.  Please delete these file(s) to avoid possible security issues.'),
+				@printf("%s <br/> <a href='admin.php?page=duplicator-tools&tab=cleanup&action=installer'>%s</a> | <a href='?{$queryStr}&{$metaKey}=1'>%s</a>",
+						__('Reserved Duplicator install file(s) still exists in the root directory.  Please delete these file(s) to avoid possible security issues.'),
 						__('Remove file(s) now'),
 						__('Dismiss this notice'));
 				echo "</p></div>";

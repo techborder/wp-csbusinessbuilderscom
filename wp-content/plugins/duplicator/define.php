@@ -1,7 +1,7 @@
 <?php
 //Prevent directly browsing to the file
 if (function_exists('plugin_dir_url')) {
-    define('DUPLICATOR_VERSION',        '0.5.2');
+    define('DUPLICATOR_VERSION',        '0.5.10');
     define("DUPLICATOR_HOMEPAGE",       "http://lifeinthegrid.com/labs/duplicator");
     define("DUPLICATOR_GIVELINK",       "http://lifeinthegrid.com/partner");
     define("DUPLICATOR_HELPLINK",       "http://lifeinthegrid.com/duplicator-docs");
@@ -26,18 +26,23 @@ if (function_exists('plugin_dir_url')) {
 	define("DUPLICATOR_SSDIR_PATH_TMP", DUPLICATOR_SSDIR_PATH . '/tmp');
 	define("DUPLICATOR_SSDIR_URL",      DUPLICATOR_SITE_URL . "/" . DUPLICATOR_SSDIR_NAME);
     define("DUPLICATOR_INSTALL_PHP",    'installer.php');
+	define("DUPLICATOR_INSTALL_BAK",    'installer-backup.php');
     define("DUPLICATOR_INSTALL_SQL",    'installer-data.sql');
     define("DUPLICATOR_INSTALL_LOG",    'installer-log.txt');
 	
 	//RESTRAINT CONSTANTS
     define("DUPLICATOR_PHP_MAX_MEMORY",  '5000M');
     define("DUPLICATOR_DB_MAX_TIME",     5000);
+	define("DUPLICATOR_DB_EOF_MARKER",   'DUPLICATOR_MYSQLDUMP_EOF');
 	define("DUPLICATOR_SCAN_SITE",    157286400);	//150MB
-	define("DUPLICATOR_SCAN_BIGFILE", 5242880);		//5MB
+	define("DUPLICATOR_SCAN_WARNFILESIZE", 3145728);//3MB
+	define("DUPLICATOR_SCAN_CACHESIZE", 524288);	//512K
 	define("DUPLICATOR_SCAN_DBSIZE",  52428800);	//50MB
 	define("DUPLICATOR_SCAN_DBROWS",  250000);
-	define("DUPLICATOR_SCAN_TIMEOUT", 300);	//Seconds
-    $GLOBALS['DUPLICATOR_SERVER_LIST'] = array('Apache','LiteSpeed', 'Nginx', 'Lighttpd', 'IIS', 'WebServerX');
+	define("DUPLICATOR_SCAN_TIMEOUT", 300);			//Seconds
+	define("DUPLICATOR_SCAN_MIN_WP", "3.7.0");
+	define("DUPLICATOR_SCAN_USELEGACY", true);
+    $GLOBALS['DUPLICATOR_SERVER_LIST'] = array('Apache','LiteSpeed', 'Nginx', 'Lighttpd', 'IIS', 'WebServerX', 'uWSGI');
 	$GLOBALS['DUPLICATOR_OPTS_DELETE'] = array('duplicator_ui_view_state', 'duplicator_package_active', 'duplicator_settings');
 	
 	/* Used to flush a response every N items. 

@@ -1,9 +1,17 @@
 <?php
+/**
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/fields/skype.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
+ */
 
 /**
  * Register data (called automatically).
- * 
- * @return type 
+ *
+ * @return type
  */
 function wpcf_fields_skype() {
     return array(
@@ -24,8 +32,8 @@ add_filter( 'wpv_condition_end', 'wpcf_fields_skype_wpv_conditional_trigger_end'
 
 /**
  * Form data for post edit page.
- * 
- * @param type $field 
+ *
+ * @param type $field
  */
 function wpcf_fields_skype_meta_box_form( $field ) {
     add_thickbox();
@@ -33,8 +41,7 @@ function wpcf_fields_skype_meta_box_form( $field ) {
         $field['value'] = maybe_unserialize( $field['value'] );
     }
     $form = array();
-    add_filter( 'wpcf_fields_shortcode_slug_' . $field['slug'],
-            'wpcf_fields_skype_shortcode_filter', 10, 2 );
+    add_filter( 'wpcf_fields_shortcode_slug_' . $field['slug'], 'wpcf_fields_skype_shortcode_filter', 10, 2 );
     $rand = wpcf_unique_id( serialize( $field ) );
     $form['skypename'] = array(
         '#type' => 'textfield',
@@ -147,10 +154,10 @@ function wpcf_fields_skype_editor_submit( $data, $field, $context ) {
 
 /**
  * Shortcode filter.
- * 
+ *
  * @param type $shortcode
  * @param type $field
- * @return type 
+ * @return type
  */
 function wpcf_fields_skype_shortcode_filter( $shortcode, $field ) {
     return $shortcode;
@@ -199,8 +206,8 @@ function wpcf_fields_skype_meta_box_ajax() {
     _e( 'Enter your Skype Name', 'wpcf' );
 
     ?></h2>
-        <p> 
-            <input id="btn-skypename" name="skypename" value="<?php echo $_GET['skypename']; ?>" type="text" /> 
+        <p>
+            <input id="btn-skypename" name="skypename" value="<?php esc_attr_e($_GET['skypename']); ?>" type="text" />
         </p>
         <?php
         echo WPCF_Loader::template( 'skype-select-button', $_GET );
@@ -233,11 +240,11 @@ function wpcf_fields_skype_meta_box_ajax() {
 
 /**
  * Returns HTML formatted skype button.
- * 
+ *
  * @param type $skypename
  * @param type $template
  * @param type $class
- * @return type 
+ * @return type
  */
 function wpcf_fields_skype_get_button( $skypename, $template = '',
         $class = false ) {
@@ -292,10 +299,10 @@ function wpcf_fields_skype_get_button( $skypename, $template = '',
 
 /**
  * Returns HTML formatted skype button image.
- * 
+ *
  * @param type $skypename
  * @param type $template
- * @return type 
+ * @return type
  */
 function wpcf_fields_skype_get_button_image( $skypename = '', $template = '' ) {
 
@@ -340,40 +347,46 @@ function wpcf_fields_skype_get_button_image( $skypename = '', $template = '' ) {
 }
 
 /**
+ *
  * View function.
- * 
- * @param type $params 
+ *
+ * @param type $params
+ *
+ * @return string
+ *
  */
-function wpcf_fields_skype_view( $params ) {
+function wpcf_fields_skype_view( $params )
+{
     if ( empty( $params['field_value']['skypename'] ) ) {
         return '__wpcf_skip_empty';
     }
     // Button style
     $button_style = 'default';
     // First check if passed by parameter
-    if ( !empty( $params['button_style'] ) ) {
+    if ( array_key_exists( 'button_style', $params ) && $params['button_style'] ) {
         $button_style = $params['button_style'];
         // Otherwise use saved value
-    } else if ( !empty( $params['field_value']['style'] ) ) {
+    } else if ( array_key_exists( 'style', $params['field_value'] ) && $params['field_value']['style'] ) {
         $button_style = $params['field_value']['style'];
+    } else if ( array_key_exists( 'button_style', $params['field_value'] ) && $params['field_value']['button_style'] ) {
+        $button_style = $params['field_value']['button_style'];
     }
     // Style can be overrided by params (shortcode)
     if ( !isset( $params['field_value']['style'] ) ) {
         $params['field_value']['style'] = '';
     }
     $class = empty( $params['class'] ) ? false : $params['class'];
-    $content = wpcf_fields_skype_get_button( $params['field_value']['skypename'],
-            $button_style, $class );
+    $content = wpcf_fields_skype_get_button( $params['field_value']['skypename'], $button_style, $class );
     return $content;
 }
 
 /**
  * Filters post relationship save data.
- * 
+ *
  * @param type $data
  * @param type $meta_key
  * @param type $post_id
- * @return type 
+ * @return type
  */
 function wpcf_pr_fields_type_skype_value_save_filter( $data, $meta_key = null,
         $post_id = null ) {
@@ -385,16 +398,16 @@ function wpcf_pr_fields_type_skype_value_save_filter( $data, $meta_key = null,
 
 /**
  * Processes repetitive Skype fields.
- * 
+ *
  * Each form element is sent separately.
  * Determine which is which and process it.
- * 
+ *
  * @staticvar array $repetitive_started
  * @staticvar array $repetitive_index
  * @param type $post
  * @param string $field
  * @param type $skype_element
- * @return string 
+ * @return string
  */
 function wpcf_field_skype_repetitive( $element, $post, $field, $array_key ) {
 
@@ -415,7 +428,7 @@ function wpcf_field_skype_repetitive( $element, $post, $field, $array_key ) {
             }
 
             /*
-             * 
+             *
              * If added via AJAX set value
              */
             if ( defined( 'DOING_AJAX' ) ) {
@@ -434,7 +447,7 @@ function wpcf_field_skype_repetitive( $element, $post, $field, $array_key ) {
 
 /**
  * Triggers post_meta filter.
- * 
+ *
  * @param type $post
  * @return type
  */
@@ -445,7 +458,7 @@ function wpcf_fields_skype_wpv_conditional_trigger( $post ) {
 
 /**
  * Returns 'skypename' if available.
- * 
+ *
  * @global type $wpcf
  * @param type $null
  * @param type $object_id
@@ -464,13 +477,19 @@ function wpcf_fields_skype_conditional_filter_post_meta( $null, $object_id,
         if ( is_array( $_meta ) ) {
             $null = isset( $_meta['skypename'] ) ? $_meta['skypename'] : '';
         }
+        /**
+         * be sure do not return string if array is expected!
+         */
+        if ( !$single && !is_array($null) ) {
+            return array($null);
+        }
     }
     return $null;
 }
 
 /**
  * Removes trigger post_meta filter.
- * 
+ *
  * @param type $evaluate
  * @return type
  */

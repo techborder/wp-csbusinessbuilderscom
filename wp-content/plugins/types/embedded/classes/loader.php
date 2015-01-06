@@ -1,6 +1,13 @@
 <?php
-/*
+/**
+ *
  * Loader class
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/classes/loader.php $
+ * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
+ * $LastChangedRevision: 1027712 $
+ * $LastChangedBy: iworks $
+ *
  */
 
 /**
@@ -91,12 +98,17 @@ class WPCF_Loader
         wp_register_script( 'types-wp-views',
                 WPCF_EMBEDDED_RES_RELPATH . '/js/wp-views.js', array('jquery'),
                 WPCF_VERSION, true );
+        global $pagenow;
+        // Exclude on post edit screen
+        if ( defined( 'WPTOOLSET_FORMS_ABSPATH' )
+                && !in_array( $pagenow, array('edit.php', 'post.php', 'post-new.php') ) ) {
         wp_register_script( 'types-conditional',
                 WPCF_EMBEDDED_RES_RELPATH . '/js/conditional.js',
                 array('types-utils'), WPCF_VERSION, true );
         wp_register_script( 'types-validation',
                 WPCF_EMBEDDED_RES_RELPATH . "/js/validation{$min}.js",
                 array('jquery'), WPCF_VERSION, true );
+        }
 //        wp_register_script( 'types-jquery-validation',
 //                WPCF_EMBEDDED_RES_RELPATH . '/js/jquery-form-validation/jquery.validate-1.11.1.min.js',
 //                array('jquery'), WPCF_VERSION, true );
@@ -125,6 +137,14 @@ class WPCF_Loader
                     WPCF_EMBEDDED_RES_RELPATH . '/css/font-awesome/css/font-awesome.min.css',
                     array('admin-bar', 'wp-admin', 'buttons', 'media-views'),
                     WPCF_VERSION );
+        }
+        if ( !wp_style_is( 'toolset-dashicons', 'registered' ) ) {
+            wp_register_style(
+                'toolset-dashicons',
+                WPCF_EMBEDDED_RES_RELPATH . '/css/dashicons.css',
+                array(),
+                WPCF_VERSION
+            );
         }
     }
 

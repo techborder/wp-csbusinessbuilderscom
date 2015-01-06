@@ -14,9 +14,9 @@ jQuery(document).ready(function(){
      * Views Layout Meta HTML, CRED form.
      */
     window.wpcfActiveEditor = 'content';
-    jQuery('.wp-media-buttons a, .wpcf-wysiwyg .editor_addon_dropdown .item, #postdivrich .editor_addon_dropdown .item, #wpv_filter_meta_html_admin_edit .item, #wpv_layout_meta_html_admin_edit .item').on('click', function(){
-        window.wpcfActiveEditor = jQuery(this).parents('.wpcf-wysiwyg, #postdivrich, #wpv_layout_meta_html_admin, #wpv_filter_meta_html_admin')
-        .find('textarea#content, textarea.wpcf-wysiwyg, textarea#wpv_layout_meta_html_content, textarea#wpv_filter_meta_html_content').attr('id');
+    jQuery('.wp-media-buttons a, .wpcf-wysiwyg .editor_addon_dropdown .item, .wpt-wysiwyg .editor_addon_dropdown .item, #postdivrich .editor_addon_dropdown .item, #wpv_filter_meta_html_admin_edit .item, #wpv_layout_meta_html_admin_edit .item').on('click', function(){
+        window.wpcfActiveEditor = jQuery(this).parents('.wpt-wysiwyg, .wpcf-wysiwyg, #postdivrich, #wpv_layout_meta_html_admin, #wpv_filter_meta_html_admin')
+        .find('textarea#content, textarea.wpcf-wysiwyg, textarea.wpt-wysiwyg, textarea#wpv_layout_meta_html_content, textarea#wpv_filter_meta_html_content').attr('id');
 
     /*
          *
@@ -86,11 +86,7 @@ jQuery(document).ready(function(){
 
         } else {
             // Hide all
-            jQuery('.editor_addon_dropdown').css({
-                'visibility': 'hidden'
-                //'display' : 'inline'
-            });
-
+			icl_editor_hide_popup();
         }
 
 
@@ -101,21 +97,15 @@ jQuery(document).ready(function(){
          * SRDJAN I do not understand this one...
          */
         jQuery('#content_ifr').contents().bind('click', function(e) {
-            jQuery('.editor_addon_dropdown').css({
-                'visibility': 'hidden'
-                //'display' : 'inline'
-            });
-        });
+			icl_editor_hide_popup();
+		});
 
 
         // Bind Escape
         jQuery(document).bind('keyup', function(e) {
             if (e.keyCode == 27) {
-                jQuery('.editor_addon_dropdown').css({
-                    'visibility': 'hidden'
-                    //'display' : 'inline'
-                });
-                jQuery(this).unbind(e);
+				icl_editor_hide_popup();
+				jQuery(this).unbind(e);
             }
         });
 
@@ -152,7 +142,22 @@ jQuery(document).ready(function(){
             icl_editor_popup(drop_down);
 
 			jQuery(drop_down).find('.search_field').focus();
-
+			
+			// Make sure the dialog fits on the screen when used in
+			// Layouts for the Post Content dialog
+			if (jQuery(drop_down).closest('#ddl-default-edit').length > 0) {
+				var dialog_bottom = jQuery(drop_down).offset().top + jQuery(drop_down).height();
+				dialog_bottom -= jQuery(window).scrollTop();
+				var window_height = jQuery(window).height();
+				
+				if (dialog_bottom > window_height) {
+					var new_top = window_height - jQuery(drop_down).height() - 80;
+					if (new_top < 0) {
+						new_top = 0;
+					}
+					jQuery(drop_down).animate({top : new_top}, 200);
+				}
+			}
         }
 
         // Bind close on iFrame click (it's loaded now)
@@ -162,20 +167,14 @@ jQuery(document).ready(function(){
          * SRDJAN I do not understand this one...
          */
         jQuery('#content_ifr').contents().bind('click', function(e) {
-            jQuery('.editor_addon_dropdown').css({
-                'visibility': 'hidden'
-                //'display' : 'inline'
-            });
+			icl_editor_hide_popup();
         });
 
 
         // Bind Escape
         jQuery(document).bind('keyup', function(e) {
             if (e.keyCode == 27) {
-                jQuery('.editor_addon_dropdown').css({
-                    'visibility': 'hidden'
-                    //'display' : 'inline'
-                });
+				icl_editor_hide_popup();
                 jQuery(this).unbind(e);
             }
         });
@@ -208,20 +207,14 @@ jQuery(document).ready(function(){
          * SRDJAN I do not understand this one...
          */
         jQuery('#content_ifr').contents().bind('click', function(e) {
-            jQuery('.editor_addon_dropdown').css({
-                'visibility': 'hidden'
-                //'display' : 'inline'
-            });
+			icl_editor_hide_popup();
         });
 
 
         // Bind Escape
         jQuery(document).bind('keyup', function(e) {
             if (e.keyCode == 27) {
-                jQuery('.editor_addon_dropdown').css({
-                    'visibility': 'hidden'
-                    //'display' : 'inline'
-                });
+				icl_editor_hide_popup();
                 jQuery(this).unbind(e);
             }
         });
@@ -255,20 +248,14 @@ jQuery(document).ready(function(){
          * SRDJAN I do not understand this one...
          */
         jQuery('#content_ifr').contents().bind('click', function(e) {
-            jQuery('.editor_addon_dropdown').css({
-                'visibility': 'hidden'
-                //'display' : 'inline'
-            });
+			icl_editor_hide_popup();
         });
 
 
         // Bind Escape
         jQuery(document).bind('keyup', function(e) {
             if (e.keyCode == 27) {
-                jQuery('.editor_addon_dropdown').css({
-                    'visibility': 'hidden'
-                    //'display' : 'inline'
-                });
+				icl_editor_hide_popup();
                 jQuery(this).unbind(e);
             }
         });
@@ -283,10 +270,7 @@ jQuery(document).ready(function(){
      * Trigger close action
      */
     jQuery(document).on('click', '.editor_addon_dropdown .item, .editor_addon_dropdown .close', function(e){
-        jQuery('.editor_addon_dropdown').css({
-            'visibility': 'hidden'
-            //'display' : 'inline'
-        });
+		icl_editor_hide_popup();
     });
 
     /*
@@ -621,6 +605,13 @@ function wpv_search_clear(el) {
     wpv_on_search_filter(searchbox[0]);
 }
 
+function icl_editor_hide_popup () {
+	jQuery('.editor_addon_dropdown').css({
+		'visibility': 'hidden'
+	});
+	jQuery(document).off('click.icl_editor');
+}
+
 /**
  * Bind window click to auto-hide
  *
@@ -632,18 +623,20 @@ function icl_editor_bind_auto_close() {
      * jQuery executes 'bind' immediatelly on click
      */
 
-    jQuery(document).on('click',function(e){
+    jQuery(document).on('click.icl_editor',function(e){
 
         var dropdownAddField = jQuery('#add_field_popup .editor_addon_dropdown');
 
         // Exception for 'Add field' button
         var $target = jQuery(e.target);
 
-        // if we click anything but V icon
-        if ( !( $target.hasClass('wpv_add_fields_button') || $target.hasClass('js-code-editor-toolbar-button-v-icon') || 
-        $target.parent().hasClass('js-code-editor-toolbar-button-v-icon') 
-         || $target.hasClass('js-wpv-shortcode-post-icon-wpv-views')
-          || $target.hasClass('js-wpv-shortcode-post-icon-types') ) ) {
+        // if we click anything but Toolset buttons
+        if ( ( $target.closest('.wpv_add_fields_button,' +
+								'.js-code-editor-toolbar-button-v-icon,' +
+								'.js-code-editor-toolbar-button-v-icon,' +
+								'.js-wpv-shortcode-post-icon-wpv-views,' +
+								'.js-wpv-shortcode-post-icon-types,' +
+								'.js-wpcf-access-editor-button').length === 0) ) {
 
             // if we click outside the popup
             if ( $target.parents('.editor_addon_dropdown').length === 0 ) {

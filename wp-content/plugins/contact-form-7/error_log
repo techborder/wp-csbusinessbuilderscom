@@ -1,2 +1,0 @@
-[05-Mar-2014 06:49:29 America/Phoenix] PHP Fatal error:  Call to undefined function plugin_basename() in /home/spencern/public_html/csbb/wp-content/plugins/contact-form-7/wp-contact-form-7.php on line 35
-[15-Mar-2014 04:18:49 America/Phoenix] PHP Fatal error:  Call to undefined function plugin_basename() in /home/spencern/public_html/csbb/wp-content/plugins/contact-form-7/wp-contact-form-7.php on line 35

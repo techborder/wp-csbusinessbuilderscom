@@ -15,9 +15,60 @@ class DUP_Util {
 	/**
 	*  returns the snapshot url
 	*/
-	static public  function SSDirURL() {
+	static public function SSDirURL() {
 		 return get_site_url(null, '', is_ssl() ? 'https' : 'http') . '/' . DUPLICATOR_SSDIR_NAME . '/';
 	}
+
+	/**
+	*  Returns the last N lines of a file
+	*  Equivelent to tail command
+	*/
+	static public function TailFile($filepath, $lines = 2, $adaptive = true) {
+
+		// Open file
+		$f = @fopen($filepath, "rb");
+		if ($f === false) return false;
+
+		// Sets buffer size
+		if (!$adaptive) $buffer = 4096;
+		else $buffer = ($lines < 2 ? 64 : ($lines < 10 ? 512 : 4096));
+
+		// Jump to last character
+		fseek($f, -1, SEEK_END);
+
+		// Read it and adjust line number if necessary
+		// (Otherwise the result would be wrong if file doesn't end with a blank line)
+		if (fread($f, 1) != "\n") $lines -= 1;
+		
+		// Start reading
+		$output = '';
+		$chunk = '';
+
+		// While we would like more
+		while (ftell($f) > 0 && $lines >= 0) {
+			// Figure out how far back we should jump
+			$seek = min(ftell($f), $buffer);
+			// Do the jump (backwards, relative to where we are)
+			fseek($f, -$seek, SEEK_CUR);
+			// Read a chunk and prepend it to our output
+			$output = ($chunk = fread($f, $seek)) . $output;
+			// Jump back to where we started reading
+			fseek($f, -mb_strlen($chunk, '8bit'), SEEK_CUR);
+			// Decrease our line counter
+			$lines -= substr_count($chunk, "\n");
+		}
+
+		// While we have too many lines
+		// (Because of buffer size we might have read too many)
+		while ($lines++ < 0) {
+			// Find first newline and remove all text before that
+			$output = substr($output, strpos($output, "\n") + 1);
+		}
+		fclose($f);
+		return trim($output);
+	}
+
+	
 
 	/**
 	*  Runs the APC cache to pre-cache the php files
@@ -92,6 +143,26 @@ class DUP_Util {
 	}
 
 	/**
+	 * List all of the files of a path
+	 * @path path to a system directory
+	 * @return array of all files in that path
+	 */
+	static public function ListFiles($path = '.') {
+		$files = array();
+		
+		//GLOB_BRACE is not an option on some systems
+		//{,.}*  allows for hidden files to be shown
+		if (defined("GLOB_BRACE")) {
+			$files	= glob("{$path}/{,.}*", GLOB_NOSORT | GLOB_BRACE);
+		} else {
+			foreach (new DirectoryIterator($path) as $file) {
+				$files[] = DUP_Util::SafePath($file->getPathname());
+			}
+		}
+		return $files;
+	}
+	
+	/**
 	 * List all of the directories of a path
 	 * @path path to a system directory
 	 * @return array of all directories in that path
@@ -116,7 +187,7 @@ class DUP_Util {
 	}
 	
 	/** 
-	 * Size of the directory recuresivly
+	 * Size of the directory recuresivly in bytes
 	 */
 	static public function GetDirectorySize($dir) {
 		if(!file_exists($dir)) 
@@ -135,9 +206,14 @@ class DUP_Util {
 	
 	
 	public static function IsShellExecAvailable() {
-
-		if (array_intersect(array('shell_exec', 'escapeshellarg', 'escapeshellcmd'), array_map('trim', explode(',', @ini_get('disable_functions')))))
+		
+		if (array_intersect(array('shell_exec', 'escapeshellarg', 'escapeshellcmd', 'extension_loaded'), array_map('trim', explode(',', @ini_get('disable_functions')))))
 			return false;
+		
+		//Suhosin: http://www.hardened-php.net/suhosin/
+		//Will cause PHP to silently fail.
+		if (extension_loaded('suhosin'))
+		  return false;
 
 		// Can we issue a simple echo command?
 		if (!@shell_exec('echo duplicator'))
@@ -150,10 +226,54 @@ class DUP_Util {
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 			return true;
 		}
-		
 		return false;
 	}
+	
+	public static function CheckPermissions($permission = 'read') {
+		$capability = $permission;
+		$capability = apply_filters('wpfront_user_role_editor_duplicator_translate_capability', $capability);
 
+		if(!current_user_can($capability)) {
+			wp_die(__('You do not have sufficient permissions to access this page.', 'wpduplicator'));
+			return;
+		}
+	}
+
+	/**
+	*  Creates the snapshot directory if it doesn't already exisit
+	*/
+	public static function GetCurrentUser() {
+		$unreadable =  'Undetectable';
+		if (function_exists('get_current_user') && is_callable('get_current_user')) {
+			$user = get_current_user(); 
+			return strlen($user) ? $user : $unreadable;
+		}
+		return $unreadable;
+	}
+	
+	/**
+	*  Gets the owner of the PHP process
+	*/
+	public static function GetProcessOwner() {
+		$unreadable = 'Undetectable';
+		$user = '';
+		try {
+			if (function_exists('exec')) {
+				$user = exec('whoami');
+			} 
+			
+			if (! strlen($user) && function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+				$user = posix_getpwuid(posix_geteuid());
+				$user = $user['name'];  
+			}
+			
+			return strlen($user) ? $user : $unreadable;
+
+		} catch (Exception $ex) {
+			return $unreadable;
+		}
+	}
+	
 	/**
 	*  Creates the snapshot directory if it doesn't already exisit
 	*/
@@ -192,9 +312,15 @@ class DUP_Util {
 		@fclose($tokenfile);
 
 		//SSDIR: Create .htaccess
-		$htfile = @fopen($path_ssdir . '/.htaccess', 'w');
-		@fwrite($htfile, "Options -Indexes");
-		@fclose($htfile);
+		$storage_htaccess_off = DUP_Settings::Get('storage_htaccess_off');
+		if ($storage_htaccess_off) {
+			@unlink($path_ssdir . '/.htaccess');
+		} else {
+			$htfile = @fopen($path_ssdir . '/.htaccess', 'w');
+			$htoutput = "Options -Indexes" ;
+			@fwrite($htfile, $htoutput);
+			@fclose($htfile);
+		}
 
 		//SSDIR: Robots.txt file
 		$robotfile = @fopen($path_ssdir . '/robots.txt', 'w');

@@ -1,8 +1,12 @@
 <?php
-/*
- * 
- * 
+/**
  * Fields class.
+ *
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/classes/fields.php $
+ * $LastChangedDate: 2014-05-07 06:56:23 +0000 (Wed, 07 May 2014) $
+ * $LastChangedRevision: 909470 $
+ * $LastChangedBy: iworks $
+ *
  */
 require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
 
@@ -173,7 +177,7 @@ class WPCF_Fields
             foreach ( $config->meta_box_css as $handle => $data_script ) {
                 $deps = !empty( $data_script['deps'] ) ? $data_script['deps'] : array();
                 if ( isset( $data_script['inline'] ) ) {
-                    add_action( 'admin_header', $data_script['inline'] );
+                    add_action( 'admin_head', $data_script['inline'] );
                     continue;
                 }
                 if ( !isset( $data_script['src'] ) ) {

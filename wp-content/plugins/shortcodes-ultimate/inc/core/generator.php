@@ -35,9 +35,11 @@ class Su_Generator {
 	public static function button( $args = array() ) {
 		// Check access
 		if ( !self::access_check() ) return;
+		// Prepare button target
+		$target = is_string( $args ) ? $args : 'content';
 		// Prepare args
 		$args = wp_parse_args( $args, array(
-				'target'    => 'content',
+				'target'    => $target,
 				'text'      => __( 'Insert shortcode', 'su' ),
 				'class'     => 'button',
 				'icon'      => plugins_url( 'assets/images/icon.png', SU_PLUGIN_FILE ),
@@ -85,6 +87,9 @@ class Su_Generator {
 					'<a href="http://gndev.info/shortcodes-ultimate/" target="_blank" title="' . __( 'Plugin homepage', 'su' ) . '">' . __( 'Plugin homepage', 'su' ) . '</a>',
 					'<a href="http://wordpress.org/support/plugin/shortcodes-ultimate/" target="_blank" title="' . __( 'Support forums', 'su' ) . '">' . __( 'Support forums', 'su' ) . '</a>'
 				) );
+
+			// Add add-ons links
+			if ( !su_addon_active( 'maker' ) || !su_addon_active( 'skins' ) || !su_addon_active( 'extra' ) ) $tools[] = '<a href="' . admin_url( 'admin.php?page=shortcodes-ultimate-addons' ) . '" target="_blank" title="' . __( 'Add-ons', 'su' ) . '" class="su-add-ons">' . __( 'Add-ons', 'su' ) . '</a>';
 ?>
 		<div id="su-generator-wrap" style="display:none">
 			<div id="su-generator">
@@ -146,6 +151,13 @@ class Su_Generator {
 			$return = '<div id="su-generator-breadcrumbs">';
 			$return .= apply_filters( 'su/generator/breadcrumbs', '<a href="javascript:void(0);" class="su-generator-home" title="' . __( 'Click to return to the shortcodes list', 'su' ) . '">' . __( 'All shortcodes', 'su' ) . '</a> &rarr; <span>' . $shortcode['name'] . '</span> <small class="alignright">' . $shortcode['desc'] . '</small><div class="su-generator-clear"></div>' );
 			$return .= '</div>';
+			// Shortcode note
+			if ( isset( $shortcode['note'] ) || isset( $shortcode['example'] ) ) {
+				$return .= '<div class="su-generator-note"><i class="fa fa-info-circle"></i><div class="su-generator-note-content">';
+				if ( isset( $shortcode['note'] ) ) $return .= wpautop( $shortcode['note'] );
+				if ( isset( $shortcode['example'] ) ) $return .= wpautop( '<a href="' . admin_url( 'admin.php?page=shortcodes-ultimate-examples&example=' . $shortcode['example'] ) . '" target="_blank">' . __( 'Examples of use', 'su' ) . ' &rarr;</a>' );
+				$return .= '</div></div>';
+			}
 			// Shortcode has atts
 			if ( count( $shortcode['atts'] ) && $shortcode['atts'] ) {
 				// Loop through shortcode parameters
@@ -160,6 +172,7 @@ class Su_Generator {
 					elseif ( !isset( $attr_info['type'] ) ) $attr_info['type'] = 'text';
 					if ( is_callable( array( 'Su_Generator_Views', $attr_info['type'] ) ) ) $return .= call_user_func( array( 'Su_Generator_Views', $attr_info['type'] ), $attr_name, $attr_info );
 					elseif ( isset( $attr_info['callback'] ) && is_callable( $attr_info['callback'] ) ) $return .= call_user_func( $attr_info['callback'], $attr_name, $attr_info );
+					if ( isset( $attr_info['desc'] ) ) $attr_info['desc'] = str_replace( '%su_skins_link%', su_skins_link(), $attr_info['desc'] );
 					if ( isset( $attr_info['desc'] ) ) $return .= '<div class="su-generator-attr-desc">' . str_replace( array( '<b%value>', '<b_>' ), '<b class="su-generator-set-value" title="' . __( 'Click to set this value', 'su' ) . '">', $attr_info['desc'] ) . '</div>';
 					$return .= '</div>';
 				}
