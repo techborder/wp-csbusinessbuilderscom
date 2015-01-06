@@ -1,0 +1,91 @@
+/*
+	Theme Name: 	CSBB
+	Theme URI: 		http://www.csbusinessbuilders.com
+	Description: 	A responsive theme and pseudo-framework for WordPress
+	Author: 		Collider Creative
+	Author URI: 	http://www.collildercreative.com.com
+	License: 		GNU General Public License version 3.0
+	License URI: 	http://www.gnu.org/licenses/gpl-3.0.html
+	Template: 		super-skeleton-2.0
+	Version: 		0.1.0
+	
+*/
+
+@import url("../super-skeleton-2.0/style.css");
+
+/* pagination fix */
+
+body {
+	font-size: 16px;
+}
+
+h2 {
+	line-height: 1.5;
+	margin: 30px 0;
+}
+
+h3, h4, h5 {
+	margin: 30px 0 10px 0;
+}
+
+.sf-menu {
+	float: right;
+}
+
+.sf-menu > li, .sf-menu li:hover {
+	border-left: 0;
+	border-right: 0;
+	background: rgba(255,255,255,1);
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	-o-box-shadow: none;
+	box-shadow: none;
+}
+
+.sf-menu > li > a strong:hover {
+	color: #00AEEF;
+}
+
+.content {
+	max-width: 750px;
+}
+
+.wp-paginate {
+	padding: 0 0 30px;
+}
+
+.member-card {
+	margin-bottom: 40px;
+}
+
+.member-card h2 {
+	margin-bottom: 10px;
+}
+
+.member-card hr {
+	margin-bottom: 10px;
+}
+
+.member-card img {
+	max-height: 184px;
+	max-width: 132px;
+	margin-right: 20px;
+}
+
+.member-card a h4 {
+	color: #00AEEF;
+	display: inline-block;
+	margin: 5px 0;
+}
+
+.member-card a h4:hover {
+	color: #3A344C;
+}
+
+.fl {
+	float: left;
+}
+
+.page-id-296 .title {
+	display: none;
+}

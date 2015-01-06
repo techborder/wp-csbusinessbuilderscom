@@ -1,0 +1,17 @@
+[data-role="evp-video"] video,
+[data-role="evp-video"] object,
+[data-role="evp-video"] embed,
+[data-role="evp-splittest"] video,
+[data-role="evp-splittest"] object,
+[data-role="evp-splittest"] embed,
+[data-role="evp-playlist"] video,
+[data-role="evp-playlist"] object
+[data-role="evp-playlist"] embed,
+.evp-video-wrap video,
+.evp-video-wrap object,
+.evp-video-wrap embed { max-width: none !important; max-width: none; width: inherit; height: inherit; }
+
+[data-role="evp-video"] img,
+[data-role="evp-splittest"] img,
+[data-role="evp-playlist"] img,
+.evp-video-wrap img { max-width: none !important; max-width: none; width: inherit; height: inherit; }

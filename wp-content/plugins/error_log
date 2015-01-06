@@ -1,0 +1,4 @@
+[24-Mar-2014 23:22:50 America/Phoenix] PHP Fatal error:  Call to undefined function add_action() in /home/spencern/public_html/csbb/wp-content/plugins/hello.php on line 60
+[17-Apr-2014 18:00:08 America/Phoenix] PHP Fatal error:  Call to undefined function add_action() in /home/spencern/public_html/csbb/wp-content/plugins/hello.php on line 60
+[11-May-2014 07:57:17 America/Phoenix] PHP Fatal error:  Call to undefined function add_action() in /home/spencern/public_html/csbb/wp-content/plugins/hello.php on line 60
+[11-May-2014 20:31:05 America/Phoenix] PHP Fatal error:  Call to undefined function add_action() in /home/spencern/public_html/csbb/wp-content/plugins/hello.php on line 60

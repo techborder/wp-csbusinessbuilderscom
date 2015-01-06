@@ -1,0 +1,187 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<title>Select a playlist</title>
+	<style type="text/css">
+	#tabs { overflow: auto; width: 761px; margin: 20px auto 20px auto; background: url(../images/tab.png) repeat-x #dce5e9; border: 1px solid #dce5e9; border-radius: 4px; }
+	#tabs div.tab { float: left; width: 189px; height: 55px; line-height: 55px; font-weight: bold; font-size: 13px; text-align: center; border-right: 1px solid #dce5e9; }
+	#tabs div.tab.active { background: #f8fafb; }
+	#tabs div.tab a { display: block; text-decoration: none; }
+	#tabs div.tab a:hover {  }
+	#tabs div.tab.active a { background: #f8fafb; }
+	#tabs div.tab.active a:hover {  }
+	#tabs div.tab.first {  }
+	#tabs div.tab.first a {  border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
+	#tabs div.tab.fourth { border-right: none; }
+	#tabs div.tab.fourth a {  border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+	
+	#wp_evs_form { font-size: 13px; width: 760px; margin: 0 auto; }
+	#wp_evs_form	.title { color: #000; font-size: 14px; margin: 0 0 10px 0; }
+	
+	#wp_evs_folders, #wp_evs_files { margin: 0 0 10px 0; background: #fff; border: 1px solid #cccccc; }
+	#wp_evs_folders { width: 280px; margin: 0 10px 0 0; float: left; }
+	#wp_evs_files {  }
+	.wp_evs_table { width: 100%; color: #000; }
+	.wp_evs_table thead tr td { font-weight: bold; padding: 10px; font-size: 12px; cursor: default; border-bottom: 1px solid #cccccc; background: url(../images/title.png) repeat-x #e6e6e6; }
+	.wp_evs_table tbody tr { background: #f8fafb; }
+	.wp_evs_table tbody tr:not(.wp_evs_metarow):hover { background: #e6edf3; }
+	.wp_evs_table tbody tr td { padding: 10px; font-size: 12px; cursor: default; border-bottom: 2px solid #fff; }
+	.wp_evs_table .wp_evs_insert_link { cursor: pointer; color: #008EE8; }
+	.wp_evs_table tbody tr:hover .wp_evs_insert_link {  }
+	.wp_evs_table tr.current td { font-weight: bold; background: #e6edf3; }
+	.wp_evs_table td.wp_evs_actions a { display: block; float: left; margin: 0 10px 0 0; text-decoration: none; border: none; }
+	.wp_evs_table td.wp_evs_actions a:last-child { margin-right: 0; }
+	.wp_evs_table td.wp_evs_actions img { display: block; border: none; }
+	.wp_evs_table tbody tr:last-child td { border-bottom: none; }
+	
+	.wp_evs_table tr.wp_evs_metarow {  }
+	.wp_evs_table tr.wp_evs_metarow td { background: #F7FDFF; }
+	.wp_evs_table tr.wp_evs_metarow td.wp_evs_actions {  }
+	
+	.wp_evs_table tr.wp_evs_profiles_open { background: #E8F5FA; background: #E8F5FA !important; }
+	
+	.wp_evs_table tbody tr td.wp_evs_profiles_expand { cursor: pointer; }
+	
+	#wp_evs_folders tbody tr {  }
+	#wp_evs_folders tbody tr a { text-decoration: none; }
+	#wp_evs_folders tbody tr.subfolder {  }
+	#wp_evs_folders tbody tr.subfolder td:first-child { padding-left: 20px; }
+	
+	#wp_evs_files thead tr td { padding: 5px 10px 5px 0; }
+	#wp_evs_files tbody tr td { padding: 5px 10px 5px 0; }
+	</style>
+	<script type="text/javascript" src="../../../../wp-includes/js/jquery/jquery.js?ver=327-1235"></script>
+	<script type="text/javascript" src="../../../../wp-includes/js/tinymce/tiny_mce_popup.js?ver=327-1235"></script>
+	<script type="text/javascript" src="wp-evs-remote.js?ver=9-1"></script>
+	<script type="text/javascript" src="../admin/scripts/phpjs.js"></script>
+	<script type="text/javascript" src="../admin/scripts/spinner.js"></script>
+	<script type="text/javascript">
+	function queryParameter(ji) {
+		hu = window.location.search.substring(1);
+		gy = hu.split("&");
+		for (i=0;i<gy.length;i++) {
+			ft = gy[i].split("=");
+			if (ft[0] == ji) {
+				return ft[1];
+			}
+		}
+	}
+	
+	jQuery(document).ready(function($) {
+		var plugin_url = tinyMCEPopup.getWindowArg('plugin_url');
+		var evs_location = tinyMCEPopup.getWindowArg('evs_location');
+		var evs_username = tinyMCEPopup.getWindowArg('evs_username');
+		var evs_password = tinyMCEPopup.getWindowArg('evs_password');
+		var evs_api = evs_location+'/api.php';
+		
+		$('body').delegate('.wp_evs_insert_link', 'click', function() {
+			var file_ref = $(this).parent().parent().attr('wp_evs_file_id');
+			var parts = file_ref.split('::');
+			var file_id = parts[0];
+			var file_profile = parts[1];
+			
+			$('#wp_evs_files').fadeTo(300, 0.2);
+			
+			$.ajax({
+				'url': evs_api,
+				'data': {'responseType': 'jsonp', 'method': 'playlist-embed-code', 'id': file_id, 'username': evs_username, 'password': evs_password},
+				'dataType': 'jsonp',
+				'success': function(response) {
+					if(response.success == true) {
+						WPEVSRemoteDialog.insert((response.javascript_code || response.embed_code), (response.splash_image || response.related_image), plugin_url);
+					} else {
+						alert('There has been an error!\r\r'+response.message);
+					}
+				},
+				'error': function() {
+					alert('Unfortunately the list of playlists could not be loaded. Please go to the EasyVideoSuite settings page to check your location, username and password and try again!');
+				}
+			});
+		});
+		
+		$('#wp_evs_files').delegate('tbody .wp_evs_actions a', 'click', function() {
+			if(event) event.stopPropagation();
+		});
+		
+		$('#wp_evs_files').css('opacity', 0.2);
+		
+		$.ajax({
+			'url': evs_api,
+			'data': {'responseType': 'jsonp', 'method': 'playlist-list', 'username': evs_username, 'password': evs_password},
+			'dataType': 'jsonp',
+			'success': function(response) {
+				if(response.success == true) {
+					// Restore the list
+					$('#wp_evs_files').fadeTo(400, 1);
+					
+					// Create the files list
+					$('#wp_evs_files tbody').empty();
+					var count = 0;
+					$.each(response.playlists, function(idx, file) {
+						
+						var el = '<tr wp_evs_file_id="'+file.id+'">';
+						el+= '<td style="padding:0px;"></td>';
+						el+= '<td><a class="wp_evs_insert_link" title="Insert: '+(file.name)+'">'+(file.name).substr(0, 25)+'</a></td>';
+						el+= '<td>'+file.file_count+'</td>';
+						el+= '</tr>';
+						$(el).appendTo($('#wp_evs_files tbody'));
+						count++;
+					});
+					
+					if(count == 0) {
+						$('<tr><td colspan="3">You have not created any playlists yet.</td></tr>').appendTo($('#wp_evs_files tbody'));
+					}
+					
+				} else {
+					alert('There has been an error!\r\r'+response.message);
+				}
+			},
+			'error': function() {
+				alert('Unfortunately the list of playlists could not be loaded. Please go to the EasyVideoSuite settings page to check your location, username and password and try again!');
+			}
+		});
+	});
+	</script>
+</head>
+<body>
+	<div id="tabs">
+		<div class="tab first"><a href="remote_video.html?v=10-1">Embed a video</a></div>
+		<div class="tab second"><a href="remote_splittest.html?v=10-1">Embed a split test</a></div>
+		<div class="tab third active"><a href="remote_playlist.html?v=10-1">Embed a playlist</a></div>
+		<div class="tab fourth"><a href="basic_embed.html?v=10-1">Enter code manually</a></div>
+	</div>
+	
+	<form name="source" action="#" id="wp_evs_form">
+		<div class="title">Select your playlist</div>
+		<div>Below is your list of playlists from EasyVideoSuite! Click on the name of the playlist to insert it into your post!</div>
+		
+		<br />
+		
+		<div id="wp_evs_files">
+			<table id="wp_evs_files_table" border="0" cellpadding="0" cellspacing="0" class="wp_evs_table">
+				<thead>
+					<tr>
+						<td width="10" style="padding:0;">&nbsp;</td>
+						<td>Name</td>
+						<td>Number of files</td>
+					</tr>
+				</thead>
+				<tfoot><tr><td colspan="3"></td></tr></tfoot>
+				<tbody></tbody>
+			</table>
+		</div>
+		
+		<div style="clear:both;"></div>
+
+		<div class="mceActionPanel">
+			<div style="float: left">
+				<input type="button" id="cancel" name="cancel" value="Cancel" onclick="tinyMCEPopup.close();" />
+			</div>
+			<div style="float: right">
+				<input type="button" id="refresh" name="refresh" value="Refresh" onclick="window.location.reload();" class="mceButton" />
+			</div>
+			<div style="clear:both;height:20px;"></div>
+		</div>
+	</form>
+</body>
+</html>

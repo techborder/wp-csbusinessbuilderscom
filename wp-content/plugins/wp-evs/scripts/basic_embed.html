@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Enter embed code from EasyVideoSuite</title>
+<script type="text/javascript" src="../../../../wp-includes/js/tinymce/tiny_mce_popup.js?ver=327-1235"></script>
+<script type="text/javascript" src="wp-evs.js?ver=327-1236"></script>
+<script type="text/javascript" src="../admin/scripts/phpjs.js"></script>
+</head>
+<style type="text/css">
+	#tabs { overflow: auto; width: 761px; margin: 20px auto 20px auto; background: url(../images/tab.png) repeat-x #dce5e9; border: 1px solid #dce5e9; border-radius: 4px; }
+	#tabs div.tab { float: left; width: 189px; height: 55px; line-height: 55px; font-weight: bold; font-size: 13px; text-align: center; border-right: 1px solid #dce5e9; }
+	#tabs div.tab.active { background: #f8fafb; }
+	#tabs div.tab a { display: block; text-decoration: none; }
+	#tabs div.tab a:hover {  }
+	#tabs div.tab.active a { background: #f8fafb; }
+	#tabs div.tab.active a:hover {  }
+	#tabs div.tab.first {  }
+	#tabs div.tab.first a {  border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
+	#tabs div.tab.fourth { border-right: none; }
+	#tabs div.tab.fourth a {  border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+	
+	#wp_evs_form { font-size: 13px; width: 760px; margin: 0 auto; }
+	#wp_evs_form	.title { color: #000; font-size: 14px; margin: 0 0 10px 0; }
+</style>
+<body onresize="WPEVSDialog.resize();" id="wp_evs_form">
+	<div id="tabs">
+		<div class="tab first"><a href="remote_video.html?v=10-1">Embed a video</a></div>
+		<div class="tab second"><a href="remote_splittest.html?v=10-1">Embed a split test</a></div>
+		<div class="tab third"><a href="remote_playlist.html?v=10-1">Embed a playlist</a></div>
+		<div class="tab fourth active"><a href="basic_embed.html?v=10-1">Enter code manually</a></div>
+	</div>
+	<form name="source" onsubmit="return WPEVSDialog.insert();" action="#">
+		<div class="title">Enter your code below</div>
+		<div>It will be encrypted and this will prevent WordPress from modifying the code. You can enter video code, or the HTML for your 'external' Events' code in here!</div>
+		<div>Use CTRL+V on your keyboard to paste the code into the window.</div>
+
+		<textarea id="content" name="content" rows="15" cols="100" style="width: 760px; height: 190px; border-radius: 4px; border: 1px solid #dadee2; margin: 20px 0; padding: 10px; font-family: 'Courier New',Courier,mono; font-size: 12px;" dir="ltr" wrap="soft" class="mceFocus"></textarea>
+
+		<div class="mceActionPanel">
+			<div style="float: left">
+				<input type="button" id="cancel" name="cancel" value="Cancel" onclick="tinyMCEPopup.close();" />
+			</div>
+
+			<div style="float: right">
+				<input type="submit" id="insert" name="insert" value="Insert" />
+			</div>
+		</div>
+	</form>
+</body>
+</html>
