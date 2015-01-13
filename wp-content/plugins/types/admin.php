@@ -3,9 +3,9 @@
  *
  * Admin functions
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/admin.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/admin.php $
+ * $LastChangedDate: 2014-11-21 08:53:16 +0000 (Fri, 21 Nov 2014) $
+ * $LastChangedRevision: 1029976 $
  * $LastChangedBy: iworks $
  *
  */
@@ -36,7 +36,6 @@ function wpcf_admin_init_hook() {
     /* wp_enqueue_style('wpcf-promo-tabs',
         WPCF_RES_RELPATH . '/css/tabs.css', array(), WPCF_VERSION); */
     wp_enqueue_style('toolset-dashicons');
-    types_marketing_message_survey_2014_09_helper();
 }
 
 /**

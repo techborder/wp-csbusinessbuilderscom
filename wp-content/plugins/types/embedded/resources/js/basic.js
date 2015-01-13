@@ -4,7 +4,7 @@
  * For now full and embedded version use this script.
  * Before moving full-version-only code - make sure it's not needed here.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/resources/js/basic.js $
+ * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/embedded/resources/js/basic.js $
  * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
  * $LastChangedRevision: 1027712 $
  * $LastChangedBy: iworks $

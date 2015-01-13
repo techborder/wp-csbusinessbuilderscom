@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.fieldconfig.php $
+ * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/embedded/common/toolset-forms/classes/class.fieldconfig.php $
  * $LastChangedDate: 2014-09-18 09:37:16 +0000 (Thu, 18 Sep 2014) $
  * $LastChangedRevision: 992466 $
  * $LastChangedBy: brucepearson $

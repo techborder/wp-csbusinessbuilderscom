@@ -3,7 +3,7 @@
  * Use this file only for scripts needed in full version.
  * Before moving from embedded JS - make sure it's needed only here.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/resources/js/basic.js $
+ * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/resources/js/basic.js $
  * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
  * $LastChangedRevision: 1027712 $
  * $LastChangedBy: iworks $

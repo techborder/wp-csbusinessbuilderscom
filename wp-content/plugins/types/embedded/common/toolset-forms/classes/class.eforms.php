@@ -27,7 +27,7 @@
  * @link http://enlimbo.net/forms
  * @author srdjan <srdjan@enlimbo.net>
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.eforms.php $
+ * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/embedded/common/toolset-forms/classes/class.eforms.php $
  * $LastChangedDate: 2014-10-29 15:57:36 +0000 (Wed, 29 Oct 2014) $
  * $LastChangedRevision: 1016002 $
  * $LastChangedBy: iworks $

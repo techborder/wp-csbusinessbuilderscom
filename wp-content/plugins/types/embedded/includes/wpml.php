@@ -8,10 +8,10 @@
  * Values:
  * 0 nothing (ignore), 1 copy, 2 translate
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/wpml.php $
- * $LastChangedDate: 2014-08-27 08:49:51 +0000 (Wed, 27 Aug 2014) $
- * $LastChangedRevision: 973824 $
- * $LastChangedBy: brucepearson $
+ * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/embedded/includes/wpml.php $
+ * $LastChangedDate: 2014-11-21 08:53:16 +0000 (Fri, 21 Nov 2014) $
+ * $LastChangedRevision: 1029976 $
+ * $LastChangedBy: iworks $
  *
  */
 
@@ -1198,14 +1198,19 @@ function wpcf_wpml_warnings_init()
         return;
     }
 
-	if ( $sitepress->get_default_language() != $sitepress_settings[ 'st' ][ 'strings_language' ] ) {
-		wp_types_default_language_warning();
-	} elseif ( $sitepress_settings[ 'st' ][ 'strings_language' ] != 'en' ) {
-		wp_types_st_language_warning();
-	} else {
-		ICL_AdminNotifier::removeMessage( 'wp_types_default_language_warning' );
-		ICL_AdminNotifier::removeMessage( 'wp_types_st_language_warning' );
-	}
+    /**
+     * do that only when version of WPML is lower then 3.2
+     */
+    if ( defined('ICL_SITEPRESS_VERSION') && version_compare( ICL_SITEPRESS_VERSION, '3.2', '<' ) ) {
+        if ( $sitepress->get_default_language() != $sitepress_settings[ 'st' ][ 'strings_language' ] ) {
+            wp_types_default_language_warning();
+        } elseif ( $sitepress_settings[ 'st' ][ 'strings_language' ] != 'en' ) {
+            wp_types_st_language_warning();
+        } else {
+            ICL_AdminNotifier::removeMessage( 'wp_types_default_language_warning' );
+            ICL_AdminNotifier::removeMessage( 'wp_types_st_language_warning' );
+        }
+    }
 }
 
 function wpcf_wpml_warning()
