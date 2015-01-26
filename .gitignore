@@ -12,3 +12,6 @@ wp-content/upgrade/
 wp-content/uploads/
 wp-content/wp-cache-config.php
 wp-content/wfcache/
+wp-snapshots/
+wp-admin/error_log
+.DS_Store
