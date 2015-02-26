@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/embedded/includes/fields/image.php $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.5.1/embedded/includes/fields/image.php $
  * $LastChangedDate: 2014-11-21 08:53:16 +0000 (Fri, 21 Nov 2014) $
  * $LastChangedRevision: 1029976 $
  * $LastChangedBy: iworks $

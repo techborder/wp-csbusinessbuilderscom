@@ -2,7 +2,7 @@
 /**
  * Types fields specific
  *
- * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/embedded/common/toolset-forms/classes/class.types.php $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.5.1/embedded/common/toolset-forms/classes/class.types.php $
  * $LastChangedDate: 2014-10-23 10:33:39 +0000 (Thu, 23 Oct 2014) $
  * $LastChangedRevision: 1012677 $
  * $LastChangedBy: iworks $

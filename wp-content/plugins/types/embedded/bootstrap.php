@@ -7,9 +7,9 @@
  *
  * @since Types 1.2
  *
- * $HeadURL: https://plugins.svn.wordpress.org/types/trunk/embedded/bootstrap.php $
- * $LastChangedDate: 2014-11-21 08:53:16 +0000 (Fri, 21 Nov 2014) $
- * $LastChangedRevision: 1029976 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.5.1/embedded/bootstrap.php $
+ * $LastChangedDate: 2015-02-24 10:05:51 +0000 (Tue, 24 Feb 2015) $
+ * $LastChangedRevision: 1097977 $
  * $LastChangedBy: iworks $
  *
  */
@@ -131,7 +131,7 @@ function wpcf_embedded_init() {
     // Define necessary constants if plugin is not present
     // This ones are skipped if used as embedded code!
     if ( !defined( 'WPCF_VERSION' ) ) {
-        define( 'WPCF_VERSION', '1.6.5' );
+        define( 'WPCF_VERSION', '1.6.5.1' );
         define( 'WPCF_META_PREFIX', 'wpcf-' );
     }
 
@@ -300,6 +300,7 @@ function wpcf_embedded_init() {
     // 'attachment' = Media
     //
     $wpcf->excluded_post_types = array(
+        'dd_layouts',
         'cred-form',
         'mediapage',
         'nav_menu_item',
