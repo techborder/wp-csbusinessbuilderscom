@@ -1,1 +1,2 @@
 [22-Jan-2014 03:52:29 America/Phoenix] PHP Fatal error:  Call to undefined function get_header() in /home/spencern/public_html/csbb/wp-content/themes/super-skeleton-2.0/404.php on line 1
+[25-Feb-2015 14:59:55 America/Denver] PHP Fatal error:  Call to undefined function get_header() in /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-content/themes/super-skeleton-2.0/404.php on line 1
