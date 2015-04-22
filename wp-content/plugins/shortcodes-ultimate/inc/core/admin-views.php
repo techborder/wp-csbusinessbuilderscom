@@ -34,7 +34,7 @@ class Su_Admin_Views {
 	<div class="su-clearfix">
 		<div class="su-about-column">
 			<h3><?php _e( 'How does it works', 'su' ); ?></h3>
-			<a href="http://www.youtube.com/watch?v=DR2c266yWEA?autoplay=1&amp;showinfo=0&amp;rel=0&amp;theme=light#" target="_blank" class="su-demo-video"><img src="<?php echo plugins_url( 'assets/images/banners/how-it-works.jpg', SU_PLUGIN_FILE ); ?>" alt=""></a>
+			<a href="http://www.youtube.com/watch?v=lni-w2dtcQY?autoplay=1&amp;showinfo=0&amp;rel=0&amp;theme=light#" target="_blank" class="su-demo-video"><img src="<?php echo plugins_url( 'assets/images/banners/how-it-works.jpg', SU_PLUGIN_FILE ); ?>" alt=""></a>
 		</div>
 		<div class="su-about-column">
 			<h3><?php _e( 'More videos', 'su' ); ?></h3>
@@ -94,8 +94,9 @@ class Su_Admin_Views {
 		$output = array();
 		$examples = Su_Data::examples();
 		$preview = '<div style="display:none"><div id="su-examples-window"><div id="su-examples-preview"></div></div></div>';
-		$open = ( isset( $_GET['example'] ) ) ? sanitize_text_field( $_GET['example'] ) : '';
+		$open = ( isset( $_GET['example'] ) ) ? sanitize_key( $_GET['example'] ) : '';
 		$open = '<input id="su_open_example" type="hidden" name="su_open_example" value="' . $open . '" />';
+		$nonce = '<input id="su_examples_nonce" type="hidden" name="su_examples_nonce" value="' . wp_create_nonce( 'su_examples_nonce' ) . '" />';
 		foreach ( $examples as $group ) {
 			$items = array();
 			if ( isset( $group['items'] ) ) foreach ( $group['items'] as $item ) {
@@ -107,7 +108,7 @@ class Su_Admin_Views {
 		}
 		su_query_asset( 'css', array( 'magnific-popup', 'font-awesome', 'su-options-page' ) );
 		su_query_asset( 'js', array( 'jquery', 'magnific-popup', 'su-options-page' ) );
-		return '<div id="su-examples-screen">' . implode( '', $output ) . '</div>' . $preview . $open;
+		return '<div id="su-examples-screen">' . implode( '', $output ) . '</div>' . $preview . $open . $nonce;
 	}
 
 	public static function cheatsheet( $field, $config ) {

@@ -74,6 +74,13 @@ class Shortcodes_Ultimate {
 						'default' => 'su_'
 					),
 					array(
+						'type'    => 'text',
+						'id'      => 'hotkey',
+						'name'    => __( 'Insert shortcode Hotkey', 'su' ),
+						'desc'    => sprintf( '%s<br><a href="https://rawgit.com/jeresig/jquery.hotkeys/master/test-static-01.html" target="_blank">%s</a> | <a href="https://github.com/jeresig/jquery.hotkeys#notes" target="_blank">%s</a>', __( 'Here you can define custom hotkey for the Insert shortcode popup window. Leave this field empty to disable hotkey', 'su' ), __( 'Hotkey examples', 'su' ), __( 'Additional notes', 'su' ) ),
+						'default' => 'alt+i'
+					),
+					array(
 						'type'    => 'hidden',
 						'id'      => 'skin',
 						'name'    => __( 'Skin', 'su' ),
@@ -166,7 +173,6 @@ class Shortcodes_Ultimate {
 	 */
 	public static function activation() {
 		self::timestamp();
-		self::skins_dir();
 		update_option( 'su_option_version', SU_PLUGIN_VERSION );
 		do_action( 'su/activation' );
 	}
@@ -213,15 +219,6 @@ class Shortcodes_Ultimate {
 	 */
 	public static function timestamp() {
 		if ( !get_option( 'su_installed' ) ) update_option( 'su_installed', time() );
-	}
-
-	/**
-	 * Create directory /wp-content/uploads/shortcodes-ultimate-skins/ on activation
-	 */
-	public static function skins_dir() {
-		$upload_dir = wp_upload_dir();
-		$path = trailingslashit( path_join( $upload_dir['basedir'], 'shortcodes-ultimate-skins' ) );
-		if ( !file_exists( $path ) ) mkdir( $path, 0755 );
 	}
 
 	/**

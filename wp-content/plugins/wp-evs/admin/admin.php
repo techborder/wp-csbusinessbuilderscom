@@ -41,7 +41,11 @@ function wp_evs_admin_options() {
 		update_option('wp-evs-configured', true);
 		
 		// Reconstruct the location
-		$evs_location = 'http://'.implode('.', $_POST['evs_location_frags']);
+		$protocol = 'http';
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
+			$protocol = 'https';
+		}
+		$evs_location = $protocol.'://'.implode('.', $_POST['evs_location_frags']);
 		
 		update_option('evs_location', $evs_location);
 		update_option('evs_username', $_POST['evs_username']);
@@ -149,7 +153,7 @@ function wp_evs_admin_options() {
 			</tr>
 			<tr align="top">
 				<th scope="row">
-					<label for="evs_location"><?php _e("EasyVideoSuite username:", 'wp-evs' ); ?></label>
+					<label for="evs_username"><?php _e("EasyVideoSuite username:", 'wp-evs' ); ?></label>
 				</th>
 				<td>
 					<input type="text" name="evs_username" id="evs_username" value="<?php echo $evs_username; ?>" size="20" class="regular-text code" />
@@ -157,7 +161,7 @@ function wp_evs_admin_options() {
 			</tr>
 			<tr align="top">
 				<th scope="row">
-					<label for="evs_location"><?php _e("EasyVideoSuite password:", 'wp-evs' ); ?></label>
+					<label for="evs_password"><?php _e("EasyVideoSuite password:", 'wp-evs' ); ?></label>
 				</th>
 				<td>
 					<input type="password" name="evs_password" id="evs_password" value="<?php echo $evs_password; ?>" size="20" class="regular-text code" />
@@ -181,7 +185,7 @@ function wp_evs_admin_options() {
 			</tr>
 			<tr align="top">
 				<th scope="row">
-					<label for="evs_video_responsive"><?php _e("Responsve <strong>only</strong> on mobiles?", 'wp-evs' ); ?></label>
+					<label for="evs_video_responsive_onlymobile"><?php _e("Responsve <strong>only</strong> on mobiles?", 'wp-evs' ); ?></label>
 				</th>
 				<td>
 					<input type="checkbox" value="1" name="evs_video_responsive_onlymobile" id="evs_video_responsive_onlymobile" style="margin: 0 10px 0 0;" <?php echo ($evs_video_responsive_onlymobile == 1 ? 'checked="checked"' : ''); ?> />

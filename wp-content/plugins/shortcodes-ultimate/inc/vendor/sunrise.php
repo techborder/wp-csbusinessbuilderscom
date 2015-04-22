@@ -158,6 +158,7 @@ if ( !class_exists( 'Sunrise4' ) ) {
 			echo '<form action="" method="post" id="sunrise-form">';
 			echo call_user_func( array( $this->config['views_class'], 'options_page_panes' ), $options, $this->config );
 			echo '<input type="hidden" name="sunrise_action" value="save" />';
+			echo '<input type="hidden" name="sunrise_nonce" value="' . wp_create_nonce( 'sunrise_nonce' ) . '" />';
 			do_action( 'sunrise/page/form' );
 			echo '</form></div>';
 			// Hook after page output
@@ -232,6 +233,8 @@ if ( !class_exists( 'Sunrise4' ) ) {
 			$page = sanitize_key( $_GET['page'] );
 			// Check page
 			if ( !$this->is_sunrise() ) return;
+			// Check nonce
+			if ( !isset( $_REQUEST['sunrise_nonce'] ) || !wp_verify_nonce( $_REQUEST['sunrise_nonce'], 'sunrise_nonce' ) ) return;
 			// Submit hooks
 			do_action( 'sunrise/submit', $this );
 			do_action( 'sunrise/submit/' . $page, $this );
@@ -366,7 +369,7 @@ if ( !class_exists( 'Sunrise4_Views' ) ) {
 			$field = wp_parse_args( $field, array( 'actions' => true ) );
 			$return = array();
 			$return[] = '</table>';
-			if ( $field['actions'] ) $return[] = '<div class="sunrise-actions-bar"><input type="submit" value="' . __( 'Save changes', $config['textdomain'] ) . '" class="sunrise-submit button-primary" /><span class="sunrise-spin"><img src="' . admin_url( 'images/wpspin_light.gif' ) . '" alt="" /> ' . __( 'Saving', $config['textdomain'] ) . '&hellip;</span><span class="sunrise-success-tip"><img src="' . admin_url( 'images/yes.png' ) . '" alt="" /> ' . __( 'Saved', $config['textdomain'] ) . '</span><a href="' . $_SERVER["REQUEST_URI"] . '&amp;sunrise_action=reset" class="sunrise-reset button alignright" title="' . esc_attr( __( 'This action will delete all your settings. Are you sure? This action cannot be undone!', $config['textdomain'] ) ) . '">' . __( 'Restore default settings', $config['textdomain'] ) . '</a></div>';
+			if ( $field['actions'] ) $return[] = '<div class="sunrise-actions-bar"><input type="submit" value="' . __( 'Save changes', $config['textdomain'] ) . '" class="sunrise-submit button-primary" /><span class="sunrise-spin"><img src="' . admin_url( 'images/wpspin_light.gif' ) . '" alt="" /> ' . __( 'Saving', $config['textdomain'] ) . '&hellip;</span><span class="sunrise-success-tip"><img src="' . admin_url( 'images/yes.png' ) . '" alt="" /> ' . __( 'Saved', $config['textdomain'] ) . '</span><a href="' . $_SERVER["REQUEST_URI"] . '&amp;sunrise_action=reset&amp;sunrise_nonce=' . wp_create_nonce( 'sunrise_nonce' ) . '" class="sunrise-reset button alignright" title="' . esc_attr( __( 'This action will delete all your settings. Are you sure? This action cannot be undone!', $config['textdomain'] ) ) . '">' . __( 'Restore default settings', $config['textdomain'] ) . '</a></div>';
 			$return[] = '</div>';
 			return implode( '', $return );
 		}

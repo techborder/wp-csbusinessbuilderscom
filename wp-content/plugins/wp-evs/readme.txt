@@ -2,7 +2,7 @@
 Contributors: easyvideoplayer
 Tags: video, evs, easy video suite, easyvideosuite
 Requires at least: 2.8
-Tested up to: 3.9
+Tested up to: 4.4.1
 Stable tag: trunk
 
 Easily embed EasyVideoSuite videos into WordPress posts, even with the visual editor!
@@ -39,6 +39,19 @@ Set up the plugin as explained in the installation instructions, and then click 
 Set up the plugin as explained in the installation instructions, and then click on the button on the post (or page!) editor. The plugin will fetch your list of split tests right from your EasyVideoSuite installation and you can click on them to insert them into your post.
 
 == Changelog ==
+
+= 1.1.12 =
+* Added support for 'popup' embed code, via the 'Enter code manually' option
+
+= 1.1.11 =
+* Fixed infinite loop issue
+
+= 1.1.10 =
+* Added SSL support
+
+= 1.1.9 =
+* Added support for manual iframe embed code
+* Fixed potential infinite loop with subfolder listing
 
 = 1.1.8 =
 * Fixed incompatibility with some strict mod_security rules, preventing saving settings

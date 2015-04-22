@@ -158,7 +158,7 @@
 						if(parent.length >= 1) {
 							
 							var search = folder.parent_id;
-							while(folder_arr[search].parent_id != null) {
+							while(folder_arr[search].parent_id != null && depth < 5) {
 								search = folder_arr[search].parent_id;
 								depth++;
 							}

@@ -3,9 +3,9 @@
  *
  * Types Marketing Class
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.5.1/classes/class.wpcf-marketing.php $
- * $LastChangedDate: 2015-02-24 10:05:51 +0000 (Tue, 24 Feb 2015) $
- * $LastChangedRevision: 1097977 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/classes/class.wpcf-marketing.php $
+ * $LastChangedDate: 2015-02-18 14:28:53 +0000 (Wed, 18 Feb 2015) $
+ * $LastChangedRevision: 1093394 $
  * $LastChangedBy: iworks $
  *
  */

@@ -5,7 +5,7 @@ Tags: CMS, custom field, custom fields, custom post type, custom post types, pos
 License: GPLv2
 Requires at least: 3.4
 Tested up to: 4.1.1
-Stable tag: 1.6.5.1
+Stable tag: 1.6.6.2
 
 The complete and reliable plugin for managing custom post types, custom taxonomy and custom fields.
 
@@ -143,22 +143,52 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 
 == Screenshots ==
 
-1. Defining custom post types and taxonomy
-2. Defining custom fields (meta-groups)
-3. Editing custom fields
-4. Inserting custom fields to content
-5. Bulk editing child content using Field Tables
-6. Edit Custom Post Type
-7. Edit Taxonomy
+1. Custom post types list
+2. Defining custom taxonomy list
+3. Defining custom post type
+4. Defining custom fields (meta-groups)
+5. Editing custom fields
+6. Inserting custom fields to content
+7. Bulk editing child content using Field Tables
+8. Edit Custom Post Type
+9. Edit Taxonomy
 
 == Changelog ==
+
+= 1.6.6.2 =
+
+* Release date: 2015-04-10
+* Fixed problem with File Field which do not work when edited from the Parent Post Type. https://wp-types.com/forums/topic/1-6-6-seems-to-break-child-fields-when-parent-has-an-image-field/
+
+= 1.6.6.1 =
+
+* Release date: 2015-04-03
+* Fixed problem with archive page for custom post type.
+
+= 1.6.6 =
+
+* Release date: 2015-04-02
+* Fixed problem with shortcode "playlist" used in WYSIWYG field.  http://wp-types.com/forums/topic/media-play-list-not-outputting-from-custom-wysiwyg-field-js-error/
+* Fixed empty title problem for filter "wpt_field_options" on user edit/add screen https://wp-types.com/forums/topic/populate-select-field-in-wpcf-um-group/
+* Added ability to create CPT without title and editor. https://wp-types.com/forums/topic/inaccurate-warning-message-when-creatingediting-a-cpt/
+* Added Skype field validation.
+* Fixed problem with loading custom CSS when user meta group is inactive or not assign to certain user role.
+* Added ability to add to menu link to archive of post type.
+* Added ability to setup meta box callback function. https://wp-types.com/forums/topic/add-support-for-meta_box_cb-in-custom-taxonomy/
+* Added ability to add HTML5 placeholder attribute for custom post fields.
+* Fixed problem with CPT labels.  https://wp-types.com/forums/topic/after-save-cpts-cutom-labels-always-revert-to-default-label/
+* Added a filters to the post title as option text in the select dropdown for post parents. wpcf_pr_belongs_items for array of options and wpcf_pr_belongs_item for one option. https://wp-types.com/forums/topic/help-to-distinguish-duplicate-titles-in-post-relationship/
+* Added ability to choose custom fields to display it on custom posts admin list.
+* Fixed problem with saving parent data into child data. On parent edit screen.
+* Added check group name for Custom Fields and User Fields.
+* Fixed missing "Edit" button on group edit screen when we close custom logic form.
 
 = 1.6.5.1 =
 
 * Release date: 2015-02-24
-* Fix Installer patch to plugins.
-* Fix problem with "Access Control and User Roles" menu in Types, when Access is active http://wp-types.com/forums/topic/update-issues-fatal-error-require_once-failed-opening-required-wpcf_access_/
-* Change utm_media used in links on "Getting Started" pages.
+* Fixed Installer patch to plugins.
+* Fixed problem with "Access Control and User Roles" menu in Types, when Access is active http://wp-types.com/forums/topic/update-issues-fatal-error-require_once-failed-opening-required-wpcf_access_/
+* Changed utm_media used in links on "Getting Started" pages.
 
 = 1.6.5 =
 

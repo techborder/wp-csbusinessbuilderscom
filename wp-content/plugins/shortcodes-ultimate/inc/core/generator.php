@@ -56,7 +56,9 @@ class Su_Generator {
 		// Request assets
 		wp_enqueue_media();
 		su_query_asset( 'css', array( 'simpleslider', 'farbtastic', 'magnific-popup', 'font-awesome', 'su-generator' ) );
-		su_query_asset( 'js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-mouse', 'simpleslider', 'farbtastic', 'magnific-popup', 'su-generator' ) );
+		su_query_asset( 'js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-mouse', 'simpleslider', 'farbtastic', 'magnific-popup', 'jquery-hotkeys', 'su-generator' ) );
+		// Hook
+		do_action( 'su/button', $args );
 		// Print/return result
 		if ( $args['echo'] ) echo $button;
 		return $button;
@@ -96,6 +98,7 @@ class Su_Generator {
 				<div id="su-generator-header">
 					<div id="su-generator-tools"><?php echo implode( ' <span></span> ', $tools ); ?></div>
 					<input type="text" name="su_generator_search" id="su-generator-search" value="" placeholder="<?php _e( 'Search for shortcodes', 'su' ); ?>" />
+					<p id="su-generator-search-pro-tip"><?php printf( '<strong>%s:</strong> %s', __( 'Pro Tip', 'su' ), __( 'Hit enter to select highlighted shortcode, while searching' ) ) ?></p>
 					<div id="su-generator-filter">
 						<strong><?php _e( 'Filter by type', 'su' ); ?></strong>
 						<?php foreach ( (array) Su_Data::groups() as $group => $label ) echo '<a href="#" data-filter="' . $group . '">' . $label . '</a>'; ?>
@@ -159,12 +162,12 @@ class Su_Generator {
 				$return .= '</div></div>';
 			}
 			// Shortcode has atts
-			if ( count( $shortcode['atts'] ) && $shortcode['atts'] ) {
+			if ( isset( $shortcode['atts'] ) && count( $shortcode['atts'] ) ) {
 				// Loop through shortcode parameters
 				foreach ( $shortcode['atts'] as $attr_name => $attr_info ) {
 					// Prepare default value
 					$default = (string) ( isset( $attr_info['default'] ) ) ? $attr_info['default'] : '';
-					$attr_info['name'] = (isset( $attr_info['name'] )) ? $attr_info['name'] : $attr_name;
+					$attr_info['name'] = ( isset( $attr_info['name'] ) ) ? $attr_info['name'] : $attr_name;
 					$return .= '<div class="su-generator-attr-container' . $skip . '" data-default="' . esc_attr( $default ) . '">';
 					$return .= '<h5>' . $attr_info['name'] . '</h5>';
 					// Create field types
@@ -180,7 +183,11 @@ class Su_Generator {
 			// Single shortcode (not closed)
 			if ( $shortcode['type'] == 'single' ) $return .= '<input type="hidden" name="su-generator-content" id="su-generator-content" value="false" />';
 			// Wrapping shortcode
-			else $return .= '<div class="su-generator-attr-container"><h5>' . __( 'Content', 'su' ) . '</h5><textarea name="su-generator-content" id="su-generator-content" rows="5">' . esc_attr( str_replace( array( '%prefix_', '__' ), su_cmpt(), $shortcode['content'] ) ) . '</textarea></div>';
+			else {
+				// Prepare shortcode content
+				$shortcode['content'] = ( isset( $shortcode['content'] ) ) ? $shortcode['content'] : '';
+				$return .= '<div class="su-generator-attr-container"><h5>' . __( 'Content', 'su' ) . '</h5><textarea name="su-generator-content" id="su-generator-content" rows="5">' . esc_attr( str_replace( array( '%prefix_', '__' ), su_cmpt(), $shortcode['content'] ) ) . '</textarea></div>';
+			}
 			$return .= '<div id="su-generator-preview"></div>';
 			$return .= '<div class="su-generator-actions su-generator-clearfix">' . implode( ' ', array_values( $actions ) ) . '</div>';
 			set_transient( 'su/generator/settings/' . sanitize_text_field( $_REQUEST['shortcode'] ), $return, 2 * DAY_IN_SECONDS );
@@ -239,7 +246,7 @@ class Su_Generator {
 
 	public static function presets( $actions ) {
 		ob_start();
-		?>
+?>
 <div class="su-generator-presets alignright" data-shortcode="<?php echo sanitize_key( $_REQUEST['shortcode'] ); ?>">
 	<a href="javascript:void(0);" class="button button-large su-gp-button"><i class="fa fa-bars"></i> <?php _e( 'Presets', 'su' ); ?></a>
 	<div class="su-gp-popup">
@@ -269,7 +276,7 @@ class Su_Generator {
 		// Presets has been found
 		if ( is_array( $presets ) && count( $presets ) ) {
 			// Print the presets
-			foreach( $presets as $preset ) {
+			foreach ( $presets as $preset ) {
 				echo '<span data-id="' . $preset['id'] . '"><em>' . stripslashes( $preset['name'] ) . '</em> <i class="fa fa-times"></i></span>';
 			}
 			// Hide default text

@@ -3,10 +3,10 @@
 Plugin Name: WP-EVS (EasyVideoSuite WordPress plugin)
 Plugin URI: http://easyvideosuite.com/
 Description: Plugin to easily embed EasyVideoSuite videos into WordPress posts!
-Date: 2014, May, 29
+Date: 2015, April, 15
 Author: WebActix
 Author URI: http://webactix.com
-Version: 1.1.8
+Version: 1.1.12
 */
 
 // Helpers
@@ -36,11 +36,17 @@ add_action('wp_enqueue_scripts', 'wp_evs_addcss');
 
 // Now the actual filter to convert
 if(!function_exists('wp_evs_filter')) {
-	function wp_evs_filter($content) {	
+	function wp_evs_filter($content) {
 		$images = wp_evs_extract_tags($content, 'img', null, true);
 		
 		$evs_video_responsive = get_option('evs_video_responsive');
 		$evs_video_responsive_onlymobile = get_option('evs_video_responsive_onlymobile');
+		
+		// Are we using SSL?
+		$protocol = 'http';
+		if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
+			$protocol = 'https';
+		}
 		
 		if(!empty($images)) {
 			foreach($images as $img) {
@@ -51,7 +57,7 @@ if(!function_exists('wp_evs_filter')) {
 					$evscode = @base64_decode($alt);
 				}
 				
-				if(stripos($evscode, '<div id="evs') === false && stripos($evscode, '<div id="evp') === false) { // If it doesn't contain valid evs code, it's a normal image!
+				if(stripos($evscode, '<div id="evs') === false && stripos($evscode, '<div id="evp') === false && stripos($evscode, '<iframe') === false && stripos($evscode, '/console/') === false) { // If it doesn't contain valid evs code, it's a normal image!
 					// Do nothing
 				} else {
 					$evsprefix = '';
@@ -72,6 +78,11 @@ if(!function_exists('wp_evs_filter')) {
 						$evscode = str_replace('"></script>', '&responsive=1&autoResponsive=1&responsiveOnlyMobile=1"></script>', $evscode);
 					} elseif($evs_video_responsive == 1) { // No? How about just all the time?
 						$evscode = str_replace('"></script>', '&responsive=1&autoResponsive=1"></script>', $evscode);
+					}
+					
+					// Are we using SSL? If so, we should try to make this SSL too
+					if($protocol === 'https') {//strpos($evs_location, 'https://') !== false) {
+						$evscode = str_replace('http://', 'https://', $evscode);
 					}
 					
 					/*
