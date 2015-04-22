@@ -1,0 +1,2 @@
+[10-Apr-2015 19:38:07 America/Denver] PHP Fatal error:  Call to undefined function add_action() in /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-content/plugins/contact-form-7/includes/upgrade.php on line 3
+[10-Apr-2015 19:38:09 America/Denver] PHP Fatal error:  Call to undefined function add_filter() in /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-content/plugins/contact-form-7/includes/mail.php on line 289

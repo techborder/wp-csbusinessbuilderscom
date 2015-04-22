@@ -1,0 +1,9 @@
+[22-Mar-2015 20:20:38 UTC] PHP Fatal error:  Uncaught exception 'Exception' with message 'We received an error response when trying to contact the Wordfence scanning servers. The HTTP status code was [0] and the curl error number was [52]  and the error from CURL was: Empty reply from server' in /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-content/plugins/wordfence/lib/wfAPI.php:81
+Stack trace:
+#0 /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-content/plugins/wordfence/lib/wfAPI.php(22): wfAPI->getURL('https://noc1.wo...', Array)
+#1 /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-content/plugins/wordfence/lib/wordfenceClass.php(133): wfAPI->call('ping_api_key')
+#2 [internal function]: wordfence::dailyCron()
+#3 /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-includes/plugin.php(571): call_user_func_array('wordfence::dail...', Array)
+#4 /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-cron.php(103): do_action_ref_array('wordfence_daily...', Array)
+#5 {main}
+  thrown in /home4/csbusine/public_html/wp/prodcsbusinessbuilderscom/wp-content/plugins/wordfence/lib/wfAPI.php on line 81
